@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorWhite"
+    tools:context="pjm.tlcn.Activity.TabActivity_message">
+
+    <LinearLayout
+        android:background="@color/colorHaftWhite"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+            <ImageButton
+                android:layout_marginLeft="15dp"
+                android:layout_gravity="center"
+                android:background="@drawable/composer_camera"
+                android:layout_width="40dp"
+                android:layout_height="40dp"/>
+            <TextView
+                android:textColor="@color/colorPrimaryDark"
+                android:textStyle="bold"
+                android:textSize="15dp"
+                android:text="Tin nhắn"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+            <ImageButton
+                android:layout_marginRight="15dp"
+                android:layout_gravity="center"
+                android:background="@drawable/empty_story_badge"
+                android:layout_width="40dp"
+                android:layout_height="40dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/tabmessage_searchview"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+            <ImageView
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="center"
+                android:background="@drawable/search_location_small"
+                android:layout_width="20dp"
+                android:layout_height="20dp" />
+            <EditText
+                android:background="@android:color/transparent"
+                android:layout_marginLeft="10dp"
+                android:hint="  Tìm kiếm"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textStyle="bold"
+            android:text="List view in here"/>
+    </LinearLayout>
+</LinearLayout>

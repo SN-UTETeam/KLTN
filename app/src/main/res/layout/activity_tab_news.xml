@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="pjm.tlcn.Activity.TabActivity_news">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:background="@color/colorHaftWhite"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <Button
+            android:text="Cancel"
+            android:textColor="@color/colorGrayMore"
+            android:textSize="15dp"
+            android:textAllCaps="false"
+            android:background="@null"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
+        <TextView
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="All Photo"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold"
+            android:textSize="15dp"/>
+        <Button
+            android:text="Next"
+            android:textColor="@color/colorGrayMore"
+            android:textSize="15dp"
+            android:textAllCaps="false"
+            android:background="@null"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@color/colorDark"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+        <ImageView
+            android:background="@drawable/btn_back_to_camera"
+            android:layout_width="50dp"
+            android:layout_height="40dp" />
+        <TextView
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:textColor="@color/colorWhite"
+            android:text="Camera"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:gravity="center"
+            android:text="hình lấy từ thư viện"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+</LinearLayout>

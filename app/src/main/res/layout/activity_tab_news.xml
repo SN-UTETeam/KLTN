@@ -30,6 +30,7 @@
             android:textStyle="bold"
             android:textSize="15dp"/>
         <Button
+            android:id="@+id/button_selected_image"
             android:text="Next"
             android:textColor="@color/colorGrayMore"
             android:textSize="15dp"
@@ -57,13 +58,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <TextView
-            android:gravity="center"
-            android:text="hình lấy từ thư viện"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+        android:layout_height="3dp"
+        android:background="@color/colorHaftWhite"/>
+
+   <ImageView
+       android:id="@+id/tab_news_imageview"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:layout_weight="1"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/colorHaftWhite"/>
+    <GridView
+        android:background="@color/colorHaftWhite"
+        android:layout_weight="1"
+        android:id="@+id/tab_news_gridview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:columnWidth="100dp"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="5dp"
+        android:gravity="center"/>
 </LinearLayout>

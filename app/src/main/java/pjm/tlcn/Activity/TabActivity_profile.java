@@ -7,14 +7,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TabHost;
+import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import pjm.tlcn.R;
 
 @SuppressWarnings("deprecation")
 public class TabActivity_profile extends TabActivity {
+    public FirebaseUser user;
+    private TextView tv_UserName;
     private TabHost Tabhost_profile;
     private Button btn_edit_profile;
     private ImageButton ImgBtn_setting;
+    public String UserName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +31,14 @@ public class TabActivity_profile extends TabActivity {
         Tabhost_profile =(TabHost) findViewById(android.R.id.tabhost);
         btn_edit_profile = (Button) findViewById(R.id.btn_edit_profile);
         ImgBtn_setting = (ImageButton) findViewById(R.id.ImgBtn_setting);
+        tv_UserName = (TextView) findViewById(R.id.tv_UserName);
+
+        //get Current User
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user!=null){
+            tv_UserName.setText(user.getEmail().toString());
+        }
+
 
         //Create Tabhost
 

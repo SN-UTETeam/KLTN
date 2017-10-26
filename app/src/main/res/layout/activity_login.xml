@@ -33,19 +33,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <EditText
+                android:id="@+id/edt_EmailLogin"
+                android:inputType="textEmailAddress"
                 android:background="@drawable/edittext_login"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:hint="  Username"
+                android:hint="  Email"
                 />
             <View
                 android:layout_width="match_parent"
                 android:layout_height="10dp"></View>
             <EditText
+                android:inputType="textPassword"
+                android:id="@+id/edt_PassWordLogin"
                 android:background="@drawable/edittext_login"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:hint="  Password"
+                android:hint=" Password"
                 />
             <View
                 android:layout_width="match_parent"

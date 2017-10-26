@@ -22,7 +22,7 @@
     <LinearLayout
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:layout_weight="7"
+        android:layout_weight="4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -83,14 +83,37 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2">
-           <TextView
-               android:id="@+id/textview_registerwithEmail"
-               android:textColor="@color/colorBlue"
-               android:gravity="center"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:text="Đăng ký bằng Email hoặc điện thoại"/>
+            android:layout_weight="1">
+            <EditText
+                android:id="@+id/edt_EmailRegister"
+                android:maxLines="1"
+                android:inputType="textEmailAddress"
+                android:background="@drawable/edittext_login"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:hint="  Email"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="10dp"></View>
+            <EditText
+                android:id="@+id/edt_PassWordRegister"
+                android:maxLines="1"
+                android:inputType="textPassword"
+                android:background="@drawable/edittext_login"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:hint=" Password"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="10dp"></View>
+            <Button
+                android:id="@+id/btn_Register"
+                android:background="@drawable/button_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:textColor="@color/colorWhite"
+                android:text="Đăng ký"/>
 
         </LinearLayout>
         <View
@@ -100,13 +123,23 @@
 
     </LinearLayout>
     <LinearLayout
+        android:gravity="center"
+        android:orientation="horizontal"
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
             android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Bạn đã có tài khoản? Đăng Nhập"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bạn đã có tài khoản? "/>
+        <TextView
+            android:id="@+id/tv_dangnhap"
+            android:textColor="@color/colorBlue"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Đăng Nhập"/>
     </LinearLayout>
 </LinearLayout>

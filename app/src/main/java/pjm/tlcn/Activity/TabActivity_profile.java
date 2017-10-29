@@ -9,14 +9,13 @@ import android.widget.ImageButton;
 import android.widget.TabHost;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 
 import pjm.tlcn.R;
 
 @SuppressWarnings("deprecation")
 public class TabActivity_profile extends TabActivity {
-    public FirebaseUser user;
+    public DatabaseReference mDatabase;
     private TextView tv_UserName;
     private TabHost Tabhost_profile;
     private Button btn_edit_profile;
@@ -33,11 +32,8 @@ public class TabActivity_profile extends TabActivity {
         ImgBtn_setting = (ImageButton) findViewById(R.id.ImgBtn_setting);
         tv_UserName = (TextView) findViewById(R.id.tv_UserName);
 
-        //get Current User
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user!=null){
-            tv_UserName.setText(user.getEmail().toString());
-        }
+
+
 
 
         //Create Tabhost
@@ -82,5 +78,12 @@ public class TabActivity_profile extends TabActivity {
             }
         });
         //End Set Onclick ImgBtn_setting
+    }
+    public static String EncodeString(String string) {
+        return string.replace(".", ",");
+    }
+
+    public static String DecodeString(String string) {
+        return string.replace(",", ".");
     }
 }

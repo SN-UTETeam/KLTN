@@ -5,14 +5,81 @@ package pjm.tlcn.Model;
  */
 
 public class User {
-    public String UserName;
-    public String Email;
+    private String Id;
+    private String Username;
+    private String Email;
+    private String PassWord;
+    private Integer PhoneNumber;
+    private String Describer;
+    private String Avatar;
 
     public User() {
     }
 
-    public User(String userName, String email) {
-        UserName = userName;
+    public String getId() {
+        return Id;
+    }
+
+    public void setId(String id) {
+        Id = id;
+    }
+
+    public User(String id, String username, String email, String passWord, Integer phoneNumber, String describer, String avatar) {
+        Id=id;
+        Username = username;
         Email = email;
+
+        PassWord = passWord;
+        PhoneNumber = phoneNumber;
+        Describer = describer;
+        Avatar = avatar;
+    }
+
+    public String getUsername() {
+        return Username;
+    }
+
+    public void setUsername(String username) {
+        Username = username;
+    }
+
+    public String getEmail() {
+        return Email;
+    }
+
+    public void setEmail(String email) {
+        Email = email;
+    }
+
+    public String getPassWord() {
+        return PassWord;
+    }
+
+    public void setPassWord(String passWord) {
+        PassWord = passWord;
+    }
+
+    public Integer getPhoneNumber() {
+        return PhoneNumber;
+    }
+
+    public void setPhoneNumber(Integer phoneNumber) {
+        PhoneNumber = phoneNumber;
+    }
+
+    public String getDescriber() {
+        return Describer;
+    }
+
+    public void setDescriber(String describer) {
+        Describer = describer;
+    }
+
+    public String getAvatar() {
+        return Avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        Avatar = avatar;
     }
 }

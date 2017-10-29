@@ -6,12 +6,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.google.firebase.database.DatabaseReference;
+import com.squareup.picasso.Picasso;
 
 import pjm.tlcn.R;
+
+import static pjm.tlcn.Activity.Login.firebaseUser;
 
 @SuppressWarnings("deprecation")
 public class TabActivity_profile extends TabActivity {
@@ -20,6 +24,7 @@ public class TabActivity_profile extends TabActivity {
     private TabHost Tabhost_profile;
     private Button btn_edit_profile;
     private ImageButton ImgBtn_setting;
+    private ImageView img_avatar;
     public String UserName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +36,7 @@ public class TabActivity_profile extends TabActivity {
         btn_edit_profile = (Button) findViewById(R.id.btn_edit_profile);
         ImgBtn_setting = (ImageButton) findViewById(R.id.ImgBtn_setting);
         tv_UserName = (TextView) findViewById(R.id.tv_UserName);
-
-
-
+        img_avatar = (ImageView) findViewById(R.id.img_avatar);
 
 
         //Create Tabhost
@@ -65,6 +68,7 @@ public class TabActivity_profile extends TabActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(TabActivity_profile.this,Edit_profile.class);
                 startActivity(intent);
+                finish();
             }
         });
         //End Set Onclick btn_edit_profile
@@ -75,15 +79,14 @@ public class TabActivity_profile extends TabActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(TabActivity_profile.this,Setting.class);
                 startActivity(intent);
+                finish();
             }
         });
         //End Set Onclick ImgBtn_setting
-    }
-    public static String EncodeString(String string) {
-        return string.replace(".", ",");
+
+        //Set UserProfile
+        tv_UserName.setText(firebaseUser.getDisplayName());
+        Picasso.with(getApplicationContext()).load(firebaseUser.getPhotoUrl()).fit().centerInside().into(img_avatar);
     }
 
-    public static String DecodeString(String string) {
-        return string.replace(",", ".");
-    }
 }

@@ -55,7 +55,7 @@ public class Register extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()){
                                     FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
-                                    User user = new User(fbuser.getUid(),"UserName",edt_EmailRegister.getText().toString(),edt_PassWordRegister.getText().toString(),0,"No Describer","NoAvatar");
+                                    User user = new User(fbuser.getUid(),"UserName",edt_EmailRegister.getText().toString(),edt_PassWordRegister.getText().toString(),"","No Describer","NoAvatar");
                                     mDatabase.child("Users").child(fbuser.getUid()).setValue(user);
                                     Toast.makeText(Register.this,"Đăng ký thành công!",Toast.LENGTH_LONG).show();
                                     finish();

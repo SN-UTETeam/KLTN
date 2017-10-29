@@ -9,9 +9,9 @@ public class User {
     private String Username;
     private String Email;
     private String PassWord;
-    private Integer PhoneNumber;
+    private String PhoneNumber;
     private String Describer;
-    private String Avatar;
+    private String AvatarUri;
 
     public User() {
     }
@@ -24,15 +24,14 @@ public class User {
         Id = id;
     }
 
-    public User(String id, String username, String email, String passWord, Integer phoneNumber, String describer, String avatar) {
+    public User(String id, String username, String email, String password, String phonenumber, String describer, String avataruri) {
         Id=id;
         Username = username;
         Email = email;
-
-        PassWord = passWord;
-        PhoneNumber = phoneNumber;
+        PassWord = password;
+        PhoneNumber = phonenumber;
         Describer = describer;
-        Avatar = avatar;
+        AvatarUri = avataruri;
     }
 
     public String getUsername() {
@@ -59,11 +58,11 @@ public class User {
         PassWord = passWord;
     }
 
-    public Integer getPhoneNumber() {
+    public String getPhoneNumber() {
         return PhoneNumber;
     }
 
-    public void setPhoneNumber(Integer phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         PhoneNumber = phoneNumber;
     }
 
@@ -76,10 +75,11 @@ public class User {
     }
 
     public String getAvatar() {
-        return Avatar;
+        return AvatarUri;
     }
 
     public void setAvatar(String avatar) {
-        Avatar = avatar;
+        AvatarUri = avatar;
     }
+
 }

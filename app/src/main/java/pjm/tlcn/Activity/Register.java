@@ -14,6 +14,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -53,9 +54,11 @@ public class Register extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()){
-                                    User user = new User("UserName",edt_EmailRegister.getText().toString(),edt_PassWordRegister.getText().toString(),0,"No Describer","NoAvatar");
-                                    mDatabase.child("Users").push().setValue(user);
+                                    FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
+                                    User user = new User(fbuser.getUid(),"UserName",edt_EmailRegister.getText().toString(),edt_PassWordRegister.getText().toString(),0,"No Describer","NoAvatar");
+                                    mDatabase.child("Users").child(fbuser.getUid()).setValue(user);
                                     Toast.makeText(Register.this,"Đăng ký thành công!",Toast.LENGTH_LONG).show();
+                                    finish();
                                 }
                                 else {
                                     Toast.makeText(Register.this,task.getException().toString(),Toast.LENGTH_LONG).show();

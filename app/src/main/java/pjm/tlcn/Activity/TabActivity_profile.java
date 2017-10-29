@@ -9,16 +9,12 @@ import android.widget.ImageButton;
 import android.widget.TabHost;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import pjm.tlcn.R;
 
 @SuppressWarnings("deprecation")
 public class TabActivity_profile extends TabActivity {
-    public FirebaseUser user;
     public DatabaseReference mDatabase;
     private TextView tv_UserName;
     private TabHost Tabhost_profile;
@@ -36,23 +32,7 @@ public class TabActivity_profile extends TabActivity {
         ImgBtn_setting = (ImageButton) findViewById(R.id.ImgBtn_setting);
         tv_UserName = (TextView) findViewById(R.id.tv_UserName);
 
-        //get Current User
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-//       DatabaseReference mData = mDatabase.child("Users").child(user.getUid()).child("Username");
-//       mData.addListenerForSingleValueEvent(new ValueEventListener() {
-//           @Override
-//           public void onDataChange(DataSnapshot dataSnapshot) {
-//               String username = dataSnapshot.getValue().toString();
-//               Log.d("Username",username);
-//               tv_UserName.setText(username);
-//           }
-//
-//           @Override
-//           public void onCancelled(DatabaseError databaseError) {
-//
-//           }
-//       });
+
 
 
 

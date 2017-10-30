@@ -85,11 +85,13 @@ public class Login extends AppCompatActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progress_bar_login.setVisibility(View.VISIBLE);
                 mAuth.signInWithEmailAndPassword(edt_EmailLogin.getText().toString(),edt_PassWordLogin.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             firebaseUser=mAuth.getCurrentUser();
+                            progress_bar_login.setVisibility(View.GONE);
                             Toast.makeText(Login.this,"Login success",Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(Login.this,MainActivity.class);
                             startActivity(intent);
@@ -124,6 +126,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
+                progress_bar_login.setVisibility(View.VISIBLE);
                 handleFacebookAccessToken(loginResult.getAccessToken().getToken());
 
             }

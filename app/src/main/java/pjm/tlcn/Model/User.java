@@ -54,16 +54,16 @@ public class User {
         return PassWord;
     }
 
-    public void setPassWord(String passWord) {
-        PassWord = passWord;
+    public void setPassWord(String password) {
+        PassWord = password;
     }
 
     public String getPhoneNumber() {
         return PhoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        PhoneNumber = phoneNumber;
+    public void setPhoneNumber(String phonenumber) {
+        PhoneNumber = phonenumber;
     }
 
     public String getDescriber() {

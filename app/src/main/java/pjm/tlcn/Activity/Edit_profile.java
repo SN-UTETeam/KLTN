@@ -57,7 +57,6 @@ private EditText edt_username_editprofile,edt_describer_editprofile,edt_phonenum
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 Picasso.with(getApplicationContext()).load(user.getAvatarurl()).fit().centerInside().into(img_avatar_editprofile);
-
                 edt_username_editprofile.setText(user.getUsername());
                 edt_describer_editprofile.setText(user.getDescriber());
                 edt_email_editprofile.setText(user.getEmail());

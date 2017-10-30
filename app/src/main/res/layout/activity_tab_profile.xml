@@ -173,6 +173,15 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+    <TextView
+        android:id="@+id/tv_describer"
+        android:layout_gravity="center"
+        android:gravity="center|left"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Your Describer will be here"/>
     <View
         android:background="@color/colorWhite"
         android:layout_width="match_parent"

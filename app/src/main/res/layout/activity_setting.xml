@@ -87,6 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"/>
         <ImageView
+            android:id="@+id/img_changepassword"
             android:layout_marginRight="20dp"
             android:layout_gravity="center|right"
             android:background="@drawable/browser_forward_inactive"

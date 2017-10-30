@@ -25,7 +25,7 @@ import static pjm.tlcn.Activity.Login.user_id;
 @SuppressWarnings("deprecation")
 public class TabActivity_profile extends TabActivity {
     public DatabaseReference mDatabase,uDatabase;
-    private TextView tv_UserName;
+    private TextView tv_UserName,tv_describer;
     private TabHost Tabhost_profile;
     private Button btn_edit_profile;
     private ImageButton ImgBtn_setting;
@@ -44,6 +44,7 @@ public class TabActivity_profile extends TabActivity {
         btn_edit_profile = (Button) findViewById(R.id.btn_edit_profile);
         ImgBtn_setting = (ImageButton) findViewById(R.id.ImgBtn_setting);
         tv_UserName = (TextView) findViewById(R.id.tv_UserName);
+        tv_describer = (TextView) findViewById(R.id.tv_describer);
         img_avatar = (ImageView) findViewById(R.id.img_avatar);
 
 
@@ -98,6 +99,7 @@ public class TabActivity_profile extends TabActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user=dataSnapshot.getValue(User.class);
                 tv_UserName.setText(user.getUsername());
+                tv_describer.setText(user.getDescriber());
                 Picasso.with(getApplicationContext()).load(user.getAvatarurl()).fit().centerInside().into(img_avatar);
 
             }

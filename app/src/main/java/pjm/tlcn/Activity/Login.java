@@ -29,8 +29,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
@@ -94,6 +97,18 @@ public class Login extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 user_id = mAuth.getUid();
+                                uDatabase=FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
+                                uDatabase.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        user = dataSnapshot.getValue(User.class);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
                                 firebaseUser = mAuth.getCurrentUser();
                                 progress_bar_login.setVisibility(View.GONE);
                                 Toast.makeText(Login.this, "Login success", Toast.LENGTH_SHORT).show();
@@ -210,14 +225,9 @@ public class Login extends AppCompatActivity {
     // [END auth_with_facebook]
 
     public boolean isLoggedIn() {
-//        if(mAuth.getCurrentUser()!=null){
-//            firebaseUser=mAuth.getCurrentUser();
-//            return true;
-//        }
-//        else {
             AccessToken accessToken = AccessToken.getCurrentAccessToken();
             //ser_id=accessToken.getUserId();
-             firebaseUser=mAuth.getCurrentUser();
+            firebaseUser=mAuth.getCurrentUser();
             user_id=firebaseUser.getUid();
             return accessToken != null;
         //}

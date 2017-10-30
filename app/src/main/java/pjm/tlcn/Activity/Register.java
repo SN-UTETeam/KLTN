@@ -80,10 +80,6 @@ public class Register extends AppCompatActivity {
             }
         });
 
-
-
-
-
         //Set Onclick tv_dangnhap
         tv_dangnhap.setOnClickListener(new View.OnClickListener() {
             @Override

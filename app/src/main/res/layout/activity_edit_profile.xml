@@ -47,10 +47,12 @@
         android:layout_width="match_parent"
         android:layout_height="100dp">
         <ImageView
-            android:background="@drawable/follow_navbar"
+            android:id="@+id/img_avatar_editprofile"
+
             android:layout_width="80dp"
             android:layout_height="80dp" />
         <TextView
+            android:id="@+id/tv_change_avatar"
             android:layout_marginTop="5dp"
             android:gravity="center"
             android:textColor="@color/colorPrimary"
@@ -77,6 +79,7 @@
                 android:layout_height="wrap_content"
                 android:text="Tên"/>
             <EditText
+                android:id="@+id/edt_username_editprofile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
@@ -91,6 +94,7 @@
                 android:layout_height="wrap_content"
                 android:text="Tiểu sử"/>
             <EditText
+                android:id="@+id/edt_describer_editprofile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
@@ -118,6 +122,7 @@
                 android:layout_height="wrap_content"
                 android:text="Email"/>
             <EditText
+                android:id="@+id/edt_email_editprofile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
@@ -131,6 +136,7 @@
                 android:layout_height="wrap_content"
                 android:text="Số điện thoại"/>
             <EditText
+                android:id="@+id/edt_phonenumber_editprofile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>

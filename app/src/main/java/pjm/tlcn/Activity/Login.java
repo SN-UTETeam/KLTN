@@ -39,14 +39,15 @@ public class Login extends AppCompatActivity {
     private static final String TAG = "FacebookLogin";
     private CallbackManager mCallbackManager;
     private FirebaseAuth mAuth;
-    public DatabaseReference mDatabase;
+    public DatabaseReference mDatabase,uDatabase;
     private Button btn_login;
-    private User user;
     private LoginButton loginButton;
     private TextView textview_dangky;
     private EditText edt_EmailLogin,edt_PassWordLogin;
     private ProgressBar progress_bar_login;
     public static FirebaseUser firebaseUser;
+    public static User user;
+    public static String user_id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +68,7 @@ public class Login extends AppCompatActivity {
         //Create User FireBaseAuth
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        uDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
 
         if(isLoggedIn()){
             firebaseUser=mAuth.getCurrentUser();
@@ -85,24 +87,29 @@ public class Login extends AppCompatActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progress_bar_login.setVisibility(View.VISIBLE);
-                mAuth.signInWithEmailAndPassword(edt_EmailLogin.getText().toString(),edt_PassWordLogin.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            firebaseUser=mAuth.getCurrentUser();
-                            progress_bar_login.setVisibility(View.GONE);
-                            Toast.makeText(Login.this,"Login success",Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(Login.this,MainActivity.class);
-                            startActivity(intent);
-                            finish();
+                if(edt_EmailLogin.getText().toString().length()!=0 && edt_PassWordLogin.getText().toString().length()!=0) {
+                    progress_bar_login.setVisibility(View.VISIBLE);
+                    mAuth.signInWithEmailAndPassword(edt_EmailLogin.getText().toString(), edt_PassWordLogin.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                user_id = mAuth.getUid();
+                                firebaseUser = mAuth.getCurrentUser();
+                                progress_bar_login.setVisibility(View.GONE);
+                                Toast.makeText(Login.this, "Login success", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(Login.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                progress_bar_login.setVisibility(View.GONE);
+                                Toast.makeText(Login.this,task.getException().toString(), Toast.LENGTH_SHORT).show();
+                            }
                         }
-                        else {
-                            Toast.makeText(Login.this,task.getException().toString(),Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-
+                    });
+                }
+                else {
+                    Toast.makeText(getApplicationContext(),"You must be have Email or Password",Toast.LENGTH_LONG).show();
+                }
             }
         });
         //End SetOnlick btn_login
@@ -170,7 +177,8 @@ public class Login extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             firebaseUser=mAuth.getCurrentUser();
-                            User user = new User(firebaseUser.getUid()+"",
+                            user_id=firebaseUser.getUid();
+                            user = new User(firebaseUser.getUid()+"",
                                                     firebaseUser.getDisplayName()+"",
                                                     firebaseUser.getEmail()+"",
                                                     firebaseUser.getUid()+"",
@@ -202,7 +210,24 @@ public class Login extends AppCompatActivity {
     // [END auth_with_facebook]
 
     public boolean isLoggedIn() {
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        return accessToken != null;
+//        if(mAuth.getCurrentUser()!=null){
+//            firebaseUser=mAuth.getCurrentUser();
+//            return true;
+//        }
+//        else {
+            AccessToken accessToken = AccessToken.getCurrentAccessToken();
+            //ser_id=accessToken.getUserId();
+             firebaseUser=mAuth.getCurrentUser();
+            user_id=firebaseUser.getUid();
+            return accessToken != null;
+        //}
     }
+    public static String EncodeString(String string) {
+        return string.replace(".", ",");
+    }
+
+    public static String DecodeString(String string) {
+        return string.replace(",", ".");
+    }
+
 }

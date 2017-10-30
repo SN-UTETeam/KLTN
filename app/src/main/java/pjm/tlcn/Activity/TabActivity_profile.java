@@ -10,16 +10,21 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
 
-import static pjm.tlcn.Activity.Login.firebaseUser;
+import static pjm.tlcn.Activity.Login.user_id;
 
 @SuppressWarnings("deprecation")
 public class TabActivity_profile extends TabActivity {
-    public DatabaseReference mDatabase;
+    public DatabaseReference mDatabase,uDatabase;
     private TextView tv_UserName;
     private TabHost Tabhost_profile;
     private Button btn_edit_profile;
@@ -30,6 +35,9 @@ public class TabActivity_profile extends TabActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_profile);
+
+        //Firebase
+        uDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
 
         //Create Variable
         Tabhost_profile =(TabHost) findViewById(android.R.id.tabhost);
@@ -68,7 +76,7 @@ public class TabActivity_profile extends TabActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(TabActivity_profile.this,Edit_profile.class);
                 startActivity(intent);
-                finish();
+
             }
         });
         //End Set Onclick btn_edit_profile
@@ -79,14 +87,26 @@ public class TabActivity_profile extends TabActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(TabActivity_profile.this,Setting.class);
                 startActivity(intent);
-                finish();
+
             }
         });
         //End Set Onclick ImgBtn_setting
 
         //Set UserProfile
-        tv_UserName.setText(firebaseUser.getDisplayName());
-        Picasso.with(getApplicationContext()).load(firebaseUser.getPhotoUrl()).fit().centerInside().into(img_avatar);
+        uDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user=dataSnapshot.getValue(User.class);
+                tv_UserName.setText(user.getUsername());
+                Picasso.with(getApplicationContext()).load(user.getAvatarurl()).fit().centerInside().into(img_avatar);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 }

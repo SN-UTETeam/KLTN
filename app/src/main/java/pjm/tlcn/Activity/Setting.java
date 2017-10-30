@@ -38,6 +38,7 @@ public class Setting extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 LoginManager.getInstance().logOut();
+                finishAffinity();
                 System.exit(0);
             }
         });

@@ -8,10 +8,20 @@ public class User {
     private String Id;
     private String Username;
     private String Email;
-    private String PassWord;
-    private String PhoneNumber;
+    private String Password;
+    private String Phonenumber;
     private String Describer;
-    private String AvatarUri;
+    private String Avatarurl;
+
+    public User(String id, String username, String email, String password, String phonenumber, String describer, String avatarurl) {
+        Id = id;
+        Username = username;
+        Email = email;
+        Password = password;
+        Phonenumber = phonenumber;
+        Describer = describer;
+        Avatarurl = avatarurl;
+    }
 
     public User() {
     }
@@ -22,16 +32,6 @@ public class User {
 
     public void setId(String id) {
         Id = id;
-    }
-
-    public User(String id, String username, String email, String password, String phonenumber, String describer, String avataruri) {
-        Id=id;
-        Username = username;
-        Email = email;
-        PassWord = password;
-        PhoneNumber = phonenumber;
-        Describer = describer;
-        AvatarUri = avataruri;
     }
 
     public String getUsername() {
@@ -50,20 +50,20 @@ public class User {
         Email = email;
     }
 
-    public String getPassWord() {
-        return PassWord;
+    public String getPassword() {
+        return Password;
     }
 
-    public void setPassWord(String password) {
-        PassWord = password;
+    public void setPassword(String password) {
+        Password = password;
     }
 
-    public String getPhoneNumber() {
-        return PhoneNumber;
+    public String getPhonenumber() {
+        return Phonenumber;
     }
 
-    public void setPhoneNumber(String phonenumber) {
-        PhoneNumber = phonenumber;
+    public void setPhonenumber(String phonenumber) {
+        Phonenumber = phonenumber;
     }
 
     public String getDescriber() {
@@ -74,12 +74,13 @@ public class User {
         Describer = describer;
     }
 
-    public String getAvatar() {
-        return AvatarUri;
+    public String getAvatarurl() {
+        return Avatarurl;
     }
 
-    public void setAvatar(String avatar) {
-        AvatarUri = avatar;
+    public void setAvatarurl(String avatarurl) {
+        Avatarurl = avatarurl;
     }
-
 }
+
+

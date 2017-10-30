@@ -7,6 +7,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,12 +29,14 @@ public class Register extends AppCompatActivity {
     public TextView tv_dangnhap;
     public Button btn_Register;
     public EditText edt_EmailRegister,edt_PassWordRegister;
+    private ProgressBar progress_bar_register;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
         //Create Variable
+        progress_bar_register = (ProgressBar) findViewById(R.id.progress_bar_register);
         btn_Register = (Button) findViewById(R.id.btn_Register);
         tv_dangnhap = (TextView) findViewById(R.id.tv_dangnhap);
         edt_EmailRegister = (EditText) findViewById(R.id.edt_EmailRegister);
@@ -49,22 +52,31 @@ public class Register extends AppCompatActivity {
         btn_Register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAuth.createUserWithEmailAndPassword(edt_EmailRegister.getText().toString(),edt_PassWordRegister.getText().toString())
-                        .addOnCompleteListener(Register.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if(task.isSuccessful()){
-                                    FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
-                                    User user = new User(fbuser.getUid(),"UserName",edt_EmailRegister.getText().toString(),edt_PassWordRegister.getText().toString(),"","No Describer","NoAvatar");
-                                    mDatabase.child("Users").child(fbuser.getUid()).setValue(user);
-                                    Toast.makeText(Register.this,"Đăng ký thành công!",Toast.LENGTH_LONG).show();
-                                    finish();
+                if(edt_EmailRegister.getText().toString().length()!=0 && edt_PassWordRegister.getText().toString().length()>=6){
+                    progress_bar_register.setVisibility(View.VISIBLE);
+                    mAuth.createUserWithEmailAndPassword(edt_EmailRegister.getText().toString(),edt_PassWordRegister.getText().toString())
+                            .addOnCompleteListener(Register.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if(task.isSuccessful()){
+                                        FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
+                                        User user = new User(fbuser.getUid(),"UserName",edt_EmailRegister.getText().toString(),edt_PassWordRegister.getText().toString(),"","No Describer","NoAvatar");
+                                        mDatabase.child("Users").child(fbuser.getUid()).setValue(user);
+                                        progress_bar_register.setVisibility(View.GONE);
+                                        Toast.makeText(Register.this,"Đăng ký thành công!",Toast.LENGTH_LONG).show();
+                                        finish();
+                                    }
+                                    else {
+                                        progress_bar_register.setVisibility(View.GONE);
+                                        Toast.makeText(Register.this,task.getException().toString(),Toast.LENGTH_LONG).show();
+                                    }
                                 }
-                                else {
-                                    Toast.makeText(Register.this,task.getException().toString(),Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
+                            });
+                    }
+                else {
+                    progress_bar_register.setVisibility(View.GONE);
+                    Toast.makeText(getApplicationContext(),"Email or Password requires", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

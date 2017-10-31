@@ -226,9 +226,10 @@ public class Login extends AppCompatActivity {
 
     public boolean isLoggedIn() {
             AccessToken accessToken = AccessToken.getCurrentAccessToken();
+            if(accessToken!=null){
             //ser_id=accessToken.getUserId();
             firebaseUser=mAuth.getCurrentUser();
-            user_id=firebaseUser.getUid();
+            user_id=firebaseUser.getUid();}
             return accessToken != null;
         //}
     }

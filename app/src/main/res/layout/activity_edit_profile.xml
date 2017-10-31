@@ -31,6 +31,7 @@
             android:textStyle="bold"
             android:textSize="15dp"/>
         <Button
+            android:id="@+id/btn_done_editprofile"
             android:text="Xong"
             android:textColor="@color/colorRed"
             android:textSize="15dp"
@@ -45,12 +46,11 @@
         android:gravity="center"
         android:background="@color/colorHaftWhite"
         android:layout_width="match_parent"
-        android:layout_height="100dp">
-        <ImageView
+        android:layout_height="150dp">
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/img_avatar_editprofile"
-
-            android:layout_width="80dp"
-            android:layout_height="80dp" />
+            android:layout_width="120dp"
+            android:layout_height="120dp" />
         <TextView
             android:id="@+id/tv_change_avatar"
             android:layout_marginTop="5dp"
@@ -79,6 +79,7 @@
                 android:layout_height="wrap_content"
                 android:text="Tên"/>
             <EditText
+                android:focusable="true"
                 android:id="@+id/edt_username_editprofile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -94,14 +95,16 @@
                 android:layout_height="wrap_content"
                 android:text="Tiểu sử"/>
             <EditText
+                android:focusable="true"
                 android:id="@+id/edt_describer_editprofile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
         <TextView
+            android:gravity="center|left"
             android:layout_margin="10dp"
             android:textColor="@color/colorPrimary"
-            android:text="Chúng tôi không sử dụng thông tin của bạn cho bất kỳ mục đích thương mại nào"
+            android:text="Tên phải nhiều hơn 3 ký tự"
             android:layout_width="match_parent"
             android:layout_height="40dp" />
         <TextView
@@ -122,6 +125,7 @@
                 android:layout_height="wrap_content"
                 android:text="Email"/>
             <EditText
+                android:enabled="false"
                 android:id="@+id/edt_email_editprofile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -136,6 +140,8 @@
                 android:layout_height="wrap_content"
                 android:text="Số điện thoại"/>
             <EditText
+                android:inputType="numberDecimal"
+                android:focusable="true"
                 android:id="@+id/edt_phonenumber_editprofile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

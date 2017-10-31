@@ -2,23 +2,26 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/item_list"
-    android:layout_marginBottom="8dp">
+    >
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="vertical"
-            android:background="#25945d"
+            android:background="#FFFFFF"
             android:layout_height="wrap_content">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:orientation="horizontal"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
                 android:layout_height="wrap_content">
-                <ImageView
-                    android:layout_width="20dp"
-                    android:background="@drawable/anh"
+                <com.makeramen.roundedimageview.RoundedImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:layout_margin="5dp"
+                    app:riv_oval="true"
                     android:layout_gravity="center"
-                    android:layout_height="20dp" />
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerHorizontal="true"
+                    android:contentDescription="null"
+                    android:src="@drawable/ava" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:text="thienphu"
@@ -27,7 +30,6 @@
                     android:layout_gravity="center"
                     android:textAllCaps="false"
                     android:textSize="10dp"
-                    android:layout_marginLeft="5dp"
                     android:layout_height="wrap_content" />
                 <ImageView
                     android:layout_width="40dp"

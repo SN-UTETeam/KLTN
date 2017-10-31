@@ -1,11 +1,13 @@
 package pjm.tlcn.Activity;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,43 +29,29 @@ public class TabActivity_home extends AppCompatActivity {
     private RecyclerView gridView;
     private ListViewAdapter listViewAdapter;
     private GridViewAdapter gridViewAdapter;
-
-
+    ////
     ListView lv;
     GridView gv;
+    TextView tvfont,tvall;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_home);
-        TextView tvfont = (TextView)findViewById(R.id.font);
+        tvfont = (TextView)findViewById(R.id.font);
         // khai báo và add kiểu font bạn cần
         Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/SNAP____.TTF");
         //add kiểu font vào textview font
         tvfont.setTypeface(typeface);
         ////
-       /* listView = (RecyclerView) findViewById(R.id.list);
-        gridView = (RecyclerView) findViewById(R.id.grid);
-        //dữ liệu thay đổi chế độ xem không thay đổi
-        listView.setHasFixedSize(true);
-        gridView.setHasFixedSize(true);
-        //set layout manager and adapter for "ListView"
-        LinearLayoutManager horizontalManager = new LinearLayoutManager(TabActivity_home.this, LinearLayoutManager.VERTICAL, false);
-        listView.setLayoutManager(horizontalManager);
-        // dbdmuc = new SqlLiteDbHelper(getActivity());
-        // dbdmuc.openDataBase();
-        // listviewItem = dbdmuc.getListViewMain();
-
-         listViewAdapter = new customlistview_main(TabActivity_home.this, listviewItem);
-         listView.setAdapter(listViewAdapter);
-        //getTieuChi(Tab1_odau.tieuchi);
-
-        cusumtab4_odau = new custumtab4_odau(TabActivity_home.this, grw);
-        gridView.setAdapter(cusumtab4_odau);
-
-        listViewAdapter = new customlistview_main(TabActivity_home.this, listviewItem);
-        listView.setAdapter(listViewAdapter);*/
-
+         tvall = (TextView) findViewById(R.id.idviewall);
+         tvall.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 Intent intent = new Intent(getApplicationContext(), TabActivity_viewall.class);
+                 startActivity(intent);
+             }
+         });
 
         listView = (RecyclerView) findViewById(R.id.list);
         gridView = (RecyclerView) findViewById(R.id.grid);

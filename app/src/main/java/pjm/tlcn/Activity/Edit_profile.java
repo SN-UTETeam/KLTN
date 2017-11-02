@@ -63,6 +63,9 @@ private boolean flag_img_select=false;
         //Firebase
         uDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
         sDatabase = FirebaseStorage.getInstance().getReference().child("AvatarUsers").child(user_id);
+
+        //Check null
+        if(edt_email_editprofile.getText().toString().equals("null")) edt_email_editprofile.setEnabled(true);
         //Start Set Onclick btn_edit_profile_cancel
         btn_edit_profile_cancel.setOnClickListener(new View.OnClickListener() {
             @Override

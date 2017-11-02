@@ -1,121 +1,100 @@
 package pjm.tlcn.Adapter;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.app.Activity;
+import android.database.Cursor;
 import android.net.Uri;
-import android.util.Log;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
-import pjm.tlcn.Activity.TabActivity_news;
 
 /**
  * Created by Pjm on 10/25/2017.
  */
-
 public class TabNews_ImageAdapter extends BaseAdapter {
-    TabActivity_news tabActivity_news;
-    private Context mContext;
-    ArrayList<String> itemList = new ArrayList<String>();
+    private ArrayList<String> images;
+        /** The context. */
+        private Activity context;
 
-    public TabNews_ImageAdapter(Context c) {
-        mContext = c;
-    }
-
-    public void add(String path) {
-        itemList.add(path);
-    }
-
-    public void clear() {
-        itemList.clear();
-    }
-
-    public void remove(int index){
-        itemList.remove(index);
-    }
-
-    @Override
-    public int getCount() {
-        return itemList.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        // TODO Auto-generated method stub
-        return itemList.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView;
-        if (convertView == null) { // if it's not recycled, initialize some
-            // attributes
-            imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(220, 220));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8, 8, 8, 8);
-        } else {
-            imageView = (ImageView) convertView;
+        /**
+         * Instantiates a new image adapter.
+         *
+         * @param localContext
+         *            the local context
+         */
+        public TabNews_ImageAdapter(Activity localContext) {
+            context = localContext;
+            images = getAllShownImagesPath(context);
         }
 
-        Bitmap bm = decodeSampledBitmapFromUri(itemList.get(position), 220,
-                220);
-        imageView.setImageBitmap(bm);
-        return imageView;
+        public int getCount() {
+            return images.size();
+        }
 
-    }
+        public Object getItem(int position) {
+            return position;
+        }
 
-    public Bitmap decodeSampledBitmapFromUri(String path, int reqWidth,
-                                             int reqHeight) {
+        public long getItemId(int position) {
+            return position;
+        }
 
-        Bitmap bm = null;
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(path, options);
+        public View getView(final int position, View convertView,
+                            ViewGroup parent) {
+            ImageView picturesView;
+            if (convertView == null) {
+                picturesView = new ImageView(context);
+                picturesView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                picturesView
+                        .setLayoutParams(new GridView.LayoutParams(270, 270));
 
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, reqWidth,
-                reqHeight);
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        bm = BitmapFactory.decodeFile(path, options);
-
-        return bm;
-    }
-
-    public int calculateInSampleSize(
-
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-            if (width > height) {
-                inSampleSize = Math.round((float) height
-                        / (float) reqHeight);
             } else {
-                inSampleSize = Math.round((float) width / (float) reqWidth);
+                picturesView = (ImageView) convertView;
             }
+
+            Picasso.with(context).load(images.get(position))
+                    .fit().centerCrop()
+                    .into(picturesView);
+
+            return picturesView;
         }
 
-        return inSampleSize;
+        /**
+         * Getting All Images Path.
+         *
+         * @param activity
+         *            the activity
+         * @return ArrayList with images Path
+         */
+        private ArrayList<String> getAllShownImagesPath(Activity activity) {
+            Uri uri;
+            Cursor cursor;
+            int column_index_data, column_index_folder_name;
+            ArrayList<String> listOfAllImages = new ArrayList<String>();
+            String absolutePathOfImage = null;
+            uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+
+            String[] projection = { MediaStore.MediaColumns.DATA,
+                    MediaStore.Images.Media.BUCKET_DISPLAY_NAME };
+
+            cursor = activity.getContentResolver().query(uri, projection, null,
+                    null, null);
+
+            column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+            column_index_folder_name = cursor
+                    .getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
+            while (cursor.moveToNext()) {
+                absolutePathOfImage = cursor.getString(column_index_data);
+
+                listOfAllImages.add(absolutePathOfImage);
+            }
+            return listOfAllImages;
+        }
     }
-
-
-}

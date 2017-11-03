@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,8 +12,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,25 +31,52 @@ import pjm.tlcn.R;
 
 public class TabActivity_news extends AppCompatActivity {
 
-    ImageView tab_news_imageview,img_camera_tabnew;
+    ImageView tab_news_imageview, img_camera_tabnew;
     private static Uri[] mUrls = null;
     private static String[] strUrls = null;
     private String[] mNames = null;
     private GridView gridview = null;
     private Cursor cc = null;
-    private Integer REQUEST_CAMERA=12;
+    private  static final int  REQUEST_CAMERA = 12;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CAMERA:
+                Log.d("TabActivity_news", "onRequestPermissionsResult: called");
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_news);
 
-
         tab_news_imageview = (ImageView) findViewById(R.id.tab_news_imageview);
         img_camera_tabnew = (ImageView) findViewById(R.id.img_camera_tabnew);
         gridview = (GridView) findViewById(R.id.tab_news_gridview);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},1);
+            Log.d("TabActivity_news", "onCreate: check permission");
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CAMERA);
+//            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        }
+
         cc = this.getContentResolver().query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, null, null,
                 null);
@@ -127,6 +159,7 @@ public class TabActivity_news extends AppCompatActivity {
 
 
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK) {
@@ -134,6 +167,7 @@ public class TabActivity_news extends AppCompatActivity {
             tab_news_imageview.setImageBitmap(photo);
         }
     }
+
     public class ImageAdapter extends BaseAdapter {
         private Context mContext;
 
@@ -181,7 +215,7 @@ public class TabActivity_news extends AppCompatActivity {
     /**
      * This method is to scale down the image
      */
-    public Bitmap decodeURI(String filePath){
+    public Bitmap decodeURI(String filePath) {
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -190,14 +224,14 @@ public class TabActivity_news extends AppCompatActivity {
         // Only scale if we need to
         // (16384 buffer for img processing)
         Boolean scaleByHeight = Math.abs(options.outHeight - 100) >= Math.abs(options.outWidth - 100);
-        if(options.outHeight * options.outWidth * 2 >= 16384){
+        if (options.outHeight * options.outWidth * 2 >= 16384) {
             // Load, scaling to smallest power of 2 that'll get it <= desired dimensions
             double sampleSize = scaleByHeight
                     ? options.outHeight / 100
                     : options.outWidth / 100;
             options.inSampleSize =
-                    (int)Math.pow(2d, Math.floor(
-                            Math.log(sampleSize)/Math.log(2d)));
+                    (int) Math.pow(2d, Math.floor(
+                            Math.log(sampleSize) / Math.log(2d)));
         }
 
         // Do the actual decoding

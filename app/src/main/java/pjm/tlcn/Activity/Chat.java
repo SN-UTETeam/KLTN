@@ -3,6 +3,7 @@ package pjm.tlcn.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import pjm.tlcn.R;
 
 import static pjm.tlcn.Activity.Login.firebaseUser;
 import static pjm.tlcn.Activity.TabActivity_message.useridchatwith;
+import static pjm.tlcn.Activity.TabActivity_message.usernamechatwith;
 
 public class Chat extends AppCompatActivity {
 
@@ -34,6 +36,8 @@ public class Chat extends AppCompatActivity {
     EditText messageArea;
     ScrollView scrollView;
     DatabaseReference reference1, reference2;
+    Toolbar toolbar_chat;
+    TextView tv_toolbar_chat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +49,22 @@ public class Chat extends AppCompatActivity {
         sendButton = (ImageView)findViewById(R.id.sendButton);
         messageArea = (EditText)findViewById(R.id.messageArea);
         scrollView = (ScrollView)findViewById(R.id.scrollView);
+        toolbar_chat = (Toolbar) findViewById(R.id.toolbar_chat);
+        tv_toolbar_chat = (TextView) findViewById(R.id.tv_toolbar_chat);
+
+        //Set Back ToolBar
+        setSupportActionBar(toolbar_chat);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar_chat.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         //
         scrollView.fullScroll(View.FOCUS_DOWN);
+        tv_toolbar_chat.setText(usernamechatwith);
         //
         Firebase.setAndroidContext(this);
         reference1 = FirebaseDatabase.getInstance().getReference().child("Messages").child("/" + firebaseUser.getUid() + "_" + useridchatwith);

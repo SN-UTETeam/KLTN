@@ -1,8 +1,10 @@
 package pjm.tlcn.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -25,6 +27,9 @@ private ListView listview_user_message;
 private ArrayList<Follow> arrayFollow = new ArrayList<Follow>();
 private ArrayAdapter arrayAdapterUserMessage=null;
 private DatabaseReference fDatabase,ffDatabase;
+public static String usernamechatwith ="";
+public static String useridchatwith ="";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,8 +50,7 @@ private DatabaseReference fDatabase,ffDatabase;
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     String uid = postSnapshot.getKey();
                     String uname = postSnapshot.getValue().toString();
-                    Log.d(uid,uname);
-
+                    //Log.d(uid,uname);
                     arrayFollow.add(new Follow(uid,uname));
                     arrayAdapterUserMessage.notifyDataSetChanged();
                 }
@@ -58,5 +62,14 @@ private DatabaseReference fDatabase,ffDatabase;
             }
         });
 
+        listview_user_message.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                usernamechatwith = arrayFollow.get(position).getUsername();
+                useridchatwith = arrayFollow.get(position).getUserid();
+                Intent intent = new Intent(TabActivity_message.this,Chat.class);
+                startActivity(intent);
+            }
+        });
     }
 }

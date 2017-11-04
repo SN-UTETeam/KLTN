@@ -14,8 +14,8 @@
             android:text="User 1"
             android:textStyle="bold"
             android:textColor="@color/colorPrimary"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"/>
+            android:layout_width="match_parent"
+            android:layout_height="40dp"/>
         <ImageView
             android:id="@+id/img_user_message"
             android:layout_marginRight="20dp"

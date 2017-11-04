@@ -10,4 +10,5 @@
     <color name="colorRed">#ed1313</color>
     <color name="colorHaftWhite">#f2ebeb</color>
     <color name="colorDark">#000000</color>
+    <color name="colorTextMessage">#CFD8DC</color>
 </resources>

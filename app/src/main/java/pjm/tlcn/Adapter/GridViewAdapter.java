@@ -8,8 +8,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
+import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
 
 /**
@@ -17,10 +22,14 @@ import pjm.tlcn.R;
  */
 
 public class GridViewAdapter extends RecyclerView.Adapter<GridViewAdapter.ViewHolder> {
-    private List<RecyclerViewItem> items;
+    private List<User> items;
+   //private List<RecyclerViewItem> items;
     private Activity activity;
 
-    public GridViewAdapter(Activity activity, List<RecyclerViewItem> items) {
+    //
+    private DatabaseReference uDatabase;
+    private StorageReference sDatabase;
+    public GridViewAdapter(Activity activity, List<User> items) {
         this.activity = activity;
         this.items = items;
     }
@@ -34,27 +43,42 @@ public class GridViewAdapter extends RecyclerView.Adapter<GridViewAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        viewHolder.imageView.setImageResource(items.get(position).getDrawableId());
-        viewHolder.textView.setText(items.get(position).getName());
+    public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
+     //  viewHolder.imageView.setImageResource(items.get(position).getDrawableId());
+        viewHolder.textView.setText(items.get(position).getUsername());
+         Picasso.with(activity).load(items.get(position).getAvatarurl()).fit().centerInside().into(viewHolder.img);
+       // viewHolder.textView.setText(items.get(position).getUsername());
+        //Firebase
+        //Firebase
+
+
+
+
     }
 
     @Override
     public int getItemCount() {
-        return items.size();
+        if(items.size()>2)
+            return 2;
+        else
+            return items.size();
     }
+
+
 
     /**
      * View holder to display each RecylerView item
      */
     protected class ViewHolder extends RecyclerView.ViewHolder {
-        private ImageView imageView;
+        private ImageView img;
         private TextView textView;
 
         public ViewHolder(View view) {
             super(view);
-            textView = (TextView)view.findViewById(R.id.text);
-            imageView = (ImageView) view.findViewById(R.id.image);
+            textView = (TextView)view.findViewById(R.id.name_fl);
+            img=(ImageView)view.findViewById(R.id.image_fl);
+
+
         }
     }
 }

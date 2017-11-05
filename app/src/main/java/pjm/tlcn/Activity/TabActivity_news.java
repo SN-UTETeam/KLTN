@@ -1,14 +1,21 @@
 package pjm.tlcn.Activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,16 +30,38 @@ import pjm.tlcn.R;
 
 
 public class TabActivity_news extends AppCompatActivity {
+
     ImageView tab_news_imageview, img_camera_tabnew;
     private static Uri[] mUrls = null;
     private static String[] strUrls = null;
     private String[] mNames = null;
     private GridView gridview = null;
     private Cursor cc = null;
-    private static final int REQUEST_CAMERA = 12;
-    MainActivity mainActivity;
+    private  static final int  REQUEST_CAMERA = 12;
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CAMERA:
+                Log.d("TabActivity_news", "onRequestPermissionsResult: called");
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,36 +70,16 @@ public class TabActivity_news extends AppCompatActivity {
         tab_news_imageview = (ImageView) findViewById(R.id.tab_news_imageview);
         img_camera_tabnew = (ImageView) findViewById(R.id.img_camera_tabnew);
         gridview = (GridView) findViewById(R.id.tab_news_gridview);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-        LoadImage();
-        img_camera_tabnew.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TakeCamera();
-            }
-        });
-
-    }
-
-    public void TakeCamera(){
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(cameraIntent, REQUEST_CAMERA);
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            tab_news_imageview.setImageBitmap(photo);
-
-
+            Log.d("TabActivity_news", "onCreate: check permission");
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CAMERA);
+//            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         }
-    }
 
-    public void LoadImage(){
         cc = this.getContentResolver().query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, null, null,
                 null);
-        Log.d("check", "check");
         if (cc != null) {
             new Thread() {
                 public void run() {
@@ -100,7 +109,65 @@ public class TabActivity_news extends AppCompatActivity {
             });
 
         }
+
+        img_camera_tabnew.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent, REQUEST_CAMERA);
+            }
+        });
+
+
+//        if (ContextCompat.checkSelfPermission(this,
+//                Manifest.permission.READ_EXTERNAL_STORAGE)
+//                != PackageManager.PERMISSION_GRANTED) {
+//
+//            // Should we show an explanation?
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(TabActivity_news.this,
+//                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+//
+//                // Show an explanation to the user *asynchronously* -- don't block
+//                // this thread waiting for the user's response! After the user
+//                // sees the explanation, try again to request the permission.
+//
+//            } else {
+//
+//                // No explanation needed, we can request the permission.
+//
+//                ActivityCompat.requestPermissions(TabActivity_news.this,
+//                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+//                        1);
+//
+//                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+//                // app-defined int constant. The callback method gets the
+//                // result of the request.
+//            }
+//        }
+//
+//        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+//            Toast.makeText(getApplicationContext(),"Please permission this app to use your STORAGE",Toast.LENGTH_LONG).show();
+//
+//            if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+//                Toast.makeText(getApplicationContext(),"Please permission this app to use your STORAGE",Toast.LENGTH_LONG).show();
+//                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+//                        1);
+//            }
+//        } else {
+//
+//        }
+
+
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK) {
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            tab_news_imageview.setImageBitmap(photo);
+        }
+    }
+
     public class ImageAdapter extends BaseAdapter {
         private Context mContext;
 
@@ -174,6 +241,61 @@ public class TabActivity_news extends AppCompatActivity {
 
         return output;
     }
+//    @RequiresApi(api = Build.VERSION_CODES.M)
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode,
+//                                           String permissions[], int[] grantResults) {
+//        switch (requestCode) {
+//            case 1: {
+//                // If request is cancelled, the result arrays are empty.
+//                if (grantResults.length > 0
+//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//
+//                    cc = this.getContentResolver().query(
+//                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, null, null,
+//                            null);
+//                    if (cc != null) {
+//                        new Thread() {
+//                            public void run() {
+//                                try {
+//                                    cc.moveToFirst();
+//                                    mUrls = new Uri[cc.getCount()];
+//                                    strUrls = new String[cc.getCount()];
+//                                    mNames = new String[cc.getCount()];
+//                                    for (int i = 0; i < cc.getCount(); i++) {
+//                                        cc.moveToPosition(i);
+//                                        mUrls[i] = Uri.parse(cc.getString(1));
+//                                        strUrls[i] = cc.getString(1);
+//                                        mNames[i] = cc.getString(3);
+//                                    }
+//
+//                                } catch (Exception e) {
+//                                }
+//
+//                            }
+//                        }.start();
+//                        gridview.setAdapter(new ImageAdapter(this));
+//                        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                            @Override
+//                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                                tab_news_imageview.setImageURI(mUrls[position]);
+//                            }
+//                        });
+//
+//                    }
+//
+//                } else {
+//
+//                    Toast.makeText(getApplicationContext(),"Please permission this app to use your STORAGE",Toast.LENGTH_LONG).show();
+//                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+//                            1);
+//                }
+//                return;
+//            }
+//
+//            // other 'case' lines to check for other
+//            // permissions this app might request
+//        }
+//    }
 
 }
-

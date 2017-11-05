@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="50dp">
         <Button
-            android:text="Cancel"
+            android:clickable="false"
+            android:text=""
             android:textColor="@color/colorGrayMore"
             android:textSize="15dp"
             android:textAllCaps="false"

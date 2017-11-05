@@ -255,8 +255,8 @@ public class Chat extends AppCompatActivity {
         ImageView imageView = new ImageView(Chat.this);
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         imageView.setLayoutParams(lp1);
-        imageView.getLayoutParams().height = 800;
-        imageView.getLayoutParams().width = 800;
+        imageView.getLayoutParams().height = 700;
+        imageView.getLayoutParams().width = 700;
 
         imageView.setPadding(20, 10, 20, 10);
         imageView.setVisibility(View.GONE);

@@ -252,7 +252,7 @@ public class TabActivity_news extends AppCompatActivity {
 //                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 //
 //                    cc = this.getContentResolver().query(
-//                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, null, null,
+//                            MediaStore.Image.Media.EXTERNAL_CONTENT_URI, null, null, null,
 //                            null);
 //                    if (cc != null) {
 //                        new Thread() {

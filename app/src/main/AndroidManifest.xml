@@ -63,7 +63,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activity.TabActivity_viewall" />
-        <activity android:name=".Activity.Chat"></activity>
+        <activity android:name=".Activity.Chat" />
+        <activity android:name=".Activity.Activity_comment"></activity>
     </application>
 
 </manifest>

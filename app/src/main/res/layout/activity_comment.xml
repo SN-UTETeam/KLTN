@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context="pjm.tlcn.Activity.Activity_comment">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorHaftWhite">
+
+        <ImageButton
+            android:layout_marginLeft="15dp"
+            android:layout_gravity="center|left"
+            android:background="@drawable/nav_arrow_back"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
+        <TextView
+            android:id="@+id/tv_UserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bình luận"
+            android:layout_gravity="center"
+            android:gravity="left"
+            android:layout_marginLeft="5dp"
+            android:textColor="@color/colorDark"
+            android:textStyle="bold"
+            android:textSize="15dp"
+            />
+    </LinearLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_weight="0.1"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ListView
+                android:layout_width="match_parent"
+                android:id="@+id/lv_comment"
+                android:layout_height="wrap_content">
+            </ListView>
+        </LinearLayout>
+    </ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/direct"
+            android:layout_gravity="center"
+            android:layout_height="25dp" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="0.1"
+            android:id="@+id/idcomment"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:id="@+id/send_id"
+            android:background="@drawable/check_android"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</LinearLayout>
+

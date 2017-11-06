@@ -64,7 +64,8 @@
         </activity>
         <activity android:name=".Activity.TabActivity_viewall" />
         <activity android:name=".Activity.Chat" />
-        <activity android:name=".Activity.Activity_comment"></activity>
+        <activity android:name=".Activity.Activity_comment" />
+        <activity android:name=".Activity.Activity_share_image"></activity>
     </application>
 
 </manifest>

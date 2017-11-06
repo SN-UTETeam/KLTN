@@ -8,15 +8,16 @@
     tools:context="pjm.tlcn.Activity.Activity_comment">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:background="@color/colorHaftWhite">
 
         <ImageButton
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="10dp"
             android:layout_gravity="center|left"
             android:background="@drawable/nav_arrow_back"
-            android:layout_width="30dp"
-            android:layout_height="30dp" />
+            android:layout_width="25dp"
+            android:id="@+id/btcomment"
+            android:layout_height="25dp" />
         <TextView
             android:id="@+id/tv_UserName"
             android:layout_width="wrap_content"
@@ -24,18 +25,16 @@
             android:text="Bình luận"
             android:layout_gravity="center"
             android:gravity="left"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="15dp"
             android:textColor="@color/colorDark"
             android:textStyle="bold"
             android:textSize="15dp"
             />
     </LinearLayout>
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_weight="0.1"
-        android:layout_height="wrap_content">
+
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_weight="0.1"
             android:layout_height="wrap_content">
             <ListView
                 android:layout_width="match_parent"
@@ -43,29 +42,37 @@
                 android:layout_height="wrap_content">
             </ListView>
         </LinearLayout>
-    </ScrollView>
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:layout_height="wrap_content">
-        <ImageView
-            android:layout_width="25dp"
-            android:layout_marginLeft="5dp"
-            android:background="@drawable/direct"
-            android:layout_gravity="center"
-            android:layout_height="25dp" />
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="0.1"
-            android:id="@+id/idcomment"
-            android:layout_height="wrap_content" />
+        android:background="@color/colorHaftWhite"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center"
+            android:background="@drawable/direct" />
+
+        <EditText
+            android:id="@+id/idcomment"
+            android:layout_width="match_parent"
+            android:textSize="12dp"
+            android:textStyle="normal"
+            android:backgroundTint="@color/colorHaftWhite"
+            android:hint="Thêm bình luận"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.1" />
+
+        <ImageView
             android:id="@+id/send_id"
-            android:background="@drawable/check_android"
-            android:layout_height="wrap_content" />
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/check_android" />
     </LinearLayout>
 
 </LinearLayout>

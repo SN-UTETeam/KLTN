@@ -22,7 +22,7 @@ public class CustomAdapterComment extends BaseAdapter {
    // public   static  int vtriclick =-1;
     Activity ac;
     ImageView im_comment;
-    TextView usename,content_comment,time;
+    TextView usename_comment,content_comment,time;
     public CustomAdapterComment(Activity ac, ArrayList<Comment> comment) {
         this.ac = ac;
         this.comment=comment;
@@ -47,13 +47,13 @@ public class CustomAdapterComment extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater l=ac.getLayoutInflater();
         convertView=l.inflate(R.layout.custom_adapter_comment,null);
-        usename=(TextView)convertView.findViewById(R.id.userid_comment);
+        usename_comment=(TextView)convertView.findViewById(R.id.userid_comment);
         time=(TextView)convertView.findViewById(R.id.realtime);
         content_comment=(TextView)convertView.findViewById(R.id.conten_comment);
         im_comment=(ImageView) convertView.findViewById(R.id.img_comment);
 
         // set text comment
-        usename.setText(comment.get(position).getUsername());
+        usename_comment.setText(comment.get(position).getUsername());
         content_comment.setText(comment.get(position).getComment());
         time.setText(comment.get(position).getDatetime());
 

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,7 +28,9 @@ import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
+import static pjm.tlcn.Activity.Login.firebaseUser;
 import static pjm.tlcn.Activity.Login.user_id;
+import static pjm.tlcn.Activity.TabActivity_home.id_image;
 
 /**
  * Created by thienphu on 10/26/2017.
@@ -69,14 +72,19 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
         //Firebase
         uDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
         sDatabase = FirebaseStorage.getInstance().getReference().child("AvatarUsers").child(user_id);
-       final String id=uDatabase.getKey();
+
         //click comment show activity comment
         viewHolder.comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //intet activity in adapter
-                v.getContext().startActivity( new Intent(activity, Activity_comment.class));
-               // Intent.putExtra(DESCRIPTION,items.get(position).getId().toString());
+                Intent intent = new Intent(activity, Activity_comment.class);
+                v.getContext().startActivity( intent);
+                idimage =id_image;
+            //    intent.putExtra("sendDate", uDatabase.getKey());
+                // idimage=;
+               // Log.d("id1",idimage);
+                Toast.makeText(activity, idimage, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -87,8 +95,17 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
       //  String tamp = String.valueOf(items.get(position).getLikes());
      //   String tamp = new Integer().toString();
         viewHolder.quatity.setText(items.get(position).getLikes()+" lượt thích");
+         Picasso.with(activity).load(items.get(position).getImgurl())
+                 .fit()
+                 .centerInside()
+                 .into(viewHolder.imageView);
+        viewHolder.realtime.setText(items.get(position).getDatetime());
+         if(items.get(position).getStatus()!=null){
+             viewHolder.username.setText(firebaseUser.getDisplayName());
+         }
 
-         Picasso.with(activity).load(items.get(position).getImgurl()).fit().centerInside().into(viewHolder.imageView);
+
+
 
         //Load user profile
         uDatabase.addValueEventListener(new ValueEventListener() {
@@ -124,7 +141,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
      */
     protected class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView imageView,imname,comment;
-        private TextView textView,quatity;
+        private TextView textView,quatity,username,realtime;
 
         //biến public sang comment
       //  public ImageView ;
@@ -137,6 +154,8 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
             comment = (ImageView)view.findViewById(R.id.comment);
             textView = (TextView)view.findViewById(R.id.text);
             quatity =(TextView)view.findViewById(R.id.quatity_like);
+            username =(TextView)view.findViewById(R.id.user_name);
+            realtime =(TextView)view.findViewById(R.id.date_time);
 
         }
 

@@ -6,18 +6,18 @@ package pjm.tlcn.Model;
 
 public class Image {
 
-    private String comment;
+    private int comment;
     private String datetime;
     private String imgurl;
     private int likes;
-    private String Status;
-    public Image( String comment, String datetime, String imgurl,int likes, String status){
+    private String status;
+    public Image( int comment, String datetime, String imgurl,int likes, String status){
 
         this.comment=comment;
         this.datetime=datetime;
         this.imgurl=imgurl;
         this.likes=likes;
-        this.Status=Status;
+        this.status=status;
 
 
 
@@ -26,11 +26,12 @@ public class Image {
     public Image() {
     }
 
-    public String getComment() {
+
+    public int getComment() {
         return comment;
     }
 
-    public void setComment(String comment) {
+    public void setComment(int comment) {
         this.comment = comment;
     }
 
@@ -59,10 +60,10 @@ public class Image {
     }
 
     public String getStatus() {
-        return Status;
+        return status;
     }
 
     public void setStatus(String status) {
-        Status = status;
+        this.status = status;
     }
 }

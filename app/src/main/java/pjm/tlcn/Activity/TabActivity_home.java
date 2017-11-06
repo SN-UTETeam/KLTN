@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -111,7 +110,7 @@ public class TabActivity_home extends AppCompatActivity {
                 if(dataSnapshot.getValue()!=null){
                     for(DataSnapshot snop:dataSnapshot.getChildren()){
                         id_image = snop.getKey();
-                        Toast.makeText(TabActivity_home.this,snop.getKey(), Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(TabActivity_home.this,snop.getKey(), Toast.LENGTH_SHORT).show();
                         Image img =new Image();
                         img = snop.getValue(Image.class);
                         lvs.add(img);

@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,8 +24,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 
 import pjm.tlcn.R;
 
@@ -37,8 +43,10 @@ public class TabActivity_news extends AppCompatActivity {
     private String[] mNames = null;
     private GridView gridview = null;
     private Cursor cc = null;
+    private Button btnext;
+    public String send_img ="";
     private  static final int  REQUEST_CAMERA = 12;
-
+    public static Bitmap bitmap_photo;
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -68,8 +76,35 @@ public class TabActivity_news extends AppCompatActivity {
         setContentView(R.layout.activity_tab_news);
 
         tab_news_imageview = (ImageView) findViewById(R.id.tab_news_imageview);
+        // chon hinh send qua activity
+        tab_news_imageview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.d("bbb",tab_news_imageview.toString());
+                Toast.makeText(TabActivity_news.this, "chon duoc roi", Toast.LENGTH_SHORT).show();
+            }
+        });
         img_camera_tabnew = (ImageView) findViewById(R.id.img_camera_tabnew);
         gridview = (GridView) findViewById(R.id.tab_news_gridview);
+        //create activity push image
+        btnext =(Button) findViewById(R.id.button_selected_image);
+        btnext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Activity_share_image.class);
+                startActivity(intent);
+              //  Intent intent = new Intent(TabActivity_news.this, Activity_share_image.class);
+//                intent.putExtra("bmp_Image", ImageView_To_Byte(tab_news_imageview));
+              //  intent.putExtra("resourseInt", R.drawable.image);
+            }
+        });
+
+
+
+
+
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
             Log.d("TabActivity_news", "onCreate: check permission");
@@ -104,6 +139,8 @@ public class TabActivity_news extends AppCompatActivity {
             gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    File f = new File(mUrls[position].getPath());
+                    bitmap_photo = BitmapFactory.decodeFile(f.getPath());
                     tab_news_imageview.setImageURI(mUrls[position]);
                 }
             });
@@ -119,43 +156,6 @@ public class TabActivity_news extends AppCompatActivity {
         });
 
 
-//        if (ContextCompat.checkSelfPermission(this,
-//                Manifest.permission.READ_EXTERNAL_STORAGE)
-//                != PackageManager.PERMISSION_GRANTED) {
-//
-//            // Should we show an explanation?
-//            if (ActivityCompat.shouldShowRequestPermissionRationale(TabActivity_news.this,
-//                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
-//
-//                // Show an explanation to the user *asynchronously* -- don't block
-//                // this thread waiting for the user's response! After the user
-//                // sees the explanation, try again to request the permission.
-//
-//            } else {
-//
-//                // No explanation needed, we can request the permission.
-//
-//                ActivityCompat.requestPermissions(TabActivity_news.this,
-//                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-//                        1);
-//
-//                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-//                // app-defined int constant. The callback method gets the
-//                // result of the request.
-//            }
-//        }
-//
-//        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-//            Toast.makeText(getApplicationContext(),"Please permission this app to use your STORAGE",Toast.LENGTH_LONG).show();
-//
-//            if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-//                Toast.makeText(getApplicationContext(),"Please permission this app to use your STORAGE",Toast.LENGTH_LONG).show();
-//                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-//                        1);
-//            }
-//        } else {
-//
-//        }
 
 
     }
@@ -163,9 +163,20 @@ public class TabActivity_news extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            tab_news_imageview.setImageBitmap(photo);
+            bitmap_photo = (Bitmap) data.getExtras().get("data");
+            tab_news_imageview.setImageBitmap(bitmap_photo);
         }
+    }
+
+    public byte[] ImageView_To_Byte(ImageView imgv){
+
+        BitmapDrawable drawable = (BitmapDrawable) imgv.getDrawable();
+        Bitmap bmp = drawable.getBitmap();
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        return byteArray;
     }
 
     public class ImageAdapter extends BaseAdapter {
@@ -207,6 +218,10 @@ public class TabActivity_news extends AppCompatActivity {
             } catch (Exception e) {
 
             }
+
+
+
+
             return v;
         }
     }
@@ -241,61 +256,5 @@ public class TabActivity_news extends AppCompatActivity {
 
         return output;
     }
-//    @RequiresApi(api = Build.VERSION_CODES.M)
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode,
-//                                           String permissions[], int[] grantResults) {
-//        switch (requestCode) {
-//            case 1: {
-//                // If request is cancelled, the result arrays are empty.
-//                if (grantResults.length > 0
-//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//
-//                    cc = this.getContentResolver().query(
-//                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, null, null,
-//                            null);
-//                    if (cc != null) {
-//                        new Thread() {
-//                            public void run() {
-//                                try {
-//                                    cc.moveToFirst();
-//                                    mUrls = new Uri[cc.getCount()];
-//                                    strUrls = new String[cc.getCount()];
-//                                    mNames = new String[cc.getCount()];
-//                                    for (int i = 0; i < cc.getCount(); i++) {
-//                                        cc.moveToPosition(i);
-//                                        mUrls[i] = Uri.parse(cc.getString(1));
-//                                        strUrls[i] = cc.getString(1);
-//                                        mNames[i] = cc.getString(3);
-//                                    }
-//
-//                                } catch (Exception e) {
-//                                }
-//
-//                            }
-//                        }.start();
-//                        gridview.setAdapter(new ImageAdapter(this));
-//                        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                            @Override
-//                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                                tab_news_imageview.setImageURI(mUrls[position]);
-//                            }
-//                        });
-//
-//                    }
-//
-//                } else {
-//
-//                    Toast.makeText(getApplicationContext(),"Please permission this app to use your STORAGE",Toast.LENGTH_LONG).show();
-//                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-//                            1);
-//                }
-//                return;
-//            }
-//
-//            // other 'case' lines to check for other
-//            // permissions this app might request
-//        }
-//    }
 
 }

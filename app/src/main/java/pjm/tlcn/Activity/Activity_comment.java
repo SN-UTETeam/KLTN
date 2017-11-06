@@ -25,14 +25,16 @@ import pjm.tlcn.R;
 import static pjm.tlcn.Activity.Login.firebaseUser;
 import static pjm.tlcn.Activity.Login.user_id;
 import static pjm.tlcn.Activity.TabActivity_home.id_image;
+import static pjm.tlcn.Adapter.ListViewAdapter.idimage;
 
 public class Activity_comment extends AppCompatActivity {
      private ArrayList<Comment> lvcomments;
     private CustomAdapterComment customadapter;
     DatabaseReference uDatabase= FirebaseDatabase.getInstance().getReference();
     ListView lvcommet;
-    ImageView imagesend;
+    ImageView imagesend,bt_comment;
     EditText idcomment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +42,14 @@ public class Activity_comment extends AppCompatActivity {
         lvcommet =(ListView)findViewById(R.id.lv_comment);
         imagesend =(ImageView)findViewById(R.id.send_id);
         idcomment=(EditText)findViewById(R.id.idcomment);
+        //fisnish comment
+        bt_comment =(ImageView) findViewById(R.id.btcomment);
+        bt_comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         imagesend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,8 +72,10 @@ public class Activity_comment extends AppCompatActivity {
 
     }
     void getData(){
+
+
         lvcomments = new ArrayList<>();
-        uDatabase.child("Comments").child(id_image).child(user_id).addValueEventListener(new ValueEventListener() {
+        uDatabase.child("Comments").child(idimage).child(user_id).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue()!=null){

@@ -12,20 +12,19 @@
         android:background="@color/colorWhite"
         android:id="@+id/timkiem"
         android:orientation="horizontal"
-        android:layout_height="50dp">
+        android:layout_height="40dp">
 
         <ImageView
-            android:layout_width="30dp"
+            android:layout_width="25dp"
             android:layout_gravity="center"
             android:layout_marginLeft="10dp"
             android:background="@drawable/nav_search"
-            android:layout_height="30dp" />
+            android:layout_height="25dp" />
         <TextView
             android:layout_width="wrap_content"
-            android:text="Tim kiem"
-            android:textAllCaps="false"
-            android:textStyle="bold"
-            android:textSize="10dp"
+            android:text="Tìm kiếm"
+            android:textSize="12dp"
+            android:layout_marginLeft="5dp"
             android:textAlignment="center"
             android:layout_gravity="center|center_horizontal"
             android:layout_height="wrap_content" />
@@ -45,7 +44,7 @@
                 android:orientation="horizontal"
                 android:background="@color/colorWhite"
                 android:layout_height="wrap_content">
-                <LinearLayout
+               <!-- <LinearLayout
                     android:layout_width="wrap_content"
                     android:orientation="vertical"
                     android:layout_margin="10dp"
@@ -62,28 +61,12 @@
                         android:textSize="10dp"
                         android:layout_marginLeft="10dp"
                         android:layout_height="wrap_content" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_margin="10dp"
-                    android:layout_height="wrap_content">
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:background="@drawable/anh"
-                        android:layout_height="40dp" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:text="Bạn"
-                        android:textColor="#080808"
-                        android:textAllCaps="false"
-                        android:textSize="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
+                </LinearLayout>-->
+
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
+                android:background="@color/colorWhite"
                 android:layout_height="match_parent">
                 <ImageView
                     android:layout_width="wrap_content"

@@ -97,19 +97,14 @@ public class TabActivity_home extends AppCompatActivity {
     {
 
 
-        /*corporations = new ArrayList<>();
-        corporations.add(new RecyclerViewItem(R.drawable.ava, "Microsoft"));
-        corporations.add(new RecyclerViewItem(R.drawable.ic_message_tab, "Apple"));
-        corporations.add(new RecyclerViewItem(R.drawable.ic_photo, "Google"));*/
-
-
+      //  String tamp =[user_id];
         lvs =new ArrayList<>();
         uDatabase.child("Images").child(user_id).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue()!=null){
                     for(DataSnapshot snop:dataSnapshot.getChildren()){
-                        id_image = snop.getKey();
+                       // id_image = snop.getKey();
                        // Toast.makeText(TabActivity_home.this,snop.getKey(), Toast.LENGTH_SHORT).show();
                         Image img =new Image();
                         img = snop.getValue(Image.class);

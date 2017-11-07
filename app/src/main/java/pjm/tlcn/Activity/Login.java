@@ -229,6 +229,13 @@ public class Login extends AppCompatActivity {
             if(accessToken!=null){
             //ser_id=accessToken.getUserId();
             firebaseUser=mAuth.getCurrentUser();
+                user = new User(firebaseUser.getUid()+"",
+                        firebaseUser.getDisplayName()+"",
+                        firebaseUser.getEmail()+"",
+                        firebaseUser.getUid()+"",
+                        firebaseUser.getPhoneNumber()+"",
+                        "No Describer",
+                        firebaseUser.getPhotoUrl().toString()+"");
             user_id=firebaseUser.getUid();}
             return accessToken != null;
         //}

@@ -50,7 +50,12 @@ public class GridViewAdapter extends RecyclerView.Adapter<GridViewAdapter.ViewHo
     public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
      //  viewHolder.imageView.setImageResource(items.get(position).getDrawableId());
         viewHolder.textView.setText(items.get(position).getUsername());
-         Picasso.with(activity).load(items.get(position).getAvatarurl()).fit().centerInside().into(viewHolder.img);
+         Picasso
+                 .with(activity)
+                 .load(items.get(position).getAvatarurl())
+                 .resize(200, 200) // resizes the image to these dimensions (in pixel)
+                 .centerCrop()
+                 .into(viewHolder.img);
         //click vào button follow
 
         viewHolder.btfollow.setOnClickListener(new View.OnClickListener() {

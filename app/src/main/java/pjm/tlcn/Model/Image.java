@@ -5,14 +5,14 @@ package pjm.tlcn.Model;
  */
 
 public class Image {
-
+    private  String id;
     private int comment;
     private String datetime;
     private String imgurl;
     private int likes;
     private String status;
-    public Image( int comment, String datetime, String imgurl,int likes, String status){
-
+    public Image( String id,int comment, String datetime, String imgurl,int likes, String status){
+        this.id=id;
         this.comment=comment;
         this.datetime=datetime;
         this.imgurl=imgurl;
@@ -26,6 +26,13 @@ public class Image {
     public Image() {
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public int getComment() {
         return comment;

@@ -40,10 +40,14 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+                <!-- moi-->
                 <ImageView
                     android:layout_width="match_parent"
                     android:id="@+id/imagemain"
-                    android:layout_height="300dp" />
+                    android:scaleType="fitStart"
+                    android:adjustViewBounds="true"
+                    android:background="@color/colorBlue"
+                    android:layout_height="260dp" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"

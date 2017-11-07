@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,7 +29,6 @@ import pjm.tlcn.R;
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static pjm.tlcn.Activity.Login.firebaseUser;
 import static pjm.tlcn.Activity.Login.user_id;
-import static pjm.tlcn.Activity.TabActivity_home.id_image;
 
 /**
  * Created by thienphu on 10/26/2017.
@@ -39,10 +37,10 @@ import static pjm.tlcn.Activity.TabActivity_home.id_image;
 public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHolder> {
     private Activity activity;
     private List<Image> items;
-    public DatabaseReference uDatabase;
+    public DatabaseReference uDatabase,keyimage;
     private StorageReference sDatabase;
     private TabActivity_viewall mAdapterCallback;
-    public static String idimage="";
+    public static String key_img="";
     //
 
 
@@ -72,6 +70,8 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
         //Firebase
         uDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
         sDatabase = FirebaseStorage.getInstance().getReference().child("AvatarUsers").child(user_id);
+        //
+        keyimage = FirebaseDatabase.getInstance().getReference().child("Images").child(user_id);
 
         //click comment show activity comment
         viewHolder.comment.setOnClickListener(new View.OnClickListener() {
@@ -80,11 +80,11 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
                 //intet activity in adapter
                 Intent intent = new Intent(activity, Activity_comment.class);
                 v.getContext().startActivity( intent);
-                idimage =id_image;
+                key_img =items.get(position).getId();
             //    intent.putExtra("sendDate", uDatabase.getKey());
                 // idimage=;
                // Log.d("id1",idimage);
-                Toast.makeText(activity, idimage, Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(activity, img_key, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -92,12 +92,16 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
 
         // viewHolder.imageView.setImageResource(items.get(position).getDrawableId());
         viewHolder.textView.setText(items.get(position).getStatus());
-      //  String tamp = String.valueOf(items.get(position).getLikes());
-     //   String tamp = new Integer().toString();
         viewHolder.quatity.setText(items.get(position).getLikes()+" lượt thích");
-         Picasso.with(activity).load(items.get(position).getImgurl())
+        //
+         Picasso
+                 .with(activity)
+                 .load(items.get(position).getImgurl())
                  .fit()
-                 .centerInside()
+                // .resize(600,200)
+               //  .centerInside()
+                // .resize(0, viewHolder.imageView.getHeight())
+                // .centerInside()
                  .into(viewHolder.imageView);
         viewHolder.realtime.setText(items.get(position).getDatetime());
          if(items.get(position).getStatus()!=null){

@@ -22,10 +22,9 @@ import pjm.tlcn.Adapter.CustomAdapterComment;
 import pjm.tlcn.Model.Comment;
 import pjm.tlcn.R;
 
-import static pjm.tlcn.Activity.Login.firebaseUser;
+import static pjm.tlcn.Activity.Login.user;
 import static pjm.tlcn.Activity.Login.user_id;
-import static pjm.tlcn.Activity.TabActivity_home.id_image;
-import static pjm.tlcn.Adapter.ListViewAdapter.idimage;
+import static pjm.tlcn.Adapter.ListViewAdapter.key_img;
 
 public class Activity_comment extends AppCompatActivity {
      private ArrayList<Comment> lvcomments;
@@ -54,10 +53,10 @@ public class Activity_comment extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Date currentTime = Calendar.getInstance().getTime();
-                Comment fl = new Comment(idcomment.getText().toString(),currentTime.toString(), firebaseUser.getDisplayName());
+                Comment fl = new Comment(idcomment.getText().toString(),currentTime.toString(), user.getUsername());
               //  Log.d("Iamge id",idimage);
               //  Log.d("Path",uDatabase.child("Comments").child(idimage).child(user_id)+"");
-                uDatabase.child("Comments").child(id_image).child(user_id).push().setValue(fl);
+                uDatabase.child("Comments").child(key_img).child(user_id).push().setValue(fl);
                 idcomment.setText("");
 
             }
@@ -75,7 +74,7 @@ public class Activity_comment extends AppCompatActivity {
 
 
         lvcomments = new ArrayList<>();
-        uDatabase.child("Comments").child(idimage).child(user_id).addValueEventListener(new ValueEventListener() {
+        uDatabase.child("Comments").child(key_img).child(user_id).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue()!=null){

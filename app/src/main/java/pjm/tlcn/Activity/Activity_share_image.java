@@ -94,8 +94,6 @@ public class Activity_share_image extends AppCompatActivity {
                         uDatabase.push().setValue(img);
                     }
                 });
-                imgshare.setImageBitmap(null);
-                edit_status.setText("");
                 finish();
                 Toast.makeText(Activity_share_image.this, "Thanh cong", Toast.LENGTH_SHORT).show();
             }

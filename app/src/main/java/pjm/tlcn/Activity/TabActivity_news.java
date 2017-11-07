@@ -41,9 +41,9 @@ public class TabActivity_news extends AppCompatActivity {
     private String[] mNames = null;
     private GridView gridview = null;
     private Cursor cc = null;
-    private Button btnext;
-    public String send_img ="";
-    private  static final int  REQUEST_CAMERA = 12;
+    private Button btnext,btcancel;
+    private Boolean flag_selected=false;
+    private  static final int  REQUEST_CAMERA = 12,REQUEST_DONE=13;
     public static Bitmap bitmap_photo;
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -53,13 +53,6 @@ public class TabActivity_news extends AppCompatActivity {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
                 }
                 return;
         }
@@ -74,49 +67,28 @@ public class TabActivity_news extends AppCompatActivity {
         setContentView(R.layout.activity_tab_news);
 
         tab_news_imageview = (ImageView) findViewById(R.id.tab_news_imageview);
-
-        // chon hinh send qua activity
-       /* tab_news_imageview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Log.d("bbb",tab_news_imageview.toString());
-                Toast.makeText(TabActivity_news.this, "chon duoc roi", Toast.LENGTH_SHORT).show();
-            }
-        });*/
         img_camera_tabnew = (ImageView) findViewById(R.id.img_camera_tabnew);
         gridview = (GridView) findViewById(R.id.tab_news_gridview);
+        btnext =(Button) findViewById(R.id.button_selected_image);
+        btcancel = (Button) findViewById(R.id.button_cancel);
 
         //xu ly su kien khi chon duoc anh
 
-            btnext =(Button) findViewById(R.id.button_selected_image);
+
             btnext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getApplicationContext(), Activity_share_image.class);
-                    startActivity(intent);
-                    //  Intent intent = new Intent(TabActivity_news.this, Activity_share_image.class);
-//                intent.putExtra("bmp_Image", ImageView_To_Byte(tab_news_imageview));
-                    //  intent.putExtra("resourseInt", R.drawable.image);
+                    if(flag_selected) {
+                        Intent intent = new Intent(getApplicationContext(), Activity_share_image.class);
+                        startActivityForResult(intent, REQUEST_DONE);
+                    }
+
                 }
             });
             btnext.setTextColor(Color.BLUE);
 
-
-        //create activity push image
-
-
-
-
-
-
-
-
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-            Log.d("TabActivity_news", "onCreate: check permission");
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CAMERA);
-//            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         }
 
         cc = this.getContentResolver().query(
@@ -149,6 +121,9 @@ public class TabActivity_news extends AppCompatActivity {
                     File f = new File(mUrls[position].getPath());
                     bitmap_photo = BitmapFactory.decodeFile(f.getPath());
                     tab_news_imageview.setImageURI(mUrls[position]);
+                    flag_selected=true;
+                    btnext.setVisibility(View.VISIBLE);
+                    btcancel.setVisibility(View.VISIBLE);
                 }
             });
 
@@ -172,6 +147,9 @@ public class TabActivity_news extends AppCompatActivity {
         if (requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK) {
             bitmap_photo = (Bitmap) data.getExtras().get("data");
             tab_news_imageview.setImageBitmap(bitmap_photo);
+            flag_selected=true;
+            btcancel.setVisibility(View.VISIBLE);
+            btnext.setVisibility(View.VISIBLE);
         }
     }
 
@@ -216,10 +194,6 @@ public class TabActivity_news extends AppCompatActivity {
             } catch (Exception e) {
 
             }
-
-
-
-
             return v;
         }
     }

@@ -102,6 +102,7 @@ public class TabActivity_home extends AppCompatActivity {
         uDatabase.child("Images").child(user_id).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                lvs.clear();
                 if(dataSnapshot.getValue()!=null){
                     for(DataSnapshot snop:dataSnapshot.getChildren()){
                        // id_image = snop.getKey();

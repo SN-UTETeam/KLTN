@@ -1,5 +1,6 @@
 package pjm.tlcn.Activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,12 +23,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
@@ -44,6 +50,8 @@ private EditText edt_username_editprofile,edt_describer_editprofile,edt_phonenum
 private int RESULT_LOAD_IMG = 1000;
 private Uri uri_img_select,uri_img_download;
 private boolean flag_img_select=false;
+private ProgressDialog progressDialog;
+private Bitmap selectedImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +72,13 @@ private boolean flag_img_select=false;
         uDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
         sDatabase = FirebaseStorage.getInstance().getReference().child("AvatarUsers").child(user_id);
 
+        //Show progressDialog
+        progressDialog = new ProgressDialog(Edit_profile.this);
+        progressDialog.setMax(100);
+        progressDialog.setMessage("Chỉnh sửa thông tin....");
+        progressDialog.setTitle("Đang thực hiện....");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.onStart();
         //Check null
         if(edt_email_editprofile.getText().toString().equals("null")) edt_email_editprofile.setEnabled(true);
         //Start Set Onclick btn_edit_profile_cancel
@@ -81,37 +96,56 @@ private boolean flag_img_select=false;
             public void onClick(View v) {
                 if(     edt_describer_editprofile.getText().toString().length()>=3 &&
                         edt_phonenumber_editprofile.getText().toString().length()>=10 &&
-                        edt_describer_editprofile.getText().toString().length()>0){
+                        edt_describer_editprofile.getText().toString().length()>0)
+                {
+                    progressDialog.show();
                     uDatabase.child("username").setValue(edt_username_editprofile.getText().toString());
                     uDatabase.child("describer").setValue(edt_describer_editprofile.getText().toString());
                     uDatabase.child("phonenumber").setValue(edt_phonenumber_editprofile.getText().toString());
                     if(flag_img_select){
-                        //Upload file to firebase storage
-                        //Uri file = Uri.fromFile(new File(uri_img_select));
-                        StorageReference img_upload = sDatabase.child(uri_img_select.getLastPathSegment());
-//                        StorageMetadata metadata = new StorageMetadata.Builder()
-//                                .setContentType("image/jpeg")
-//                                .build();
-                        UploadTask uploadTask = img_upload.putFile(uri_img_select);
+                        //optimze picture
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        //File f = new File(selectedImage.getPath());
+                        //Bitmap bitmap = BitmapFactory.decodeFile(f.getPath());
+                        float aspectRatio = selectedImage.getWidth() /
+                                (float) selectedImage.getHeight();
+                        int width = 480;
+                        int height = Math.round(width / aspectRatio);
+                        selectedImage = Bitmap.createScaledBitmap(
+                                selectedImage, width, height, false);
+                        selectedImage.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        byte[] data = baos.toByteArray();
+                        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                        UploadTask uploadTask = sDatabase.child("IMG_"+timeStamp).putBytes(data);
+                        uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                final double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                int currentprogress = (int) progress;
+                                progressDialog.setProgress(currentprogress);
+                            }
 
-                        // Register observers to listen for when the download is done or if it fails
-                        uploadTask.addOnFailureListener(new OnFailureListener() {
+                        }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception exception) {
                                 // Handle unsuccessful uploads
+                                progressDialog.dismiss();
+                                Toast.makeText(Edit_profile.this, "Lỗi", Toast.LENGTH_SHORT).show();
                             }
                         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                                Date currentTime = Calendar.getInstance().getTime();
                                 uri_img_download = taskSnapshot.getMetadata().getDownloadUrl();
                                 uDatabase.child("avatarurl").setValue(uri_img_download.toString());
+                                progressDialog.dismiss();
+                                finish();
+                                Toast.makeText(getApplication(),"Chỉnh sửa thành công thành công!!!",Toast.LENGTH_SHORT);
+                                finish();
                             }
                         });
                         flag_img_select=false;
                     }
-                    Toast.makeText(getApplicationContext(),"Chỉnh sửa thông tin thành công!",Toast.LENGTH_LONG).show();
-                    finish();
                 }
                 else
                     Toast.makeText(getApplicationContext(),"Vui lòng nhập đúng các thông tin!",Toast.LENGTH_LONG).show();
@@ -138,8 +172,9 @@ private boolean flag_img_select=false;
                 Picasso.with(getApplicationContext()).load(user.getAvatarurl()).fit().centerInside().into(img_avatar_editprofile);
                 edt_username_editprofile.setText(user.getUsername());
                 edt_describer_editprofile.setText(user.getDescriber());
-                edt_email_editprofile.setText(user.getEmail());
-                if(!user.getPhonenumber().equals(null)) edt_phonenumber_editprofile.setText(user.getPhonenumber());
+                if(!user.getEmail().equals("null")) edt_email_editprofile.setText(user.getEmail());
+                else edt_email_editprofile.setText("");
+                if(!user.getPhonenumber().equals("null")) edt_phonenumber_editprofile.setText(user.getPhonenumber());
                 else edt_phonenumber_editprofile.setText("");
             }
 
@@ -159,7 +194,7 @@ private boolean flag_img_select=false;
             try {
                 uri_img_select = data.getData();
                 final InputStream imageStream = getContentResolver().openInputStream(uri_img_select);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                selectedImage = BitmapFactory.decodeStream(imageStream);
                 img_avatar_editprofile.setImageBitmap(selectedImage);
                 flag_img_select=true;
             } catch (FileNotFoundException e) {

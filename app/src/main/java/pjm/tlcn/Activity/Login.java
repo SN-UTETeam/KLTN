@@ -1,5 +1,6 @@
 package pjm.tlcn.Activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -51,6 +52,7 @@ public class Login extends AppCompatActivity {
     public static FirebaseUser firebaseUser;
     public static User user;
     public static String user_id;
+    private ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +75,14 @@ public class Login extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         uDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
 
+        //Show progressDialog
+        progressDialog = new ProgressDialog(Login.this);
+        progressDialog.setMax(100);
+        progressDialog.setMessage("Đang xử lý...");
+        progressDialog.setTitle("Đang tiến hành đăng nhập....");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.dismiss();
+
         if(isLoggedIn()){
             firebaseUser=mAuth.getCurrentUser();
             if(firebaseUser!=null){
@@ -90,8 +100,15 @@ public class Login extends AppCompatActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(edt_EmailLogin.getText().toString().length()!=0 && edt_PassWordLogin.getText().toString().length()!=0) {
-                    progress_bar_login.setVisibility(View.VISIBLE);
+
+                if(edt_EmailLogin.getText().toString().length()==0)
+                    Toast.makeText(getApplicationContext(),"You must enter an Email",Toast.LENGTH_LONG).show();
+                else
+                    if(edt_PassWordLogin.getText().toString().length()==0)
+                        Toast.makeText(getApplicationContext(),"You must enter an Password",Toast.LENGTH_LONG).show();
+                else
+                {
+                    progressDialog.show();
                     mAuth.signInWithEmailAndPassword(edt_EmailLogin.getText().toString(), edt_PassWordLogin.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -110,21 +127,18 @@ public class Login extends AppCompatActivity {
                                     }
                                 });
                                 firebaseUser = mAuth.getCurrentUser();
-                                progress_bar_login.setVisibility(View.GONE);
-                                Toast.makeText(Login.this, "Login success", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(Login.this, MainActivity.class);
+                                progressDialog.dismiss();
                                 startActivity(intent);
                                 finish();
                             } else {
-                                progress_bar_login.setVisibility(View.GONE);
+                                progressDialog.dismiss();
                                 Toast.makeText(Login.this,task.getException().toString(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
                 }
-                else {
-                    Toast.makeText(getApplicationContext(),"You must be have Email or Password",Toast.LENGTH_LONG).show();
-                }
+
             }
         });
         //End SetOnlick btn_login
@@ -148,25 +162,17 @@ public class Login extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
-                progress_bar_login.setVisibility(View.VISIBLE);
+                progressDialog.show();
                 handleFacebookAccessToken(loginResult.getAccessToken().getToken());
-
             }
-
             @Override
             public void onCancel() {
-                Log.d(TAG, "facebook:onCancel");
-                // [START_EXCLUDE]
-                //updateUI(null);
-                // [END_EXCLUDE]
+               // Log.d(TAG, "facebook:onCancel");
             }
 
             @Override
             public void onError(FacebookException error) {
-                Log.d(TAG, "facebook:onError", error);
-                // [START_EXCLUDE]
-                //updateUI(null);
-                // [END_EXCLUDE]
+                ///Log.d(TAG, "facebook:onError", error);
             }
         });
         // [END initialize_fblogin]
@@ -181,8 +187,8 @@ public class Login extends AppCompatActivity {
     }
     // [START auth_with_facebook]
     private void handleFacebookAccessToken(String token) {
-        Log.d(TAG, "handleFacebookAccessToken:" + token);
-        progress_bar_login.setVisibility(View.VISIBLE);
+        //Log.d(TAG, "handleFacebookAccessToken:" + token);
+        progressDialog.show();
         AuthCredential credential = FacebookAuthProvider.getCredential(token);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -202,23 +208,19 @@ public class Login extends AppCompatActivity {
                                                     firebaseUser.getPhotoUrl().toString()+"");
                             mDatabase.child("Users").child(firebaseUser.getUid()).setValue(user);
                             Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                            progress_bar_login.setVisibility(View.VISIBLE);
+                            progressDialog.dismiss();
                             startActivity(intent);
                             finish();
                             //updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            //Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(Login.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            progress_bar_login.setVisibility(View.VISIBLE);
+                            progressDialog.dismiss();
 
-                            //updateUI(null);
                         }
 
-                        // [START_EXCLUDE]
-                        //hideProgressDialog();
-                        // [END_EXCLUDE]
                     }
                 });
     }

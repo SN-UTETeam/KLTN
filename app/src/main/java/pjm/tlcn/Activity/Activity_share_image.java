@@ -1,8 +1,12 @@
 package pjm.tlcn.Activity;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -17,6 +21,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -40,6 +45,8 @@ public class Activity_share_image extends AppCompatActivity {
     private StorageReference sDatabase;
     private boolean flag_img_select=false;
     private Uri uri_img_select,uri_img_download;
+    private ProgressDialog progressDialog;
+    private Handler handle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,20 +72,41 @@ public class Activity_share_image extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                // Create a storage reference from our app
-              //  StorageReference storageRef = uDatabase.getReference();
-                // Get the data from an ImageView as bytes
-                Calendar time = Calendar.getInstance();
-                // Create a reference to "mountains.jpg"
+                //Show progressDialog
+                progressDialog = new ProgressDialog(Activity_share_image.this);
+                progressDialog.setMax(100);
+                progressDialog.setMessage("Uploading....");
+                progressDialog.setTitle("Uploading your status....");
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                progressDialog.show();
+                progressDialog.onStart();
+
+                //Optimze Picture
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                float aspectRatio = bitmap_photo.getWidth() /
+                        (float) bitmap_photo.getHeight();
+                int width = 480;
+                int height = Math.round(width / aspectRatio);
+
+                bitmap_photo = Bitmap.createScaledBitmap(
+                        bitmap_photo, width, height, false);
                 bitmap_photo.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] data = baos.toByteArray();
                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
                 UploadTask uploadTask = sDatabase.child("IMG_"+timeStamp).putBytes(data);
-                uploadTask.addOnFailureListener(new OnFailureListener() {
+                uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        final double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                        int currentprogress = (int) progress;
+                        progressDialog.setProgress(currentprogress);
+                    }
+
+                }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
                         // Handle unsuccessful uploads
+                        progressDialog.dismiss();
                         Toast.makeText(Activity_share_image.this, "Lỗi", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -89,13 +117,18 @@ public class Activity_share_image extends AppCompatActivity {
                        // uDatabase.child("datetime").setValue(currentTime.toString());
                         uri_img_download = taskSnapshot.getMetadata().getDownloadUrl();
                      //  uDatabase.child("imageurl").setValue(uri_img_download.toString());
-                       String temp = uDatabase.push().getKey();
+                        String temp = uDatabase.push().getKey();
                         Image img = new Image(temp,0,currentTime.toString(),uri_img_download+"",0,edit_status.getText().toString()+"");
                         uDatabase.push().setValue(img);
+                        progressDialog.dismiss();
+                        Intent it = new Intent();
+                        setResult(Activity.RESULT_OK, it);
+                        finish();
+                        Toast.makeText(getApplication(),"Đăng tải thành công!!!",Toast.LENGTH_SHORT);
                     }
                 });
-                finish();
-                Toast.makeText(Activity_share_image.this, "Thanh cong", Toast.LENGTH_SHORT).show();
+
+
             }
 
         });

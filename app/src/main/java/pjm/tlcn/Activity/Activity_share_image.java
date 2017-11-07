@@ -32,8 +32,8 @@ import static pjm.tlcn.Activity.Login.user_id;
 import static pjm.tlcn.Activity.TabActivity_news.bitmap_photo;
 
 public class Activity_share_image extends AppCompatActivity {
-    ImageView imgshare;
-    EditText edit_status;
+     private  ImageView imgshare;
+    private EditText edit_status;
     TextView     send;
     ImageButton bt_back;
     private DatabaseReference uDatabase;
@@ -94,7 +94,12 @@ public class Activity_share_image extends AppCompatActivity {
                         uDatabase.push().setValue(img);
                     }
                 });
+                imgshare.setImageBitmap(null);
+                edit_status.setText("");
+                finish();
+                Toast.makeText(Activity_share_image.this, "Thanh cong", Toast.LENGTH_SHORT).show();
             }
+
         });
 
 

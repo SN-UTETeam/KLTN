@@ -60,7 +60,6 @@ public class TabActivity_search extends AppCompatActivity {
                         String use = snop.getKey();
                         User temp = new User();
                         temp = snop.getValue(User.class);
-                        Log.d("AAA", temp.getUsername());
                         gridviewArrayUser.add(temp);
                         customAdapterSearch.notifyDataSetChanged();
 

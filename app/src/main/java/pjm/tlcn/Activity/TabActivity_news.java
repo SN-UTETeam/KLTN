@@ -8,7 +8,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,9 +27,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import pjm.tlcn.R;
@@ -76,29 +74,38 @@ public class TabActivity_news extends AppCompatActivity {
         setContentView(R.layout.activity_tab_news);
 
         tab_news_imageview = (ImageView) findViewById(R.id.tab_news_imageview);
+
         // chon hinh send qua activity
-        tab_news_imageview.setOnClickListener(new View.OnClickListener() {
+       /* tab_news_imageview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Log.d("bbb",tab_news_imageview.toString());
                 Toast.makeText(TabActivity_news.this, "chon duoc roi", Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
         img_camera_tabnew = (ImageView) findViewById(R.id.img_camera_tabnew);
         gridview = (GridView) findViewById(R.id.tab_news_gridview);
-        //create activity push image
-        btnext =(Button) findViewById(R.id.button_selected_image);
-        btnext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Activity_share_image.class);
-                startActivity(intent);
-              //  Intent intent = new Intent(TabActivity_news.this, Activity_share_image.class);
+
+        //xu ly su kien khi chon duoc anh
+
+            btnext =(Button) findViewById(R.id.button_selected_image);
+            btnext.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(), Activity_share_image.class);
+                    startActivity(intent);
+                    //  Intent intent = new Intent(TabActivity_news.this, Activity_share_image.class);
 //                intent.putExtra("bmp_Image", ImageView_To_Byte(tab_news_imageview));
-              //  intent.putExtra("resourseInt", R.drawable.image);
-            }
-        });
+                    //  intent.putExtra("resourseInt", R.drawable.image);
+                }
+            });
+            btnext.setTextColor(Color.BLUE);
+
+
+        //create activity push image
+
+
 
 
 
@@ -168,16 +175,7 @@ public class TabActivity_news extends AppCompatActivity {
         }
     }
 
-    public byte[] ImageView_To_Byte(ImageView imgv){
 
-        BitmapDrawable drawable = (BitmapDrawable) imgv.getDrawable();
-        Bitmap bmp = drawable.getBitmap();
-
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] byteArray = stream.toByteArray();
-        return byteArray;
-    }
 
     public class ImageAdapter extends BaseAdapter {
         private Context mContext;

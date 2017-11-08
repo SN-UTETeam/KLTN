@@ -1,5 +1,6 @@
 package pjm.tlcn.Activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,6 +29,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
@@ -63,6 +65,7 @@ public class Chat extends AppCompatActivity {
     public Uri uri_img_download;
     public Bitmap bitmap_img_capture;
     private boolean flag_img_select=false,flag_img_capture=false;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,16 +130,41 @@ public class Chat extends AppCompatActivity {
             public void onClick(View v) {
                final String messageText = messageArea.getText().toString();
                final Map<String, String> map = new HashMap<String, String>();
-
+                //Show progressDialog
+                progressDialog = new ProgressDialog(Chat.this);
+                progressDialog.setMax(100);
+                progressDialog.setMessage("Uploading....");
+                progressDialog.setTitle("Uploading your status....");
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                progressDialog.show();
+                progressDialog.onStart();
                 if(!messageText.equals("")||flag_img_select||flag_img_capture){
                     if(flag_img_select){ //Upload when chosen img form galery
-                        StorageReference img_upload = s1Database.child(uri_img_select.getLastPathSegment());
-                        UploadTask uploadTask = img_upload.putFile(uri_img_select);
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        float aspectRatio = bitmap_img_capture.getWidth() /
+                                (float) bitmap_img_capture.getHeight();
+                        int width = 480;
+                        int height = Math.round(width / aspectRatio);
+                        bitmap_img_capture = Bitmap.createScaledBitmap(
+                                bitmap_img_capture, width, height, false);
+                        bitmap_img_capture.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        byte[] data = baos.toByteArray();
+                        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                        UploadTask uploadTask = s1Database.child("IMG_"+timeStamp).putBytes(data);
                         // Listen for state changes, errors, and completion of the upload.
-                        uploadTask.addOnFailureListener(new OnFailureListener() {
+                        uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                final double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                int currentprogress = (int) progress;
+                                progressDialog.setProgress(currentprogress);
+                            }
+
+                        }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception exception) {
-                                // Handle unsuccessful uploads
+                                progressDialog.dismiss();
+                                Toast.makeText(Chat.this, "Lỗi", Toast.LENGTH_SHORT).show();
                             }
                         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
@@ -149,10 +177,10 @@ public class Chat extends AppCompatActivity {
                                 map.put("imageurl",uri_img_download+"");
                                 reference1.push().setValue(map);
                                 reference2.push().setValue(map);
-
                                 flag_img_select=false;
                                 messageArea.setText("");
                                 img_chat_image.setVisibility(View.GONE);
+                                progressDialog.dismiss();
                             }
                         });
 
@@ -160,6 +188,12 @@ public class Chat extends AppCompatActivity {
                     if(flag_img_capture){
 
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        float aspectRatio = bitmap_img_capture.getWidth() /
+                                (float) bitmap_img_capture.getHeight();
+                        int width = 480;
+                        int height = Math.round(width / aspectRatio);
+                        bitmap_img_capture = Bitmap.createScaledBitmap(
+                                bitmap_img_capture, width, height, false);
                         bitmap_img_capture.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                         byte[] data = baos.toByteArray();
                         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -255,8 +289,8 @@ public class Chat extends AppCompatActivity {
         ImageView imageView = new ImageView(Chat.this);
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         imageView.setLayoutParams(lp1);
-        imageView.getLayoutParams().height = 700;
-        imageView.getLayoutParams().width = 700;
+        imageView.getLayoutParams().height = 800;
+        imageView.getLayoutParams().width = 800;
 
         imageView.setPadding(20, 10, 20, 10);
         imageView.setVisibility(View.GONE);
@@ -301,8 +335,8 @@ public class Chat extends AppCompatActivity {
                 try {
                     uri_img_select = data.getData();
                     final InputStream imageStream = getContentResolver().openInputStream(uri_img_select);
-                    final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                    img_chat_image.setImageBitmap(selectedImage);
+                    bitmap_img_capture = BitmapFactory.decodeStream(imageStream);
+                    img_chat_image.setImageBitmap(bitmap_img_capture);
                     img_chat_image.setVisibility(View.VISIBLE);
                     flag_img_select=true;
                     flag_img_capture=false;

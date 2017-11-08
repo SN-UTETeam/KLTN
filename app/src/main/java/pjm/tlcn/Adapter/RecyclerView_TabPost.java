@@ -9,25 +9,31 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 import pjm.tlcn.Activity.ViewCmt_tabProfile;
 import pjm.tlcn.Model.Image;
+import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
 
-import static pjm.tlcn.Activity.Login.user;
+import static pjm.tlcn.Activity.Login.user_id;
 
 /**
  * Created by Pjm on 11/8/2017.
  */
 
 public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabPost.RecyclerViewHolder>{
-
     private ArrayList<Image> item = new ArrayList<Image>();
     private Context context;
     public static String img_id;
+    private DatabaseReference uDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
 
     public RecyclerView_TabPost(ArrayList<Image> item) {
         this.item = item;
@@ -43,8 +49,19 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
 
     @Override
     public void onBindViewHolder(final RecyclerViewHolder holder, final int position) {
-        holder.tv_username_tabpost.setText(user.getUsername());
-        Picasso.with(context).load(user.getAvatarurl()).fit().centerInside().into(holder.img_avatar_tabpost);
+        uDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                holder.tv_username_tabpost.setText(user.getUsername());
+                Picasso.with(context).load(user.getAvatarurl()).fit().centerInside().into(holder.img_avatar_tabpost);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         Picasso.with(context).load(item.get(position).getImgurl()).fit().centerCrop().into(holder.img_image_tabpost);
         holder.tv_likes_tabpost.setText(item.get(position).getLikes()+" like");
         if(item.get(position).getStatus().length()>0) holder.tv_status_tabpost.setText(item.get(position).getStatus());
@@ -56,6 +73,8 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
             public void onClick(View v) {
                 img_id = item.get(position).getId();
                 Intent intent = new Intent(context,ViewCmt_tabProfile.class);
+                intent.putExtra("imgurl",item.get(position).getImgurl()+"");
+                intent.putExtra("status",item.get(position).getStatus()+"");
                 context.startActivity(intent);
             }
         });

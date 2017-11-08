@@ -2,6 +2,7 @@ package pjm.tlcn.Fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -24,8 +25,9 @@ import pjm.tlcn.R;
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static pjm.tlcn.Activity.Login.user_id;
 
-public class Post extends Fragment {
+public class Post extends Fragment{
 private RecyclerView rv_tabpost;
+SwipeRefreshLayout mSwipeRefreshLayout;
 private RecyclerView_TabPost recyclerView_tabPost;
 private ArrayList<Image> imageArrayList = new ArrayList<Image>();
 private DatabaseReference uDatabase;
@@ -43,6 +45,20 @@ private DatabaseReference uDatabase;
         rv_tabpost.setLayoutManager(layoutManager);
         rv_tabpost.setAdapter(recyclerView_tabPost);
 
+        //Swipe
+        mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_container);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mSwipeRefreshLayout.setRefreshing(false);
+                loadData();
+            }
+        });
+        loadData();
+        return v;
+    }
+
+    public void loadData(){
         //Firebase
         uDatabase = FirebaseDatabase.getInstance().getReference().child("Images").child(user_id);
         uDatabase.addValueEventListener(new ValueEventListener() {
@@ -65,7 +81,5 @@ private DatabaseReference uDatabase;
 
             }
         });
-        return v;
     }
-
 }

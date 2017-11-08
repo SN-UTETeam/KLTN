@@ -117,9 +117,9 @@ public class Activity_share_image extends AppCompatActivity {
                        // uDatabase.child("datetime").setValue(currentTime.toString());
                         uri_img_download = taskSnapshot.getMetadata().getDownloadUrl();
                      //  uDatabase.child("imageurl").setValue(uri_img_download.toString());
-                        String temp = uDatabase.push().getKey();
-                        Image img = new Image(temp,0,currentTime.toString(),uri_img_download+"",0,edit_status.getText().toString()+"");
-                        uDatabase.push().setValue(img);
+                        DatabaseReference shareimg = uDatabase.push();
+                        Image img = new Image(shareimg.getKey(),0,currentTime.toString(),uri_img_download+"",0,edit_status.getText().toString()+"");
+                        shareimg.setValue(img);
                         progressDialog.dismiss();
                         Intent it = new Intent();
                         setResult(Activity.RESULT_OK, it);

@@ -70,6 +70,10 @@ public class TabActivity_home extends AppCompatActivity {
              }
          });
 
+
+
+
+
         listView = (RecyclerView) findViewById(R.id.list);
         gridView = (RecyclerView) findViewById(R.id.grid);
 
@@ -91,6 +95,8 @@ public class TabActivity_home extends AppCompatActivity {
 
     void setDATA()
     {
+
+
       //  String tamp =[user_id];
         lvs =new ArrayList<>();
         uDatabase.child("Images").child(user_id).addValueEventListener(new ValueEventListener() {
@@ -99,6 +105,8 @@ public class TabActivity_home extends AppCompatActivity {
                 lvs.clear();
                 if(dataSnapshot.getValue()!=null){
                     for(DataSnapshot snop:dataSnapshot.getChildren()){
+                        id_image = snop.getKey();
+                       // Toast.makeText(TabActivity_home.this,snop.getKey(), Toast.LENGTH_SHORT).show();
                         Image img =new Image();
                         img = snop.getValue(Image.class);
                         lvs.add(img);

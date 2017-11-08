@@ -109,6 +109,7 @@ public class ViewCmt_tabProfile extends AppCompatActivity {
                                                                         );
                     uDatabase.push().setValue(cmt_tabProfile);
                     edt_cmt_tabprofile.setText("");
+
                 }
                 else
                     Toast.makeText(getApplicationContext(),"You must be enter an comment!",Toast.LENGTH_SHORT).show();

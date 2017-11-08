@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -36,6 +37,7 @@ public class ViewCmt_tabProfile extends AppCompatActivity {
     private DatabaseReference cDatabase,iDatabase;
     private ArrayList<Cmt_tabProfile> cmt_tabProfiles = new ArrayList<Cmt_tabProfile>();
     private android.support.v7.widget.Toolbar toolbar_tabcmt;
+    private String ref_img;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +61,7 @@ public class ViewCmt_tabProfile extends AppCompatActivity {
         });
         String imgurl = getIntent().getExtras().getString("imgurl");
         String status = getIntent().getExtras().getString("status");
+        ref_img = getIntent().getExtras().getString("ref_img");
 
         toolbar_tabcmt.setTitle(status);
         Picasso.with(getApplicationContext()).load(imgurl).into(img_tabcmt_toolbar);
@@ -106,6 +109,21 @@ public class ViewCmt_tabProfile extends AppCompatActivity {
                                                                         timeStamp+""
                                                                         );
                     cDatabase.push().setValue(cmt_tabProfile);
+                    //Comment ++
+                    final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl(ref_img+"/").child("comment");
+                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                       @Override
+                       public void onDataChange(DataSnapshot dataSnapshot) {
+                           Integer i = dataSnapshot.getValue(Integer.class);
+                           i++;
+                           databaseReference.setValue(i);
+                       }
+
+                       @Override
+                       public void onCancelled(DatabaseError databaseError) {
+
+                       }
+                    });
                     edt_cmt_tabprofile.setText("");
 
                 }

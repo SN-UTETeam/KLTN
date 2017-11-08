@@ -34,7 +34,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
     private Context context;
     public static String img_id;
     private DatabaseReference uDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
-
+    private DatabaseReference iDatabase = FirebaseDatabase.getInstance().getReference().child("Images").child(user_id);
     public RecyclerView_TabPost(ArrayList<Image> item) {
         this.item = item;
     }
@@ -75,6 +75,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                 Intent intent = new Intent(context,ViewCmt_tabProfile.class);
                 intent.putExtra("imgurl",item.get(position).getImgurl()+"");
                 intent.putExtra("status",item.get(position).getStatus()+"");
+                intent.putExtra("ref_img",iDatabase.toString()+"/"+item.get(position).getId()+"");
                 context.startActivity(intent);
             }
         });
@@ -85,6 +86,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                 Intent intent = new Intent(context,ViewCmt_tabProfile.class);
                 intent.putExtra("imgurl",item.get(position).getImgurl()+"");
                 intent.putExtra("status",item.get(position).getStatus()+"");
+                intent.putExtra("ref_img",iDatabase.toString()+"/"+item.get(position).getId()+"");
                 context.startActivity(intent);
             }
         });

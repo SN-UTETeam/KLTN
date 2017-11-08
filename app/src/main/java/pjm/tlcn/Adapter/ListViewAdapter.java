@@ -6,8 +6,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,12 +25,12 @@ import java.util.List;
 import pjm.tlcn.Activity.Activity_comment;
 import pjm.tlcn.Activity.TabActivity_viewall;
 import pjm.tlcn.Model.Image;
-import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
-import static pjm.tlcn.Activity.Login.firebaseUser;
+import static pjm.tlcn.Activity.Login.user;
 import static pjm.tlcn.Activity.Login.user_id;
+import static pjm.tlcn.Activity.TabActivity_home.id_image;
 
 /**
  * Created by thienphu on 10/26/2017.
@@ -68,10 +70,10 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
     @Override
     public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
         //Firebase
-        uDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
-        sDatabase = FirebaseStorage.getInstance().getReference().child("AvatarUsers").child(user_id);
+        uDatabase = FirebaseDatabase.getInstance().getReference();
+       sDatabase = FirebaseStorage.getInstance().getReference().child("AvatarUsers").child(user_id);
         //
-        keyimage = FirebaseDatabase.getInstance().getReference().child("Images").child(user_id);
+      //  keyimage = FirebaseDatabase.getInstance().getReference().child("Images").child(user_id);
 
         //click comment show activity comment
         viewHolder.comment.setOnClickListener(new View.OnClickListener() {
@@ -81,51 +83,71 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
                 Intent intent = new Intent(activity, Activity_comment.class);
                 v.getContext().startActivity( intent);
                 key_img =items.get(position).getId();
-            //    intent.putExtra("sendDate", uDatabase.getKey());
-                // idimage=;
-               // Log.d("id1",idimage);
-              //  Toast.makeText(activity, img_key, Toast.LENGTH_SHORT).show();
+            }
+        });
+        viewHolder.image_like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewHolder.image_like.setBackgroundResource(R.drawable.direct_heart);
+                uDatabase.child("Likes").child(id_image).child(user_id).setValue(user.getUsername());
+                uDatabase.child("Images").child(user_id).child(id_image).child("likes").setValue(items.get(position).getLikes()+1);
+
             }
         });
 
 
 
+
         // viewHolder.imageView.setImageResource(items.get(position).getDrawableId());
-        viewHolder.textView.setText(items.get(position).getStatus());
-        viewHolder.quatity.setText(items.get(position).getLikes()+" lượt thích");
-        //
-         Picasso
-                 .with(activity)
-                 .load(items.get(position).getImgurl())
-                 .fit()
-                // .resize(600,200)
-               //  .centerInside()
-                // .resize(0, viewHolder.imageView.getHeight())
-                // .centerInside()
-                 .into(viewHolder.imageView);
+        //get time
+     /*   SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date dat = new Date();
+        String thoigianhientai = fmt.format(dat);
+        String dtStart = items.get(position).getDatetime();*/
+       // SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+     //   thoigianhientai-"222";
+        // DateTime dt = new DateTime(yourNumber);
+      //  Date da  =new Date(so);
+      //  String daa= fmt.format(da);
+       /* try {
+            Date date = fmt.parse(dtStart);
+            date.getTime();
+           // System.out.println(date);
+         //  long NEWTIME = date.getTime()-thoigianhientai;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }*/
+      //   long a=  thoigianhientai-
+
+
+
+
+
+        //////
         viewHolder.realtime.setText(items.get(position).getDatetime());
-         if(items.get(position).getStatus()!=null){
-             viewHolder.username.setText(firebaseUser.getDisplayName());
+        Toast.makeText(activity, items.get(position).getDatetime(), Toast.LENGTH_SHORT).show();
+
+         if(items.get(position).getStatus() != null && !items.get(position).getStatus().isEmpty() && !items.get(position).getStatus().equals("null")){
+             viewHolder.username.setText(user.getUsername());
+             viewHolder.textView.setText(items.get(position).getStatus());
+             viewHolder.quatity.setText(items.get(position).getLikes()+" lượt thích");
+             //
+             Picasso
+                     .with(activity)
+                     .load(items.get(position).getImgurl())
+                     .fit()
+                     .into(viewHolder.imageView);
          }
 
-
-
-
         //Load user profile
-        uDatabase.addValueEventListener(new ValueEventListener() {
+        uDatabase.child("Users").child(user_id).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
+                viewHolder.user_name_img.setText(user.getUsername());
                 Picasso.with(getApplicationContext())
                         .load(user.getAvatarurl())
                         .fit()
-                        .centerInside()
                         .into(viewHolder.imname);
-             //   edt_username_editprofile.setText(user.getUsername());
-              //  edt_describer_editprofile.setText(user.getDescriber());
-             //   edt_email_editprofile.setText(user.getEmail());
-             //   if(!user.getPhonenumber().equals(null)) edt_phonenumber_editprofile.setText(user.getPhonenumber());
-               // else edt_phonenumber_editprofile.setText("");
             }
 
             @Override
@@ -145,7 +167,8 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
      */
     protected class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView imageView,imname,comment;
-        private TextView textView,quatity,username,realtime;
+        private ImageButton image_like;
+        private TextView textView,quatity,username,realtime,user_name_img;
 
         //biến public sang comment
       //  public ImageView ;
@@ -160,6 +183,8 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
             quatity =(TextView)view.findViewById(R.id.quatity_like);
             username =(TextView)view.findViewById(R.id.user_name);
             realtime =(TextView)view.findViewById(R.id.date_time);
+            user_name_img = (TextView)view.findViewById(R.id.name_user);
+            image_like =(ImageButton) view.findViewById(R.id.image_like);
 
         }
 

@@ -11,7 +11,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import pjm.tlcn.Model.User;
+import pjm.tlcn.Model.Image;
 import pjm.tlcn.R;
 
 /**
@@ -19,17 +19,17 @@ import pjm.tlcn.R;
  */
 
 public class CustomAdapterSearch extends BaseAdapter {
-    ArrayList<User> users;
+    ArrayList<Image> image_sh;
     Activity ac;
     ImageView image_search;
-    public CustomAdapterSearch(Activity ac, ArrayList<User> users) {
+    public CustomAdapterSearch(Activity ac, ArrayList<Image> image_sh) {
         this.ac = ac;
-        this.users = users;
+        this.image_sh=image_sh;
     }
 
     @Override
     public int getCount() {
-        return users.size();
+        return image_sh.size();
     }
 
     @Override
@@ -50,7 +50,7 @@ public class CustomAdapterSearch extends BaseAdapter {
 
         Picasso
                 .with(ac)
-                .load(users.get(position).getAvatarurl())
+                .load(image_sh.get(position).getImgurl())
                 .resize(200, 200) // resizes the image to these dimensions (in pixel)
                 .centerCrop()
                 .into(image_search);

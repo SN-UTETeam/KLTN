@@ -35,9 +35,6 @@
         <activity android:name=".Activity.Register" />
         <activity android:name=".Activity.RegisterWithEmail" />
         <activity android:name=".Activity.Set_password" />
-        <activity android:name=".Activity.Post" />
-        <activity android:name=".Activity.Likes" />
-        <activity android:name=".Activity.Following" />
         <activity android:name=".Activity.Edit_profile" />
         <activity android:name=".Activity.Setting" />
         <activity android:name=".Activity.Activity_timkiem" />
@@ -65,7 +62,8 @@
         <activity android:name=".Activity.TabActivity_viewall" />
         <activity android:name=".Activity.Chat" />
         <activity android:name=".Activity.Activity_comment" />
-        <activity android:name=".Activity.Activity_share_image"></activity>
+        <activity android:name=".Activity.Activity_share_image" />
+        <activity android:name=".Activity.ViewCmt_tabProfile"></activity>
     </application>
 
 </manifest>

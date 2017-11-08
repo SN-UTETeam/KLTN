@@ -101,7 +101,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
                 // .resize(600,200)
                //  .centerInside()
                 // .resize(0, viewHolder.imageView.getHeight())
-                // .centerInside()
+                 //.centerInside()
                  .into(viewHolder.imageView);
         viewHolder.realtime.setText(items.get(position).getDatetime());
          if(items.get(position).getStatus()!=null){

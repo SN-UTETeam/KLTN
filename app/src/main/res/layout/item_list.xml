@@ -42,9 +42,10 @@
                 android:layout_height="wrap_content">
                 <!-- moi-->
                 <ImageView
+                    android:layout_gravity="center"
                     android:layout_width="match_parent"
                     android:id="@+id/imagemain"
-                    android:scaleType="fitStart"
+                    android:scaleType="centerInside"
                     android:adjustViewBounds="true"
                     android:background="@color/colorBlue"
                     android:layout_height="260dp" />

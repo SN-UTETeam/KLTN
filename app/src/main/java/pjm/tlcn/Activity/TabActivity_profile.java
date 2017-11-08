@@ -1,13 +1,17 @@
 package pjm.tlcn.Activity;
 
-import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -17,20 +21,24 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import pjm.tlcn.Fragment.Following;
+import pjm.tlcn.Fragment.Likes;
+import pjm.tlcn.Fragment.Post;
 import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
 
 import static pjm.tlcn.Activity.Login.user_id;
 
 @SuppressWarnings("deprecation")
-public class TabActivity_profile extends TabActivity {
+public class TabActivity_profile extends FragmentActivity {
     public DatabaseReference mDatabase,uDatabase;
     private TextView tv_UserName,tv_describer;
-    private TabHost Tabhost_profile;
+
     private Button btn_edit_profile;
     private ImageButton ImgBtn_setting;
     private ImageView img_avatar;
     public String UserName;
+    private ViewPager viewPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,35 +48,20 @@ public class TabActivity_profile extends TabActivity {
         uDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
 
         //Create Variable
-        Tabhost_profile =(TabHost) findViewById(android.R.id.tabhost);
         btn_edit_profile = (Button) findViewById(R.id.btn_edit_profile);
         ImgBtn_setting = (ImageButton) findViewById(R.id.ImgBtn_setting);
         tv_UserName = (TextView) findViewById(R.id.tv_UserName);
         tv_describer = (TextView) findViewById(R.id.tv_describer);
         img_avatar = (ImageView) findViewById(R.id.img_avatar);
+        viewPager = (ViewPager) findViewById(R.id.materialup_viewpager);
 
 
         //Create Tabhost
+        final TabLayout tabLayout = (TabLayout) findViewById(R.id.materialup_tabs);
 
-        Tabhost_profile.getTabWidget().setDividerDrawable(null);
-        TabHost.TabSpec Tabhost_post =  Tabhost_profile.newTabSpec("Tab1");
-        TabHost.TabSpec Tabhost_like =  Tabhost_profile.newTabSpec("Tab2");
-        TabHost.TabSpec Tabhost_following =  Tabhost_profile.newTabSpec("Tab3");
-        //Create Tab1 - Post
-        Tabhost_post.setIndicator("POST");
-        Tabhost_post.setContent(new Intent(this, Post.class));
-        //Create Tab2 - Likes
-        Tabhost_like.setIndicator("LIKES");
-        Tabhost_like.setContent(new Intent(this, Likes.class));
-        //Create Tab3 - Following
-        Tabhost_following.setIndicator("FOLLOWING");
-        Tabhost_following.setContent(new Intent(this, Following.class));
-        //Add Tab
-        Tabhost_profile.addTab(Tabhost_post);
-        Tabhost_profile.addTab(Tabhost_like);
-        Tabhost_profile.addTab(Tabhost_following);
-        Tabhost_profile.getTabWidget().setBackgroundResource(R.color.colorWhite);
-        Tabhost_profile.getTabWidget().setStripEnabled(false);
+        viewPager.setAdapter(new TabsAdapter(getSupportFragmentManager()));
+        tabLayout.setupWithViewPager(viewPager);
+
         //End Create Tabhost
 
         //Start Set Onclick btn_edit_profile
@@ -111,4 +104,42 @@ public class TabActivity_profile extends TabActivity {
         });
     }
 
+    private static class TabsAdapter extends FragmentPagerAdapter {
+        private static final int TAB_COUNT = 3;
+
+        TabsAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public int getCount() {
+            return TAB_COUNT;
+        }
+
+        @Override
+        public Fragment getItem(int i) {
+            if (i == 0) {
+                return new Post();
+            } else if (i == 1){
+                return new Likes();
+            } else if (i == 2){
+                return new Following();
+            } else {
+                return new Post();
+            }
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+           switch (position){
+               case 0: return "Bài viết";
+
+               case 1: return "Đã thích";
+
+               case 2: return "Đang theo dõi";
+               default:
+                   return null;
+           }
+        }
+    }
 }

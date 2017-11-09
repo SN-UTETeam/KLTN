@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -60,6 +61,7 @@ public class TabActivity_search extends AppCompatActivity {
             @Override
 
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 for (DataSnapshot snop : dataSnapshot.getChildren()) {
                     A.add(snop.getKey());
                 }
@@ -87,6 +89,7 @@ public class TabActivity_search extends AppCompatActivity {
                         List<String> C = new ArrayList<>();
                         C.addAll(A);
                         C.addAll(B);
+                        Toast.makeText(TabActivity_search.this, C.toString(), Toast.LENGTH_SHORT).show();
 
                         int size = C.size();
                         for(int i=0;i<size;i++) {
@@ -98,6 +101,7 @@ public class TabActivity_search extends AppCompatActivity {
                                 public void onDataChange(DataSnapshot dataSnapshot) {
 
                                     if (dataSnapshot.getValue() != null) {
+                                        gridviewArrayImage.clear();
                                         for (DataSnapshot snop : dataSnapshot.getChildren()) {
 
                                             //   Toast.makeText(TabActivity_search.this, mangkey.toString(), Toast.LENGTH_SHORT).show();

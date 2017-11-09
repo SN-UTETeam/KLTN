@@ -17,4 +17,7 @@
         <item name="actionMenuTextColor">@android:color/white</item>
 
     </style>
+    <style name="AppTabLayout" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+    </style>
 </resources>

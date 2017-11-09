@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -102,7 +101,7 @@ public class ViewCmt_tabProfile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(edt_cmt_tabprofile.getText().toString().length()>0){
-                    String timeStamp = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy").format(new Date());
+                    String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
                     Cmt_tabProfile cmt_tabProfile = new Cmt_tabProfile(user_id+"",
                                                                         edt_cmt_tabprofile.getText().toString()+"",

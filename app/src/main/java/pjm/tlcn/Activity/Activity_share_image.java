@@ -92,7 +92,7 @@ public class Activity_share_image extends AppCompatActivity {
                         bitmap_photo, width, height, false);
                 bitmap_photo.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] data = baos.toByteArray();
-                final String timeStamp = new SimpleDateFormat("HH:mm:ss_dd/MM/yyyy").format(new Date());
+                final String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
                 UploadTask uploadTask = sDatabase.child("IMG_"+timeStamp).putBytes(data);
                 uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @Override

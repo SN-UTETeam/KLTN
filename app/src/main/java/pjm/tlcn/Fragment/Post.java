@@ -51,7 +51,9 @@ private DatabaseReference uDatabase;
             @Override
             public void onRefresh() {
                 mSwipeRefreshLayout.setRefreshing(false);
+                imageArrayList.clear();
                 loadData();
+                recyclerView_tabPost.notifyDataSetChanged();
             }
         });
         loadData();

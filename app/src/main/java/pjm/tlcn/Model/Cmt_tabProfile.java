@@ -7,15 +7,11 @@ package pjm.tlcn.Model;
 public class Cmt_tabProfile {
     private String userid;
     private String comment;
-    private String username;
-    private String avatarurl;
     private String datetime;
 
-    public Cmt_tabProfile(String userid, String comment, String username, String avatarurl, String datetime) {
+    public Cmt_tabProfile(String userid, String comment, String datetime) {
         this.userid = userid;
         this.comment = comment;
-        this.username = username;
-        this.avatarurl = avatarurl;
         this.datetime = datetime;
     }
 
@@ -36,22 +32,6 @@ public class Cmt_tabProfile {
 
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getAvatarurl() {
-        return avatarurl;
-    }
-
-    public void setAvatarurl(String avatarurl) {
-        this.avatarurl = avatarurl;
     }
 
     public String getDatetime() {

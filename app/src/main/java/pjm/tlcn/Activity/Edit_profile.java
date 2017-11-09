@@ -139,7 +139,6 @@ private Bitmap selectedImage;
                                 uri_img_download = taskSnapshot.getMetadata().getDownloadUrl();
                                 uDatabase.child("avatarurl").setValue(uri_img_download.toString());
                                 progressDialog.dismiss();
-                                finish();
                                 Toast.makeText(getApplication(),"Chỉnh sửa thành công thành công!!!",Toast.LENGTH_SHORT);
                                 finish();
                             }

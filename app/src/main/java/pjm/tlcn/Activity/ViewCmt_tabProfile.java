@@ -24,7 +24,6 @@ import pjm.tlcn.Adapter.RecyclerView_TabCmt;
 import pjm.tlcn.Model.Cmt_tabProfile;
 import pjm.tlcn.R;
 
-import static pjm.tlcn.Activity.Login.user;
 import static pjm.tlcn.Activity.Login.user_id;
 import static pjm.tlcn.Adapter.RecyclerView_TabPost.img_id;
 
@@ -34,9 +33,10 @@ public class ViewCmt_tabProfile extends AppCompatActivity {
     private EditText edt_cmt_tabprofile;
     private ImageView img_sendcmt_tabprofile,img_tabcmt_toolbar;
     private RecyclerView_TabCmt recyclerView_tabCmt;
-    private DatabaseReference uDatabase;
+    private DatabaseReference cDatabase,iDatabase;
     private ArrayList<Cmt_tabProfile> cmt_tabProfiles = new ArrayList<Cmt_tabProfile>();
     private android.support.v7.widget.Toolbar toolbar_tabcmt;
+    private String ref_img;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,13 +60,15 @@ public class ViewCmt_tabProfile extends AppCompatActivity {
         });
         String imgurl = getIntent().getExtras().getString("imgurl");
         String status = getIntent().getExtras().getString("status");
+        ref_img = getIntent().getExtras().getString("ref_img");
 
         toolbar_tabcmt.setTitle(status);
-        Picasso.with(getApplicationContext()).load(imgurl).fit().into(img_tabcmt_toolbar);
+        Picasso.with(getApplicationContext()).load(imgurl).into(img_tabcmt_toolbar);
 
 
         //Firebase
-        uDatabase = FirebaseDatabase.getInstance().getReference().child("Comments").child(img_id);
+        cDatabase = FirebaseDatabase.getInstance().getReference().child("Comments").child(img_id);
+        iDatabase = FirebaseDatabase.getInstance().getReference().child("Images").child(user_id);
 
         //RC
         recyclerView_tabCmt = new RecyclerView_TabCmt(cmt_tabProfiles);
@@ -76,7 +78,7 @@ public class ViewCmt_tabProfile extends AppCompatActivity {
         rc_cmt_tabprofile.setAdapter(recyclerView_tabCmt);
         //Load Cmt
 
-        uDatabase.addValueEventListener(new ValueEventListener() {
+        cDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 cmt_tabProfiles.clear();
@@ -99,15 +101,28 @@ public class ViewCmt_tabProfile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(edt_cmt_tabprofile.getText().toString().length()>0){
-                    String timeStamp = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy").format(new Date());
+                    String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
                     Cmt_tabProfile cmt_tabProfile = new Cmt_tabProfile(user_id+"",
                                                                         edt_cmt_tabprofile.getText().toString()+"",
-                                                                        user.getUsername()+"",
-                                                                        user.getAvatarurl()+"",
                                                                         timeStamp+""
                                                                         );
-                    uDatabase.push().setValue(cmt_tabProfile);
+                    cDatabase.push().setValue(cmt_tabProfile);
+                    //Comment ++
+                    final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl(ref_img+"/").child("comment");
+                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                       @Override
+                       public void onDataChange(DataSnapshot dataSnapshot) {
+                           Integer i = dataSnapshot.getValue(Integer.class);
+                           i++;
+                           databaseReference.setValue(i);
+                       }
+
+                       @Override
+                       public void onCancelled(DatabaseError databaseError) {
+
+                       }
+                    });
                     edt_cmt_tabprofile.setText("");
 
                 }

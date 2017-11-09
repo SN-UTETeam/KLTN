@@ -238,7 +238,19 @@ public class Login extends AppCompatActivity {
                         firebaseUser.getPhoneNumber()+"",
                         "No Describer",
                         firebaseUser.getPhotoUrl().toString()+"");
-            user_id=firebaseUser.getUid();}
+            user_id=firebaseUser.getUid();
+            uDatabase.child(user_id).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    user = dataSnapshot.getValue(User.class);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+            }
             return accessToken != null;
         //}
     }

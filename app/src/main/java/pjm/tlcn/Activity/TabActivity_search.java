@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,38 +23,37 @@ import pjm.tlcn.R;
 import static pjm.tlcn.Activity.Login.user_id;
 
 public class TabActivity_search extends AppCompatActivity {
-    DatabaseReference uDatabase= FirebaseDatabase.getInstance().getReference();
-    private ArrayList<Image> gridviewArrayImage=new ArrayList<Image>();
+    DatabaseReference uDatabase = FirebaseDatabase.getInstance().getReference();
+    private ArrayList<Image> gridviewArrayImage = new ArrayList<Image>();
     private CustomAdapterSearch customAdapterSearch;
     GridView gridViewSearch;
-    List A=new ArrayList();
-    List B=new ArrayList();
-   // List c =new ArrayList<>();
+    List A = new ArrayList();
+    List B = new ArrayList();
+    // List c =new ArrayList<>();
 
 
-
-  //  ArrayList<String> mangkey = new ArrayList<String>();
-   // String[] tamp =mStrings.toArray();
+    //  ArrayList<String> mangkey = new ArrayList<String>();
+    // String[] tamp =mStrings.toArray();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_search);
-        LinearLayout lnsearch=(LinearLayout) findViewById(R.id.timkiem);
+        LinearLayout lnsearch = (LinearLayout) findViewById(R.id.timkiem);
         lnsearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent timkiem= new Intent(TabActivity_search.this,Activity_timkiem.class);
+                Intent timkiem = new Intent(TabActivity_search.this, Activity_timkiem.class);
                 startActivity(timkiem);
             }
         });
         getData();
-       gridViewSearch =(GridView)findViewById(R.id.grid_search);
-       customAdapterSearch = new CustomAdapterSearch(this,gridviewArrayImage);
-       gridViewSearch.setAdapter(customAdapterSearch);
+        gridViewSearch = (GridView) findViewById(R.id.grid_search);
+        customAdapterSearch = new CustomAdapterSearch(this, gridviewArrayImage);
+        gridViewSearch.setAdapter(customAdapterSearch);
 
     }
 
-    void getData(){
+    void getData() {
 
         uDatabase.child("Users").addValueEventListener(new ValueEventListener() {
             @Override
@@ -65,7 +63,6 @@ public class TabActivity_search extends AppCompatActivity {
                 for (DataSnapshot snop : dataSnapshot.getChildren()) {
                     A.add(snop.getKey());
                 }
-
                 uDatabase.child("Follow").child(user_id).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -73,29 +70,22 @@ public class TabActivity_search extends AppCompatActivity {
                             //  mangkey.add(snop.getKey());
                             B.add(snop.getKey());
                         }
+                        for (int i = 0; i < A.size(); i++) {
+                            String a = A.get(i).toString();
 
-                        for (int i=0; i<A.size(); i++)
-                        {
-                          String  a = A.get(i).toString();
-
-                            if (B.contains(a))
-                            {
+                            if (B.contains(a)) {
                                 B.remove(a);
                                 A.remove(a);
                                 i--;
                             }
                         }
-
                         List<String> C = new ArrayList<>();
                         C.addAll(A);
                         C.addAll(B);
-                        Toast.makeText(TabActivity_search.this, C.toString(), Toast.LENGTH_SHORT).show();
-
                         int size = C.size();
-                        for(int i=0;i<size;i++) {
+                        for (int i = 0; i < size; i++) {
 
                             String key = C.get(i).toString();
-                            //  Toast.makeText(this, key, Toast.LENGTH_SHORT).show();
                             uDatabase.child("Images").child(key).addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -104,7 +94,6 @@ public class TabActivity_search extends AppCompatActivity {
                                         gridviewArrayImage.clear();
                                         for (DataSnapshot snop : dataSnapshot.getChildren()) {
 
-                                            //   Toast.makeText(TabActivity_search.this, mangkey.toString(), Toast.LENGTH_SHORT).show();
                                             Image temp = new Image();
                                             temp = snop.getValue(Image.class);
                                             gridviewArrayImage.add(temp);
@@ -122,6 +111,7 @@ public class TabActivity_search extends AppCompatActivity {
                             });
                         }
                     }
+
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
 

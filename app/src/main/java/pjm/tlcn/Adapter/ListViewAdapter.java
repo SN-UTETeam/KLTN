@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -95,37 +94,8 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
             }
         });
 
-
-
-
-        // viewHolder.imageView.setImageResource(items.get(position).getDrawableId());
-        //get time
-     /*   SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date dat = new Date();
-        String thoigianhientai = fmt.format(dat);
-        String dtStart = items.get(position).getDatetime();*/
-       // SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-     //   thoigianhientai-"222";
-        // DateTime dt = new DateTime(yourNumber);
-      //  Date da  =new Date(so);
-      //  String daa= fmt.format(da);
-       /* try {
-            Date date = fmt.parse(dtStart);
-            date.getTime();
-           // System.out.println(date);
-         //  long NEWTIME = date.getTime()-thoigianhientai;
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }*/
-      //   long a=  thoigianhientai-
-
-
-
-
-
         //////
         viewHolder.realtime.setText(items.get(position).getDatetime());
-        Toast.makeText(activity, items.get(position).getDatetime(), Toast.LENGTH_SHORT).show();
 
          if(items.get(position).getStatus() != null && !items.get(position).getStatus().isEmpty() && !items.get(position).getStatus().equals("null")){
              viewHolder.username.setText(user.getUsername());

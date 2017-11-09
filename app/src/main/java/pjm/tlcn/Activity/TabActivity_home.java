@@ -106,7 +106,6 @@ public class TabActivity_home extends AppCompatActivity {
                 if(dataSnapshot.getValue()!=null){
                     for(DataSnapshot snop:dataSnapshot.getChildren()){
                         id_image = snop.getKey();
-                       // Toast.makeText(TabActivity_home.this,snop.getKey(), Toast.LENGTH_SHORT).show();
                         Image img =new Image();
                         img = snop.getValue(Image.class);
                         lvs.add(img);

@@ -67,16 +67,8 @@ public class GridViewAdapter extends RecyclerView.Adapter<GridViewAdapter.ViewHo
               // Follow fl = new Follow(,items.get(position).getUsername());
                 uDatabase.child("Follow").child(user_id).child(items.get(position).getId()).setValue(items.get(position).getUsername());
 
-
             }
         });
-       // viewHolder.textView.setText(items.get(position).getUsername());
-        //Firebase
-        //Firebase
-
-
-
-
     }
 
     @Override

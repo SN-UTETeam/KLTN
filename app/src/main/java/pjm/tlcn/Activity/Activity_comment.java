@@ -87,7 +87,6 @@ public class Activity_comment extends AppCompatActivity {
                         customadapter.notifyDataSetChanged();
                     }
                 }
-               // Toast.makeText(Activity_comment.this,dataSnapshot.getKey(), Toast.LENGTH_SHORT).show();
             }
 
             @Override

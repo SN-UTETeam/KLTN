@@ -101,7 +101,6 @@ public class Chat extends AppCompatActivity {
         reference1 = FirebaseDatabase.getInstance().getReference().child("Messages").child("/" + firebaseUser.getUid() + "_" + useridchatwith);
         reference2 = FirebaseDatabase.getInstance().getReference().child("Messages").child("/" + useridchatwith + "_" + firebaseUser.getUid());
         s1Database = FirebaseStorage.getInstance().getReference().child("ImageChat").child("/" + firebaseUser.getUid() + "_" + useridchatwith);
-        //s2Database = FirebaseStorage.getInstance().getReference().child("ImageChat").child("/" + useridchatwith + "_" + firebaseUser.getUid());
 
         //Open Galery
         img_chat_chose.setOnClickListener(new View.OnClickListener() {
@@ -133,8 +132,8 @@ public class Chat extends AppCompatActivity {
                 //Show progressDialog
                 progressDialog = new ProgressDialog(Chat.this);
                 progressDialog.setMax(100);
-                progressDialog.setMessage("Uploading....");
-                progressDialog.setTitle("Uploading your status....");
+                progressDialog.setMessage("Sending....");
+                progressDialog.setTitle("Sending your message....");
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 progressDialog.show();
                 progressDialog.onStart();

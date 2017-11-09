@@ -3,6 +3,7 @@ package pjm.tlcn.Adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.squareup.picasso.Picasso;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 import pjm.tlcn.Activity.ViewCmt_tabProfile;
@@ -43,12 +45,15 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
     public RecyclerView_TabPost(ArrayList<Image> item) {
         this.item = item;
     }
-    Boolean flag_like = false;
+    Boolean[] flag_like;
 
     @Override
     public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         context=parent.getContext();
+        flag_like = new Boolean[item.size()+1];
+        Log.d("size",item.size()+"");
+        Arrays.fill(flag_like, Boolean.FALSE);
         View view = inflater.inflate(R.layout.item_post_tab_profile, parent, false);
         return new RecyclerViewHolder(view);
     }
@@ -116,68 +121,82 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
             holder.tv_time_tabpost.setText(item.get(position).getDatetime());
             e.printStackTrace();
         }
-
-        //Onclick Like
-        holder.img_like_tabpost.setOnClickListener(new View.OnClickListener() {
+        holder.img_like_tabpost.setImageResource(R.drawable.ufi_heart_bold);
+        lDatabase.child(item.get(position).getId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
-                flag_like=false;
-                lDatabase.child(item.get(position).getId()).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                            String k = postSnapshot.getKey();
-                            if (user_id.equals(k)){
-                                flag_like = true;
-                            }
-                        }
-                        final DatabaseReference databaseReference = iDatabase.child(item.get(position).getId()).child("likes");
-                        if(flag_like){
-                            holder.img_like_tabpost.setImageResource(R.drawable.ufi_heart_bold);
-                            flag_like=false;
-                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    Integer i = dataSnapshot.getValue(Integer.class);
-                                    i--;
-                                    databaseReference.setValue(i);
-                                    lDatabase.child(item.get(position).getId()).child(user_id).setValue(null);
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
-                        }
-                        else {
-                            holder.img_like_tabpost.setImageResource(R.drawable.direct_heart);
-                            flag_like=true;
-                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    Integer i = dataSnapshot.getValue(Integer.class);
-                                    i++;
-                                    databaseReference.setValue(i);
-                                    lDatabase.child(item.get(position).getId()).child(user_id).setValue(user.getUsername());
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
-                        }
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    String k = postSnapshot.getKey();
+                    if (user_id.equals(k)) {
+                        holder.img_like_tabpost.setImageResource(R.drawable.direct_heart);
+                        flag_like[position] = true;
                     }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
+                }
             }
-        });
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+              });
+                //Onclick Like
+                holder.img_like_tabpost.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //flag_like = false;
+//                        lDatabase.child(item.get(position).getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(DataSnapshot dataSnapshot) {
+//                                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+//                                    String k = postSnapshot.getKey();
+//                                    if (user_id.equals(k)) {
+//                                        flag_like = true;
+//                                    }
+//                                }
+                                final DatabaseReference databaseReference = iDatabase.child(item.get(position).getId()).child("likes");
+                                if (flag_like[position]) {
+                                    //holder.img_like_tabpost.setImageResource(R.drawable.ufi_heart_bold);
+                                    flag_like[position] = false;
+                                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            Integer i = dataSnapshot.getValue(Integer.class);
+                                            i--;
+                                            databaseReference.setValue(i);
+                                            lDatabase.child(item.get(position).getId()).child(user_id).setValue(null);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                } else {
+                                    //holder.img_like_tabpost.setImageResource(R.drawable.direct_heart);
+                                    flag_like[position] = true;
+                                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            Integer i = dataSnapshot.getValue(Integer.class);
+                                            i++;
+                                            databaseReference.setValue(i);
+                                            lDatabase.child(item.get(position).getId()).child(user_id).setValue(user.getUsername());
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
+                            }
+//
+//        @Override
+//        public void onCancelled(DatabaseError databaseError) {
+//
+//        }
+//    });
+//
+//                    }
+                });
 
         //onclick comment
         holder.tv_comments_tabpost.setOnClickListener(new View.OnClickListener() {

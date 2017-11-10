@@ -202,7 +202,7 @@ private Bitmap selectedImage;
             }
 
         }else {
-            Toast.makeText(getApplicationContext(), "You haven't picked Image",Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "You haven't picked Photo",Toast.LENGTH_LONG).show();
         }
     }
 }

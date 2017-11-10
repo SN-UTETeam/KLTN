@@ -961,7 +961,7 @@ instanceKlass com/android/ide/common/res2/NoOpResourcePreprocessor
 instanceKlass com/android/ide/common/res2/DataFile
 instanceKlass com/android/build/gradle/internal/LoggerWrapper$LoggerSupplier
 instanceKlass com/android/ide/common/resources/configuration/ResourceQualifier
-instanceKlass java/awt/image/RenderedImage
+instanceKlass java/awt/photo/RenderedImage
 instanceKlass com/android/builder/png/VectorDrawableRenderer
 instanceKlass com/android/build/gradle/tasks/MergeResources$$Lambda$448
 instanceKlass com/android/builder/internal/compiler/RenderScriptProcessor$$Lambda$447
@@ -7141,13 +7141,13 @@ instanceKlass java/awt/AWTKeyStroke
 instanceKlass javax/swing/plaf/ComponentUI
 instanceKlass javax/swing/TransferHandler
 instanceKlass java/awt/event/ItemListener
-instanceKlass java/awt/image/BufferStrategy
+instanceKlass java/awt/photo/BufferStrategy
 instanceKlass java/awt/BufferCapabilities
 instanceKlass java/awt/ImageCapabilities
-instanceKlass java/awt/image/ImageProducer
+instanceKlass java/awt/photo/ImageProducer
 instanceKlass java/awt/Cursor
 instanceKlass java/awt/FontMetrics
-instanceKlass java/awt/image/ColorModel
+instanceKlass java/awt/photo/ColorModel
 instanceKlass java/awt/Color
 instanceKlass java/awt/Paint
 instanceKlass java/awt/Transparency
@@ -7205,7 +7205,7 @@ instanceKlass javax/swing/MutableComboBoxModel
 instanceKlass javax/swing/ComboBoxModel
 instanceKlass java/awt/Component
 instanceKlass java/awt/MenuContainer
-instanceKlass java/awt/image/ImageObserver
+instanceKlass java/awt/photo/ImageObserver
 instanceKlass javax/swing/tree/MutableTreeNode
 instanceKlass javax/swing/tree/TreeNode
 instanceKlass javax/swing/ListModel

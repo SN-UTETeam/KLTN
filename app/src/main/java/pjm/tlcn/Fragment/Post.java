@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import pjm.tlcn.Adapter.RecyclerView_TabPost;
-import pjm.tlcn.Model.Image;
+import pjm.tlcn.Model.Photo;
 import pjm.tlcn.R;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -29,7 +29,7 @@ public class Post extends Fragment{
 private RecyclerView rv_tabpost;
 SwipeRefreshLayout mSwipeRefreshLayout;
 private RecyclerView_TabPost recyclerView_tabPost;
-private ArrayList<Image> imageArrayList = new ArrayList<Image>();
+private ArrayList<Photo> photoArrayList = new ArrayList<Photo>();
 private DatabaseReference uDatabase;
 
     @Override
@@ -39,7 +39,7 @@ private DatabaseReference uDatabase;
 
         rv_tabpost = (RecyclerView) v.findViewById(R.id.rv_tabpost);
 
-        recyclerView_tabPost = new RecyclerView_TabPost(imageArrayList);
+        recyclerView_tabPost = new RecyclerView_TabPost(photoArrayList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rv_tabpost.setLayoutManager(layoutManager);
@@ -51,7 +51,7 @@ private DatabaseReference uDatabase;
             @Override
             public void onRefresh() {
                 mSwipeRefreshLayout.setRefreshing(false);
-                imageArrayList.clear();
+                photoArrayList.clear();
                 loadData();
                 recyclerView_tabPost.notifyDataSetChanged();
             }
@@ -66,14 +66,14 @@ private DatabaseReference uDatabase;
         uDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                imageArrayList.clear();
+                photoArrayList.clear();
                 if(dataSnapshot.getValue()!=null){
                     for(DataSnapshot snop:dataSnapshot.getChildren()){
-                        Image image = new Image();
-                        image = snop.getValue(Image.class);
-                        imageArrayList.add(image);
+                        Photo photo = new Photo();
+                        photo = snop.getValue(Photo.class);
+                        photoArrayList.add(photo);
                     }
-                    Collections.reverse(imageArrayList);
+                    Collections.reverse(photoArrayList);
                     recyclerView_tabPost.notifyDataSetChanged();
                 }
             }

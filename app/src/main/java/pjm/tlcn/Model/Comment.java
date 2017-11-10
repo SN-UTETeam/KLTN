@@ -7,19 +7,18 @@ package pjm.tlcn.Model;
 public class Comment {
 
     private String comment;
-    private String datetime;
-    private String username;
+    private String date_created;
+    private String user_id;
 
-    public Comment( String comment, String datetime, String username){
+    public Comment( String comment, String date_created, String user_id){
 
         this.comment=comment;
-        this.datetime=datetime;
-        this.username=username;
+        this.date_created=date_created;
+        this.user_id=user_id;
     }
 
     public Comment() {
     }
-
 
     public String getComment() {
         return comment;
@@ -29,19 +28,19 @@ public class Comment {
         this.comment = comment;
     }
 
-    public String getDatetime() {
-        return datetime;
+    public String getDate_created() {
+        return date_created;
     }
 
-    public void setDatetime(String datetime) {
-        this.datetime = datetime;
+    public void setDate_created(String date_created) {
+        this.date_created = date_created;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUser_id() {
+        return user_id;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 }

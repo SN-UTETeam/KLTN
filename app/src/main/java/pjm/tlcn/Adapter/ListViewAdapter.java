@@ -23,7 +23,7 @@ import java.util.List;
 
 import pjm.tlcn.Activity.Activity_comment;
 import pjm.tlcn.Activity.TabActivity_viewall;
-import pjm.tlcn.Model.Image;
+import pjm.tlcn.Model.Photo;
 import pjm.tlcn.R;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -37,7 +37,7 @@ import static pjm.tlcn.Activity.TabActivity_home.id_image;
 
 public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHolder> {
     private Activity activity;
-    private List<Image> items;
+    private List<Photo> items;
     public DatabaseReference uDatabase,keyimage;
     private StorageReference sDatabase;
     private TabActivity_viewall mAdapterCallback;
@@ -45,7 +45,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
     //
 
 
-    public ListViewAdapter(Activity activity, List<Image> items) {
+    public ListViewAdapter(Activity activity, List<Photo> items) {
 
         this.activity = activity;
         this.items = items;

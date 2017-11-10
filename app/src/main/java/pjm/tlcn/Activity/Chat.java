@@ -345,7 +345,7 @@ public class Chat extends AppCompatActivity {
                 }
 
             }else {
-                Toast.makeText(getApplicationContext(), "You haven't picked Image",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "You haven't picked Photo",Toast.LENGTH_LONG).show();
             }
         if(reqCode==REQUEST_CAMERA)
             if(resultCode==RESULT_OK){
@@ -362,6 +362,6 @@ public class Chat extends AppCompatActivity {
                     }
                 }
             else
-                Toast.makeText(getApplicationContext(), "You haven't Capture Image",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "You haven't Capture Photo",Toast.LENGTH_LONG).show();
     }
 }

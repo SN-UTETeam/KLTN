@@ -23,7 +23,7 @@
             android:src="@drawable/ava" />
 
        <!-- <ImageView
-            android:id="@+id/image"
+            android:id="@photomage"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
@@ -35,7 +35,7 @@
             android:id="@+id/name_fl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/image"
+            android:layout_below="@+id/photo"
             android:layout_marginTop="5dp"
             android:gravity="center"
             android:text="Le cho xu"
@@ -44,7 +44,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/image"
+            android:layout_below="@+id/photo"
             android:textSize="8dp"
             android:gravity="center_horizontal"
             android:layout_gravity="center_horizontal"
@@ -57,7 +57,7 @@
             android:layout_width="match_parent"
             android:text="Theo doi"
             android:id="@+id/button_fl_id"
-            android:layout_below="@+id/image"
+            android:layout_below="@+id/photo"
             android:textColor="@color/colorWhite"
             android:textAllCaps="false"
             android:layout_gravity="center"

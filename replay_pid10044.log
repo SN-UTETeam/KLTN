@@ -1529,7 +1529,7 @@ instanceKlass com/android/ide/common/res2/NoOpResourcePreprocessor
 instanceKlass com/android/ide/common/res2/DataFile
 instanceKlass com/android/build/gradle/internal/LoggerWrapper$LoggerSupplier
 instanceKlass com/android/ide/common/resources/configuration/ResourceQualifier
-instanceKlass java/awt/image/RenderedImage
+instanceKlass java/awt/photo/RenderedImage
 instanceKlass com/android/builder/png/VectorDrawableRenderer
 instanceKlass com/android/build/gradle/tasks/MergeResources$$Lambda$283
 instanceKlass org/gradle/api/internal/changedetection/state/SetValueSnapshot
@@ -6753,12 +6753,12 @@ instanceKlass java/awt/event/KeyListener
 instanceKlass java/awt/event/HierarchyBoundsListener
 instanceKlass java/awt/event/HierarchyListener
 instanceKlass java/awt/event/FocusListener
-instanceKlass java/awt/image/BufferStrategy
+instanceKlass java/awt/photo/BufferStrategy
 instanceKlass java/awt/BufferCapabilities
 instanceKlass java/awt/ImageCapabilities
-instanceKlass java/awt/image/ImageProducer
+instanceKlass java/awt/photo/ImageProducer
 instanceKlass java/awt/Cursor
-instanceKlass java/awt/image/ColorModel
+instanceKlass java/awt/photo/ColorModel
 instanceKlass java/awt/Toolkit
 instanceKlass java/awt/dnd/DropTarget
 instanceKlass java/awt/dnd/DropTargetListener
@@ -6809,7 +6809,7 @@ instanceKlass javax/swing/MenuElement
 instanceKlass javax/swing/SwingConstants
 instanceKlass java/awt/Component
 instanceKlass java/awt/MenuContainer
-instanceKlass java/awt/image/ImageObserver
+instanceKlass java/awt/photo/ImageObserver
 instanceKlass javax/swing/TransferHandler$HasGetTransferHandler
 instanceKlass javax/accessibility/Accessible
 instanceKlass java/awt/event/ActionListener

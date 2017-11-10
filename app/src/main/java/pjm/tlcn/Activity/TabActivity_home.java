@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 import pjm.tlcn.Adapter.GridViewAdapter;
 import pjm.tlcn.Adapter.ListViewAdapter;
-import pjm.tlcn.Model.Image;
+import pjm.tlcn.Model.Photo;
 import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
 
@@ -36,7 +36,7 @@ public class TabActivity_home extends AppCompatActivity {
 
    // private ArrayList<RecyclerViewItem> corporations;
     private ArrayList<User> gr=new ArrayList<User>();
-    private ArrayList<Image> lvs;
+    private ArrayList<Photo> lvs;
     private RecyclerView listView;
     private RecyclerView gridView;
     private ListViewAdapter listViewAdapter;
@@ -106,8 +106,8 @@ public class TabActivity_home extends AppCompatActivity {
                 if(dataSnapshot.getValue()!=null){
                     for(DataSnapshot snop:dataSnapshot.getChildren()){
                         id_image = snop.getKey();
-                        Image img =new Image();
-                        img = snop.getValue(Image.class);
+                        Photo img =new Photo();
+                        img = snop.getValue(Photo.class);
                         lvs.add(img);
                         listViewAdapter.notifyDataSetChanged();
                     }

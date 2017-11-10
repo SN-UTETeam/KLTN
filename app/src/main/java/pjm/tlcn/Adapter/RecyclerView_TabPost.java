@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import pjm.tlcn.Activity.ViewCmt_tabProfile;
-import pjm.tlcn.Model.Image;
+import pjm.tlcn.Model.Photo;
 import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
 
@@ -36,13 +36,13 @@ import static pjm.tlcn.Activity.Login.user_id;
  */
 
 public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabPost.RecyclerViewHolder>{
-    private ArrayList<Image> item = new ArrayList<Image>();
+    private ArrayList<Photo> item = new ArrayList<Photo>();
     private Context context;
     public static String img_id;
     private DatabaseReference uDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
     private DatabaseReference iDatabase = FirebaseDatabase.getInstance().getReference().child("Images").child(user_id);
     private DatabaseReference lDatabase = FirebaseDatabase.getInstance().getReference().child("Likes");
-    public RecyclerView_TabPost(ArrayList<Image> item) {
+    public RecyclerView_TabPost(ArrayList<Photo> item) {
         this.item = item;
     }
     Boolean[] flag_like;

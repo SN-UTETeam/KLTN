@@ -17,14 +17,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pjm.tlcn.Adapter.CustomAdapterSearch;
-import pjm.tlcn.Model.Image;
+import pjm.tlcn.Model.Photo;
 import pjm.tlcn.R;
 
 import static pjm.tlcn.Activity.Login.user_id;
 
 public class TabActivity_search extends AppCompatActivity {
     DatabaseReference uDatabase = FirebaseDatabase.getInstance().getReference();
-    private ArrayList<Image> gridviewArrayImage = new ArrayList<Image>();
+    private ArrayList<Photo> gridviewArrayPhoto = new ArrayList<Photo>();
     private CustomAdapterSearch customAdapterSearch;
     GridView gridViewSearch;
     List A = new ArrayList();
@@ -48,7 +48,7 @@ public class TabActivity_search extends AppCompatActivity {
         });
         getData();
         gridViewSearch = (GridView) findViewById(R.id.grid_search);
-        customAdapterSearch = new CustomAdapterSearch(this, gridviewArrayImage);
+        customAdapterSearch = new CustomAdapterSearch(this, gridviewArrayPhoto);
         gridViewSearch.setAdapter(customAdapterSearch);
 
     }
@@ -91,12 +91,12 @@ public class TabActivity_search extends AppCompatActivity {
                                 public void onDataChange(DataSnapshot dataSnapshot) {
 
                                     if (dataSnapshot.getValue() != null) {
-                                        gridviewArrayImage.clear();
+                                        gridviewArrayPhoto.clear();
                                         for (DataSnapshot snop : dataSnapshot.getChildren()) {
 
-                                            Image temp = new Image();
-                                            temp = snop.getValue(Image.class);
-                                            gridviewArrayImage.add(temp);
+                                            Photo temp = new Photo();
+                                            temp = snop.getValue(Photo.class);
+                                            gridviewArrayPhoto.add(temp);
                                             customAdapterSearch.notifyDataSetChanged();
                                         }
                                     } else {

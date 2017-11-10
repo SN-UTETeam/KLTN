@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -18,6 +17,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -27,13 +27,11 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
-import pjm.tlcn.Model.Image;
+import pjm.tlcn.Model.Photo;
 import pjm.tlcn.R;
 
-import static pjm.tlcn.Activity.Login.user_id;
 import static pjm.tlcn.Activity.TabActivity_news.bitmap_photo;
 
 public class Activity_share_image extends AppCompatActivity {
@@ -41,12 +39,10 @@ public class Activity_share_image extends AppCompatActivity {
     private EditText edit_status;
     TextView     send;
     ImageButton bt_back;
-    private DatabaseReference uDatabase;
-    private StorageReference sDatabase;
-    private boolean flag_img_select=false;
-    private Uri uri_img_select,uri_img_download;
+    private DatabaseReference databaseRef;
+    private StorageReference storageRef;
+    private Uri uri_img_download;
     private ProgressDialog progressDialog;
-    private Handler handle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,8 +60,8 @@ public class Activity_share_image extends AppCompatActivity {
         });
 
         //Firebase
-        uDatabase = FirebaseDatabase.getInstance().getReference().child("Images").child(user_id);
-        sDatabase = FirebaseStorage.getInstance().getReference().child("ShareImages").child(user_id);
+        databaseRef = FirebaseDatabase.getInstance().getReference();
+        storageRef = FirebaseStorage.getInstance().getReference();
 
         //set onclick send
         send.setOnClickListener(new View.OnClickListener() {
@@ -85,7 +81,7 @@ public class Activity_share_image extends AppCompatActivity {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 float aspectRatio = bitmap_photo.getWidth() /
                         (float) bitmap_photo.getHeight();
-                int width = 480;
+                int width = 600;
                 int height = Math.round(width / aspectRatio);
 
                 bitmap_photo = Bitmap.createScaledBitmap(
@@ -93,7 +89,9 @@ public class Activity_share_image extends AppCompatActivity {
                 bitmap_photo.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] data = baos.toByteArray();
                 final String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-                UploadTask uploadTask = sDatabase.child("IMG_"+timeStamp).putBytes(data);
+
+                //Upload to Storage
+                UploadTask uploadTask = storageRef.child(FirebaseAuth.getInstance().getUid()).child("photos").child("IMG_"+timeStamp).putBytes(data);
                 uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
@@ -113,13 +111,21 @@ public class Activity_share_image extends AppCompatActivity {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                        Date currentTime = Calendar.getInstance().getTime();
-                       // uDatabase.child("datetime").setValue(currentTime.toString());
                         uri_img_download = taskSnapshot.getMetadata().getDownloadUrl();
-                     //  uDatabase.child("imageurl").setValue(uri_img_download.toString());
-                        DatabaseReference shareimg = uDatabase.push();
-                        Image img = new Image(shareimg.getKey(),0,timeStamp,uri_img_download+"",0,edit_status.getText().toString()+"");
-                        shareimg.setValue(img);
+                        String newPhotoKey = databaseRef.child("photos").push().getKey();
+
+                        //Set value
+                        Photo photo = new Photo();
+                        photo.setCaption(edit_status.getText().toString()+"");
+                        photo.setDate_created(timeStamp+"");
+                        photo.setImage_path(uri_img_download+"");
+                        photo.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        photo.setPhoto_id(newPhotoKey);
+
+                        //insert into database
+                        databaseRef.child("user_photos").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(newPhotoKey)
+                                .setValue(photo);
+                        databaseRef.child("photos").child(newPhotoKey).setValue(photo);
                         progressDialog.dismiss();
                         Intent it = new Intent();
                         setResult(Activity.RESULT_OK, it);

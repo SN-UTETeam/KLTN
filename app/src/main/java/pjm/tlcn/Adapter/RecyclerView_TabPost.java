@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import pjm.tlcn.Activity.ViewCmt_tabProfile;
+import pjm.tlcn.Model.Like;
 import pjm.tlcn.Model.Photo;
 import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
@@ -48,17 +49,17 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
     public RecyclerView_TabPost(ArrayList<Photo> item) {
         this.item = item;
     }
-    Boolean[] flag_like;
-    private Boolean mLikedByCurrentUser;
-    private String mLikesString = "";
+    private Boolean[] mLikedByCurrentUser;
+    private String[] mLikesString;
 
     @Override
     public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         context=parent.getContext();
-        flag_like = new Boolean[item.size()+1];
-        Log.d("size",item.size()+"");
-        Arrays.fill(flag_like, Boolean.FALSE);
+        mLikedByCurrentUser = new Boolean[item.size()];
+        Arrays.fill(mLikedByCurrentUser, Boolean.FALSE);
+        mLikesString = new String[item.size()];
+        Arrays.fill(mLikesString,"");
         View view = inflater.inflate(R.layout.item_post_tab_profile, parent, false);
         return new RecyclerViewHolder(view);
     }
@@ -79,7 +80,6 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
             }
         });
         Picasso.with(context).load(item.get(position).getImage_path()).fit().centerCrop().into(holder.img_image_tabpost);
-
         //GetLike
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference
@@ -91,48 +91,69 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mUsers = new StringBuilder();
                 for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
-                    Log.d("RecyclerView_Tabpost", "onDataChange: found like: " +
-                            singleSnapshot.getValue(User.class).getUsername());
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                    Query query = reference
+                            .child("users")
+                            .orderByChild("user_id")
+                            .equalTo(singleSnapshot.getValue(Like.class).getUser_id());
+                                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+                                                Log.d("RecyclerView_Tabpost", "onDataChange: found like: " +
+                                                        singleSnapshot.getValue(User.class).getUsername());
 
-                    mUsers.append(singleSnapshot.getValue(User.class).getUsername());
-                    mUsers.append(",");
-                }
-                String[] splitUsers = mUsers.toString().split(",");
-                if(mUsers.toString().contains(user.getUsername() + ",")){//mitch, mitchell.tabian
-                    mLikedByCurrentUser = true;
-                }else{
-                    mLikedByCurrentUser = false;
-                }
+                                                mUsers.append(singleSnapshot.getValue(User.class).getUsername());
+                                                mUsers.append(",");
+                                            }
+                                            String[] splitUsers = mUsers.toString().split(",");
+                                            if(mUsers.toString().contains(user.getUsername() + ",")){
+                                                mLikedByCurrentUser[position] = true;
+                                            }else{
+                                                mLikedByCurrentUser[position] = false;
+                                            }
 
-                int length = splitUsers.length;
-                if(length == 1){
-                    mLikesString = "Người thích: " + splitUsers[0];
-                }
-                else if(length == 2){
-                    mLikesString = "Người thích: " + splitUsers[0]
-                            + " và " + splitUsers[1];
-                }
-                else if(length == 3){
-                    mLikesString = "Người thích: " + splitUsers[0]
-                            + ", " + splitUsers[1]
-                            + " và " + splitUsers[2];
+                                            int length = splitUsers.length;
+                                            if(length == 1){
+                                                mLikesString[position] = "Người thích: " + splitUsers[0];
+                                            }
+                                            else if(length == 2){
+                                                mLikesString[position] = "Người thích: " + splitUsers[0]
+                                                        + " và " + splitUsers[1];
+                                            }
+                                            else if(length == 3){
+                                                mLikesString[position] = "Người thích: " + splitUsers[0]
+                                                        + ", " + splitUsers[1]
+                                                        + " và " + splitUsers[2];
 
+                                            }
+                                            else if(length == 4){
+                                                mLikesString[position] = "Người thích: " + splitUsers[0]
+                                                        + ", " + splitUsers[1]
+                                                        + ", " + splitUsers[2]
+                                                        + " và " + splitUsers[3];
+                                            }
+                                            else if(length > 4){
+                                                mLikesString[position] = "Người thích: " + splitUsers[0]
+                                                        + ", " + splitUsers[1]
+                                                        + ", " + splitUsers[2]
+                                                        + " và " + (splitUsers.length - 3) + " người khác";
+                                            }
+                                            if(length>0){
+                                                holder.tv_likes_tabpost.setVisibility(View.VISIBLE);
+                                            holder.tv_likes_tabpost.setText(mLikesString[position]+"");}
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
                 }
-                else if(length == 4){
-                    mLikesString = "Người thích: " + splitUsers[0]
-                            + ", " + splitUsers[1]
-                            + ", " + splitUsers[2]
-                            + " và " + splitUsers[3];
+                if(!dataSnapshot.exists()){
+                    mLikesString[position] = "";
+                    mLikedByCurrentUser[position] = false;
                 }
-                else if(length > 4){
-                    mLikesString = "Người thích: " + splitUsers[0]
-                            + ", " + splitUsers[1]
-                            + ", " + splitUsers[2]
-                            + " và " + (splitUsers.length - 3) + " người khác";
-                }
-                if(length>8)
-                holder.tv_likes_tabpost.setText(mLikesString+"");
-                else holder.tv_likes_tabpost.setVisibility(View.GONE);
             }
 
             @Override
@@ -140,8 +161,9 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
 
             }
         });
+
+
         if(item.get(position).getCaption().length()>0) holder.tv_status_tabpost.setText(item.get(position).getCaption());
-        Log.d("Comment",item.get(position).getComments().size()+"");
         if(item.get(position).getComments().size() > 0){
             holder.tv_comments_tabpost.setVisibility(View.VISIBLE);
             holder.tv_comments_tabpost.setText("Xem " + item.get(position).getComments().size() + " bình luận");
@@ -193,7 +215,102 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
         }
 
         //Like
-        holder.img_like_tabpost.setImageResource(R.drawable.ufi_heart_bold);
+        holder.img_like_tabpost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                Query query = reference
+                        .child("photos")
+                        .child(item.get(position).getPhoto_id())
+                        .child("likes");
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+
+                            String keyID = singleSnapshot.getKey();
+                            //case1: Then user already liked the photo
+                            if(mLikedByCurrentUser[position] &&
+                                    singleSnapshot.getValue(Like.class).getUser_id()
+                                            .equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+
+                                databaseRef.child("photos")
+                                        .child(item.get(position).getPhoto_id())
+                                        .child("likes")
+                                        .child(keyID)
+                                        .removeValue();
+        ///
+                                databaseRef.child("user_photos")
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child(item.get(position).getPhoto_id())
+                                        .child("likes")
+                                        .child(keyID)
+                                        .removeValue();
+
+                                holder.img_like_tabpost.setImageResource(R.drawable.ufi_heart_bold);
+                                holder.tv_likes_tabpost.setText("Người thích: ");
+                                //Setup like
+
+                                //End Setup
+                            }
+                            //case2: The user has not liked the photo
+                            else if(!mLikedByCurrentUser[position]){
+                                //add new like
+                                String newLikeID = databaseRef.push().getKey();
+                                Log.d("Like","here");
+                                Like like = new Like();
+                                like.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                databaseRef.child("photos")
+                                        .child(item.get(position).getPhoto_id())
+                                        .child("likes")
+                                        .child(newLikeID)
+                                        .setValue(like);
+
+                                databaseRef.child("user_photos")
+                                        .child(item.get(position).getUser_id())
+                                        .child(item.get(position).getPhoto_id())
+                                        .child("likes")
+                                        .child(newLikeID)
+                                        .setValue(like);
+
+                                holder.img_like_tabpost.setImageResource(R.drawable.direct_heart);
+                                break;
+                            }
+                        }
+                        if(!dataSnapshot.exists()){
+                            //add new like
+                            String newLikeID = databaseRef.push().getKey();
+                            Log.d("Like","here");
+                            Like like = new Like();
+                            like.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            databaseRef.child("photos")
+                                    .child(item.get(position).getPhoto_id())
+                                    .child("likes")
+                                    .child(newLikeID)
+                                    .setValue(like);
+
+                            databaseRef.child("user_photos")
+                                    .child(item.get(position).getUser_id())
+                                    .child(item.get(position).getPhoto_id())
+                                    .child("likes")
+                                    .child(newLikeID)
+                                    .setValue(like);
+
+                            holder.img_like_tabpost.setImageResource(R.drawable.direct_heart);
+
+                            //break;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
+
+        //holder.img_like_tabpost.setImageResource(R.drawable.ufi_heart_bold);
 
 
         //View Comment

@@ -65,7 +65,7 @@ public class GridViewAdapter extends RecyclerView.Adapter<GridViewAdapter.ViewHo
                 Toast.makeText(activity, "haaaaaa", Toast.LENGTH_SHORT).show();
 
               // Follow fl = new Follow(,items.get(position).getUsername());
-                uDatabase.child("Follow").child(user_id).child(items.get(position).getId()).setValue(items.get(position).getUsername());
+                uDatabase.child("Follow").child(user_id).child(items.get(position).getUser_id()).setValue(items.get(position).getUsername());
 
             }
         });

@@ -5,7 +5,7 @@ package pjm.tlcn.Model;
  */
 
 public class User {
-    private String Id;
+    private String User_id;
     private String Username;
     private String Email;
     private String Password;
@@ -13,8 +13,8 @@ public class User {
     private String Describer;
     private String Avatarurl;
 
-    public User(String id, String username, String email, String password, String phonenumber, String describer, String avatarurl) {
-        Id = id;
+    public User(String user_id, String username, String email, String password, String phonenumber, String describer, String avatarurl) {
+        User_id = user_id;
         Username = username;
         Email = email;
         Password = password;
@@ -27,12 +27,12 @@ public class User {
         ////
     }
 
-    public String getId() {
-        return Id;
+    public String getUser_id() {
+        return User_id;
     }
 
-    public void setId(String id) {
-        Id = id;
+    public void setUser_id(String user_id) {
+        User_id = user_id;
     }
 
     public String getUsername() {

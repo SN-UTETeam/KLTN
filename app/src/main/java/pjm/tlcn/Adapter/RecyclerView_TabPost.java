@@ -89,7 +89,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mUsers = new StringBuilder();
+
                 for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                     Query query = reference
@@ -99,6 +99,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                                     query.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
+                                            mUsers = new StringBuilder();
                                             for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
                                                 Log.d("RecyclerView_Tabpost", "onDataChange: found like: " +
                                                         singleSnapshot.getValue(User.class).getUsername());
@@ -109,11 +110,13 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                                             String[] splitUsers = mUsers.toString().split(",");
                                             if(mUsers.toString().contains(user.getUsername() + ",")){
                                                 mLikedByCurrentUser[position] = true;
+                                                holder.img_like_tabpost.setImageResource(R.drawable.direct_heart);
                                             }else{
                                                 mLikedByCurrentUser[position] = false;
                                             }
 
                                             int length = splitUsers.length;
+                                            //Log.d("length split:"+position+": ",length+"");
                                             if(length == 1){
                                                 mLikesString[position] = "Người thích: " + splitUsers[0];
                                             }
@@ -139,9 +142,9 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                                                         + ", " + splitUsers[2]
                                                         + " và " + (splitUsers.length - 3) + " người khác";
                                             }
-                                            if(length>0){
-                                                holder.tv_likes_tabpost.setVisibility(View.VISIBLE);
-                                            holder.tv_likes_tabpost.setText(mLikesString[position]+"");}
+                                            //Log.d("likes string: " +position+": ",mLikesString[position]);
+                                            holder.tv_likes_tabpost.setVisibility(View.VISIBLE);
+                                            holder.tv_likes_tabpost.setText(mLikesString[position]+"");
                                         }
 
                                         @Override
@@ -257,7 +260,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                             else if(!mLikedByCurrentUser[position]){
                                 //add new like
                                 String newLikeID = databaseRef.push().getKey();
-                                Log.d("Like","here");
+                                //Log.d("Like","here");
                                 Like like = new Like();
                                 like.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 databaseRef.child("photos")

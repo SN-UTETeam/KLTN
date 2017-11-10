@@ -29,7 +29,6 @@ import pjm.tlcn.R;
 import static com.facebook.FacebookSdk.getApplicationContext;
 import static pjm.tlcn.Activity.Login.user;
 import static pjm.tlcn.Activity.Login.user_id;
-import static pjm.tlcn.Activity.TabActivity_home.id_image;
 
 /**
  * Created by thienphu on 10/26/2017.
@@ -81,30 +80,30 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
                 //intet activity in adapter
                 Intent intent = new Intent(activity, Activity_comment.class);
                 v.getContext().startActivity( intent);
-                key_img =items.get(position).getId();
+               // key_img =items.get(position).getId();
             }
         });
         viewHolder.image_like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 viewHolder.image_like.setBackgroundResource(R.drawable.direct_heart);
-                uDatabase.child("Likes").child(id_image).child(user_id).setValue(user.getUsername());
-                uDatabase.child("Images").child(user_id).child(id_image).child("likes").setValue(items.get(position).getLikes()+1);
+              //  uDatabase.child("Likes").child(id_image).child(user_id).setValue(user.getUsername());
+                //uDatabase.child("Images").child(user_id).child(id_image).child("likes").setValue(items.get(position).getLikes()+1);
 
             }
         });
 
         //////
-        viewHolder.realtime.setText(items.get(position).getDatetime());
+        viewHolder.realtime.setText(items.get(position).getDate_created());
 
-         if(items.get(position).getStatus() != null && !items.get(position).getStatus().isEmpty() && !items.get(position).getStatus().equals("null")){
+         if(items.get(position).getComments() != null && !items.get(position).getComments().isEmpty() && !items.get(position).getComments().equals("null")){
              viewHolder.username.setText(user.getUsername());
-             viewHolder.textView.setText(items.get(position).getStatus());
+           //  viewHolder.textView.setText(items.get(position).getComments());
              viewHolder.quatity.setText(items.get(position).getLikes()+" lượt thích");
              //
              Picasso
                      .with(activity)
-                     .load(items.get(position).getImgurl())
+                     .load(items.get(position).getImage_path())
                      .fit()
                      .into(viewHolder.imageView);
          }

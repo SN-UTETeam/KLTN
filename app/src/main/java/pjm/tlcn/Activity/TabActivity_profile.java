@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,8 +27,6 @@ import pjm.tlcn.Fragment.Likes;
 import pjm.tlcn.Fragment.Post;
 import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
-
-import static pjm.tlcn.Activity.Login.user_id;
 
 @SuppressWarnings("deprecation")
 public class TabActivity_profile extends FragmentActivity {
@@ -45,7 +44,7 @@ public class TabActivity_profile extends FragmentActivity {
         setContentView(R.layout.activity_tab_profile);
 
         //Firebase
-        uDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
+        uDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         //Create Variable
         btn_edit_profile = (Button) findViewById(R.id.btn_edit_profile);

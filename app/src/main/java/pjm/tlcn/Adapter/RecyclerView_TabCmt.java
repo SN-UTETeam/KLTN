@@ -20,11 +20,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import pjm.tlcn.Model.Cmt_tabProfile;
+import pjm.tlcn.Model.Comment;
 import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
-
-import static pjm.tlcn.Activity.Login.user_id;
 
 /**
  * Created by Pjm on 11/8/2017.
@@ -32,13 +30,13 @@ import static pjm.tlcn.Activity.Login.user_id;
 
 public class RecyclerView_TabCmt extends RecyclerView.Adapter<RecyclerView_TabCmt.RecyclerViewHolder>{
 
-    private ArrayList<Cmt_tabProfile> item = new ArrayList<Cmt_tabProfile>();
+    private ArrayList<Comment> item = new ArrayList<Comment>();
     private Context context;
-    private DatabaseReference uDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
+    private DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
 
 
 
-    public RecyclerView_TabCmt(ArrayList<Cmt_tabProfile> item) {
+    public RecyclerView_TabCmt(ArrayList<Comment> item) {
         this.item = item;
     }
 
@@ -52,7 +50,7 @@ public class RecyclerView_TabCmt extends RecyclerView.Adapter<RecyclerView_TabCm
     @Override
     public void onBindViewHolder(final RecyclerViewHolder holder, final int position) {
 
-        uDatabase.addValueEventListener(new ValueEventListener() {
+        databaseRef.child("users").child(item.get(position).getUser_id()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
@@ -72,7 +70,7 @@ public class RecyclerView_TabCmt extends RecyclerView.Adapter<RecyclerView_TabCm
 
 
         try {
-            Date date1 = formater.parse(item.get(position).getDatetime());
+            Date date1 = formater.parse(item.get(position).getDate_created());
             Date date2 = formater.parse(currenttime);
 
             long different=date2.getTime() - date1.getTime();
@@ -106,7 +104,7 @@ public class RecyclerView_TabCmt extends RecyclerView.Adapter<RecyclerView_TabCm
 
             holder.tv_datetime_tabcmt.setText(diffTime);
         } catch (ParseException e) {
-            holder.tv_datetime_tabcmt.setText(item.get(position).getDatetime());
+            holder.tv_datetime_tabcmt.setText(item.get(position).getDate_created());
             e.printStackTrace();
         }
         holder.tv_cmt_tabcmt.setText(item.get(position).getComment());

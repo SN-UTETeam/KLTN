@@ -1,14 +1,17 @@
 package pjm.tlcn.Activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,11 +24,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import pjm.tlcn.Adapter.RecyclerView_TabCmt;
-import pjm.tlcn.Model.Cmt_tabProfile;
+import pjm.tlcn.Model.Comment;
 import pjm.tlcn.R;
-
-import static pjm.tlcn.Activity.Login.user_id;
-import static pjm.tlcn.Adapter.RecyclerView_TabPost.img_id;
 
 public class ViewCmt_tabProfile extends AppCompatActivity {
 
@@ -33,8 +33,8 @@ public class ViewCmt_tabProfile extends AppCompatActivity {
     private EditText edt_cmt_tabprofile;
     private ImageView img_sendcmt_tabprofile,img_tabcmt_toolbar;
     private RecyclerView_TabCmt recyclerView_tabCmt;
-    private DatabaseReference cDatabase,iDatabase;
-    private ArrayList<Cmt_tabProfile> cmt_tabProfiles = new ArrayList<Cmt_tabProfile>();
+    private DatabaseReference databaseRef;
+    private ArrayList<Comment> cmt_tabProfiles = new ArrayList<Comment>();
     private android.support.v7.widget.Toolbar toolbar_tabcmt;
     private String ref_img;
     @Override
@@ -58,17 +58,18 @@ public class ViewCmt_tabProfile extends AppCompatActivity {
                 finish();
             }
         });
-        String imgurl = getIntent().getExtras().getString("imgurl");
-        String status = getIntent().getExtras().getString("status");
+        final String photo_id = getIntent().getExtras().getString("photo_id");
+        final String caption = getIntent().getExtras().getString("caption");
+        String image_path = getIntent().getExtras().getString("image_path");
+        cmt_tabProfiles = getIntent().getParcelableArrayListExtra("ArrayComment");
         ref_img = getIntent().getExtras().getString("ref_img");
 
-        toolbar_tabcmt.setTitle(status);
-        Picasso.with(getApplicationContext()).load(imgurl).into(img_tabcmt_toolbar);
+        toolbar_tabcmt.setTitle(caption);
+        Picasso.with(getApplicationContext()).load(image_path).into(img_tabcmt_toolbar);
 
 
         //Firebase
-        cDatabase = FirebaseDatabase.getInstance().getReference().child("Comments").child(img_id);
-        iDatabase = FirebaseDatabase.getInstance().getReference().child("Images").child(user_id);
+        databaseRef = FirebaseDatabase.getInstance().getReference();
 
         //RC
         recyclerView_tabCmt = new RecyclerView_TabCmt(cmt_tabProfiles);
@@ -77,17 +78,18 @@ public class ViewCmt_tabProfile extends AppCompatActivity {
         rc_cmt_tabprofile.setLayoutManager(layoutManager);
         rc_cmt_tabprofile.setAdapter(recyclerView_tabCmt);
         //Load Cmt
-
-        cDatabase.addValueEventListener(new ValueEventListener() {
+        databaseRef.child("photos").child(photo_id).child("comments").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 cmt_tabProfiles.clear();
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    Cmt_tabProfile cmt = postSnapshot.getValue(Cmt_tabProfile.class);
-                    cmt_tabProfiles.add(cmt);
+                for (DataSnapshot dSnapshot : dataSnapshot.getChildren()){
+                    Comment comment = new Comment();
+                    comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+                    comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+                    comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                    cmt_tabProfiles.add(comment);
+                    recyclerView_tabCmt.notifyDataSetChanged();
                 }
-                //Collections.reverse(cmt_tabProfiles);
-                recyclerView_tabCmt.notifyDataSetChanged();
             }
 
             @Override
@@ -95,7 +97,6 @@ public class ViewCmt_tabProfile extends AppCompatActivity {
 
             }
         });
-
         //On click button send
         img_sendcmt_tabprofile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,32 +104,38 @@ public class ViewCmt_tabProfile extends AppCompatActivity {
                 if(edt_cmt_tabprofile.getText().toString().length()>0){
                     String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
-                    Cmt_tabProfile cmt_tabProfile = new Cmt_tabProfile(user_id+"",
-                                                                        edt_cmt_tabprofile.getText().toString()+"",
-                                                                        timeStamp+""
-                                                                        );
-                    cDatabase.push().setValue(cmt_tabProfile);
-                    //Comment ++
-                    final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl(ref_img+"/").child("comment");
-                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                       @Override
-                       public void onDataChange(DataSnapshot dataSnapshot) {
-                           Integer i = dataSnapshot.getValue(Integer.class);
-                           i++;
-                           databaseReference.setValue(i);
-                       }
+                    String commentID = databaseRef.push().getKey();
+                    Comment comment = new Comment();
+                    comment.setComment(edt_cmt_tabprofile.getText().toString()+"");
+                    comment.setDate_created(timeStamp);
+                    comment.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                       @Override
-                       public void onCancelled(DatabaseError databaseError) {
-
-                       }
-                    });
+                    databaseRef.child("photos")
+                            .child(photo_id)
+                            .child("comments")
+                            .child(commentID)
+                            .setValue(comment);
+                    databaseRef.child("user_photos")
+                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .child(photo_id)
+                            .child("comments")
+                            .child(commentID)
+                            .setValue(comment);
                     edt_cmt_tabprofile.setText("");
+                    hiddenKeyboard();
 
                 }
                 else
                     Toast.makeText(getApplicationContext(),"You must be enter an comment!",Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    private void hiddenKeyboard(){
+        InputMethodManager inputManager =
+                (InputMethodManager) this.
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(
+                this.getCurrentFocus().getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }

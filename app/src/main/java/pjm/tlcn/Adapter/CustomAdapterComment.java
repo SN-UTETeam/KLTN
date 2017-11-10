@@ -53,9 +53,9 @@ public class CustomAdapterComment extends BaseAdapter {
         im_comment=(ImageView) convertView.findViewById(R.id.img_comment);
 
         // set text comment
-        usename_comment.setText(comment.get(position).getUsername());
+        usename_comment.setText("Name");
         content_comment.setText(comment.get(position).getComment());
-        time.setText(comment.get(position).getDatetime());
+        time.setText(comment.get(position).getDate_created());
 
 
         return convertView;

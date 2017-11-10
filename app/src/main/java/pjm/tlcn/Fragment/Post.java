@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -17,13 +18,15 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import pjm.tlcn.Adapter.RecyclerView_TabPost;
+import pjm.tlcn.Model.Comment;
 import pjm.tlcn.Model.Photo;
 import pjm.tlcn.R;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
-import static pjm.tlcn.Activity.Login.user_id;
 
 public class Post extends Fragment{
 private RecyclerView rv_tabpost;
@@ -62,15 +65,34 @@ private DatabaseReference uDatabase;
 
     public void loadData(){
         //Firebase
-        uDatabase = FirebaseDatabase.getInstance().getReference().child("Images").child(user_id);
+        uDatabase = FirebaseDatabase.getInstance().getReference().child("user_photos").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         uDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 photoArrayList.clear();
                 if(dataSnapshot.getValue()!=null){
-                    for(DataSnapshot snop:dataSnapshot.getChildren()){
+                    for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+
                         Photo photo = new Photo();
-                        photo = snop.getValue(Photo.class);
+                        Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+
+                        photo.setCaption(objectMap.get("caption").toString());
+                        photo.setPhoto_id(objectMap.get("photo_id").toString());
+                        photo.setUser_id(objectMap.get("user_id").toString());
+                        photo.setDate_created(objectMap.get("date_created").toString());
+                        photo.setImage_path(objectMap.get("image_path").toString());
+
+                        ArrayList<Comment> comments = new ArrayList<Comment>();
+                        for (DataSnapshot dSnapshot : singleSnapshot
+                                .child("comments").getChildren()){
+                            Comment comment = new Comment();
+                            comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+                            comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+                            comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                            comments.add(comment);
+                        }
+
+                        photo.setComments(comments);
                         photoArrayList.add(photo);
                     }
                     Collections.reverse(photoArrayList);

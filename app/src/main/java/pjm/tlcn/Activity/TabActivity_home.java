@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -79,18 +77,18 @@ public class TabActivity_home extends AppCompatActivity {
 
         listView.setHasFixedSize(true);
         gridView.setHasFixedSize(true);
-        setDATA();
+        //setDATA();
         //set layout manager and adapter for "ListView"
-        LinearLayoutManager horizontalManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        listView.setLayoutManager(horizontalManager);
-        listViewAdapter = new ListViewAdapter(this, lvs);
-        listView.setAdapter(listViewAdapter);
-
-        //set layout manager and adapter for "GridView"
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
-        gridView.setLayoutManager(layoutManager);
-        gridViewAdapter = new GridViewAdapter(this, gr);
-        gridView.setAdapter(gridViewAdapter);
+//        LinearLayoutManager horizontalManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+//        listView.setLayoutManager(horizontalManager);
+//        listViewAdapter = new ListViewAdapter(this, lvs);
+//        listView.setAdapter(listViewAdapter);
+//
+//        //set layout manager and adapter for "GridView"
+//        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+//        gridView.setLayoutManager(layoutManager);
+//        gridViewAdapter = new GridViewAdapter(this, gr);
+//        gridView.setAdapter(gridViewAdapter);
     }
 
     void setDATA()

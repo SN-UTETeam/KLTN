@@ -74,8 +74,8 @@ public class Register extends AppCompatActivity {
                                                                             edt_PassWordRegister.getText().toString()+"",
                                                                             "",
                                                                             "No Describer",
-                                                                            "https://firebasestorage.googleapis.com/v0/b/instagram-pjm.appspot.com/o/default_user_image.png?alt=media&token=e9585ce1-84e3-40bb-af38-d931a2c15cb6");
-                                        mDatabase.child("Users").child(fbuser.getUid()).setValue(user);
+                                                                            "https://firebasestorage.googleapis.com/v0/b/instagram-pjm.appspot.com/o/default_user_image.png?alt=media&token=9b3a004a-70e4-4105-bc8f-55cfbe21f025");
+                                        mDatabase.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user);
                                         progressDialog.dismiss();
                                         Toast.makeText(Register.this,"Đăng ký thành công!",Toast.LENGTH_LONG).show();
                                         finish();

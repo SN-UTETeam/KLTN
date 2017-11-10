@@ -73,7 +73,7 @@ public class Login extends AppCompatActivity {
         //Create User FireBaseAuth
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        uDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
+        uDatabase = FirebaseDatabase.getInstance().getReference().child("users");
 
         //Show progressDialog
         progressDialog = new ProgressDialog(Login.this);
@@ -114,7 +114,7 @@ public class Login extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 user_id = mAuth.getUid();
-                                uDatabase=FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
+                                uDatabase=FirebaseDatabase.getInstance().getReference().child("users").child(user_id);
                                 uDatabase.addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -206,7 +206,7 @@ public class Login extends AppCompatActivity {
                                                     firebaseUser.getPhoneNumber()+"",
                                                     "No Describer",
                                                     firebaseUser.getPhotoUrl().toString()+"");
-                            mDatabase.child("Users").child(firebaseUser.getUid()).setValue(user);
+                            mDatabase.child("users").child(firebaseUser.getUid()).setValue(user);
                             Intent intent = new Intent(getApplicationContext(),MainActivity.class);
                             progressDialog.dismiss();
                             startActivity(intent);

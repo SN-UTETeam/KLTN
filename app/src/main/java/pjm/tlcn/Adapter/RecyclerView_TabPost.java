@@ -2,6 +2,8 @@ package pjm.tlcn.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,10 +12,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -29,7 +33,6 @@ import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
 
 import static pjm.tlcn.Activity.Login.user;
-import static pjm.tlcn.Activity.Login.user_id;
 
 /**
  * Created by Pjm on 11/8/2017.
@@ -37,15 +40,17 @@ import static pjm.tlcn.Activity.Login.user_id;
 
 public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabPost.RecyclerViewHolder>{
     private ArrayList<Photo> item = new ArrayList<Photo>();
+    Bundle bundle;
     private Context context;
     public static String img_id;
-    private DatabaseReference uDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
-    private DatabaseReference iDatabase = FirebaseDatabase.getInstance().getReference().child("Images").child(user_id);
-    private DatabaseReference lDatabase = FirebaseDatabase.getInstance().getReference().child("Likes");
+    private StringBuilder mUsers;
+    private DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
     public RecyclerView_TabPost(ArrayList<Photo> item) {
         this.item = item;
     }
     Boolean[] flag_like;
+    private Boolean mLikedByCurrentUser;
+    private String mLikesString = "";
 
     @Override
     public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -60,7 +65,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
 
     @Override
     public void onBindViewHolder(final RecyclerViewHolder holder, final int position) {
-        uDatabase.addValueEventListener(new ValueEventListener() {
+        databaseRef.child("users").child(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
@@ -73,18 +78,83 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
 
             }
         });
-        Picasso.with(context).load(item.get(position).getImgurl()).fit().centerCrop().into(holder.img_image_tabpost);
-        holder.tv_likes_tabpost.setText(item.get(position).getLikes()+" like");
-        if(item.get(position).getStatus().length()>0) holder.tv_status_tabpost.setText(item.get(position).getStatus());
-        holder.tv_comments_tabpost.setText("View " +item.get(position).getComment()+" comments");
+        Picasso.with(context).load(item.get(position).getImage_path()).fit().centerCrop().into(holder.img_image_tabpost);
 
+        //GetLike
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference
+                .child("photos")
+                .child(item.get(position).getPhoto_id())
+                .child("likes");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mUsers = new StringBuilder();
+                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+                    Log.d("RecyclerView_Tabpost", "onDataChange: found like: " +
+                            singleSnapshot.getValue(User.class).getUsername());
+
+                    mUsers.append(singleSnapshot.getValue(User.class).getUsername());
+                    mUsers.append(",");
+                }
+                String[] splitUsers = mUsers.toString().split(",");
+                if(mUsers.toString().contains(user.getUsername() + ",")){//mitch, mitchell.tabian
+                    mLikedByCurrentUser = true;
+                }else{
+                    mLikedByCurrentUser = false;
+                }
+
+                int length = splitUsers.length;
+                if(length == 1){
+                    mLikesString = "Người thích: " + splitUsers[0];
+                }
+                else if(length == 2){
+                    mLikesString = "Người thích: " + splitUsers[0]
+                            + " và " + splitUsers[1];
+                }
+                else if(length == 3){
+                    mLikesString = "Người thích: " + splitUsers[0]
+                            + ", " + splitUsers[1]
+                            + " và " + splitUsers[2];
+
+                }
+                else if(length == 4){
+                    mLikesString = "Người thích: " + splitUsers[0]
+                            + ", " + splitUsers[1]
+                            + ", " + splitUsers[2]
+                            + " và " + splitUsers[3];
+                }
+                else if(length > 4){
+                    mLikesString = "Người thích: " + splitUsers[0]
+                            + ", " + splitUsers[1]
+                            + ", " + splitUsers[2]
+                            + " và " + (splitUsers.length - 3) + " người khác";
+                }
+                if(length>8)
+                holder.tv_likes_tabpost.setText(mLikesString+"");
+                else holder.tv_likes_tabpost.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        if(item.get(position).getCaption().length()>0) holder.tv_status_tabpost.setText(item.get(position).getCaption());
+        Log.d("Comment",item.get(position).getComments().size()+"");
+        if(item.get(position).getComments().size() > 0){
+            holder.tv_comments_tabpost.setVisibility(View.VISIBLE);
+            holder.tv_comments_tabpost.setText("Xem " + item.get(position).getComments().size() + " bình luận");
+        }else{
+            holder.tv_comments_tabpost.setVisibility(View.GONE);
+        }
         //TimeStamp
         SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String currenttime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
 
         try {
-            Date date1 = formater.parse(item.get(position).getDatetime());
+            Date date1 = formater.parse(item.get(position).getDate_created());
             Date date2 = formater.parse(currenttime);
 
             long different=date2.getTime() - date1.getTime();
@@ -118,106 +188,34 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
 
             holder.tv_time_tabpost.setText(diffTime);
         } catch (ParseException e) {
-            holder.tv_time_tabpost.setText(item.get(position).getDatetime());
+            holder.tv_time_tabpost.setText(item.get(position).getDate_created());
             e.printStackTrace();
         }
+
+        //Like
         holder.img_like_tabpost.setImageResource(R.drawable.ufi_heart_bold);
-        lDatabase.child(item.get(position).getId()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    String k = postSnapshot.getKey();
-                    if (user_id.equals(k)) {
-                        holder.img_like_tabpost.setImageResource(R.drawable.direct_heart);
-                        flag_like[position] = true;
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-              });
-                //Onclick Like
-                holder.img_like_tabpost.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //flag_like = false;
-//                        lDatabase.child(item.get(position).getId()).addListenerForSingleValueEvent(new ValueEventListener() {
-//                            @Override
-//                            public void onDataChange(DataSnapshot dataSnapshot) {
-//                                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-//                                    String k = postSnapshot.getKey();
-//                                    if (user_id.equals(k)) {
-//                                        flag_like = true;
-//                                    }
-//                                }
-                                final DatabaseReference databaseReference = iDatabase.child(item.get(position).getId()).child("likes");
-                                if (flag_like[position]) {
-                                    //holder.img_like_tabpost.setImageResource(R.drawable.ufi_heart_bold);
-                                    flag_like[position] = false;
-                                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            Integer i = dataSnapshot.getValue(Integer.class);
-                                            i--;
-                                            databaseReference.setValue(i);
-                                            lDatabase.child(item.get(position).getId()).child(user_id).setValue(null);
-                                        }
 
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
 
-                                        }
-                                    });
-                                } else {
-                                    //holder.img_like_tabpost.setImageResource(R.drawable.direct_heart);
-                                    flag_like[position] = true;
-                                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            Integer i = dataSnapshot.getValue(Integer.class);
-                                            i++;
-                                            databaseReference.setValue(i);
-                                            lDatabase.child(item.get(position).getId()).child(user_id).setValue(user.getUsername());
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-
-                                        }
-                                    });
-                                }
-                            }
-//
-//        @Override
-//        public void onCancelled(DatabaseError databaseError) {
-//
-//        }
-//    });
-//
-//                    }
-                });
-
-        //onclick comment
-        holder.tv_comments_tabpost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                img_id = item.get(position).getId();
-                Intent intent = new Intent(context,ViewCmt_tabProfile.class);
-                intent.putExtra("imgurl",item.get(position).getImgurl()+"");
-                intent.putExtra("status",item.get(position).getStatus()+"");
-                intent.putExtra("ref_img",iDatabase.toString()+"/"+item.get(position).getId()+"");
-                context.startActivity(intent);
-            }
-        });
+        //View Comment
         holder.img_cmt_tabpost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                img_id = item.get(position).getId();
-                Intent intent = new Intent(context,ViewCmt_tabProfile.class);
-                intent.putExtra("imgurl",item.get(position).getImgurl()+"");
-                intent.putExtra("status",item.get(position).getStatus()+"");
-                intent.putExtra("ref_img",iDatabase.toString()+"/"+item.get(position).getId()+"");
+                Intent intent = new Intent(context, ViewCmt_tabProfile.class);
+                intent.putExtra("caption",item.get(position).getCaption());
+                intent.putExtra("image_path",item.get(position).getImage_path());
+                intent.putExtra("photo_id",item.get(position).getPhoto_id());
+                intent.putParcelableArrayListExtra("ArrayComment", (ArrayList<? extends Parcelable>) item.get(position).getComments());
+                context.startActivity(intent);
+            }
+        });
+        holder.tv_comments_tabpost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ViewCmt_tabProfile.class);
+                intent.putExtra("caption",item.get(position).getCaption());
+                intent.putExtra("image_path",item.get(position).getImage_path());
+                intent.putExtra("photo_id",item.get(position).getPhoto_id());
+                intent.putParcelableArrayListExtra("ArrayComment", (ArrayList<? extends Parcelable>) item.get(position).getComments());
                 context.startActivity(intent);
             }
         });

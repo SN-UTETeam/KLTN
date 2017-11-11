@@ -245,7 +245,6 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                             if(mLikedByCurrentUser[position] &&
                                     singleSnapshot.getValue(Like.class).getUser_id()
                                             .equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
-
                                 databaseRef.child("photos")
                                         .child(item.get(position).getPhoto_id())
                                         .child("likes")

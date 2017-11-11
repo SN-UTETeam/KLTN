@@ -1,6 +1,7 @@
 package pjm.tlcn.Adapter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,12 +11,14 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import pjm.tlcn.Activity.Activity_viewprofile;
 import pjm.tlcn.Model.UserFollow;
 import pjm.tlcn.R;
 
@@ -53,6 +56,7 @@ public class CustomAdapterListFollow extends BaseAdapter implements Filterable {
 
     @Override
     public long getItemId(int position) {
+
         return 0;
     }
 
@@ -62,9 +66,24 @@ public class CustomAdapterListFollow extends BaseAdapter implements Filterable {
         convertView=l.inflate(R.layout.custom_listview_adapter_follow,null);
         img_follow =(ImageView)convertView.findViewById(R.id.image_follow);
         usename_follow=(TextView)convertView.findViewById(R.id.follow_username);
+        usename_follow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ac,Activity_viewprofile.class);
+               // TextView  textView = (TextView) findViewById(R.id.follow_username);
+
+                String test = itemsDisplayed.get(position).getUser_id();
+                //String key =itemsDisplayed.get(position).g
+                intent.putExtra("send", test );
+                Toast.makeText(ac, test, Toast.LENGTH_SHORT).show();
+                v.getContext().startActivity( intent);
+              //  TextView  textView = (TextView) findViewById(R.id.follow_username);
+
+            }
+        });
 
         ///set text
-        usename_follow.setText(itemsDisplayed.get(position).getUsername());
+         usename_follow.setText(itemsDisplayed.get(position).getUsername());
         Picasso
                 .with(ac)
                 .load(itemsDisplayed.get(position).getAvatarurl())
@@ -107,8 +126,8 @@ public class CustomAdapterListFollow extends BaseAdapter implements Filterable {
                        // String image =items.get(i).getAvatarurl();
                         if (items.get(i).getUsername().toLowerCase()
                                 .contains(constraint)) {
-                            UserFollow u =new UserFollow(items.get(i).getUsername(),items.get(i).getAvatarurl());
-                            FilteredArrayNames.add(new UserFollow(u.getUsername(),u.getAvatarurl()));
+                            UserFollow u =new UserFollow(items.get(i).getUsername(),items.get(i).getAvatarurl(),items.get(i).getUser_id());
+                            FilteredArrayNames.add(new UserFollow(u.getUsername(),u.getAvatarurl(),u.getUser_id()));
                         }
                     }
 

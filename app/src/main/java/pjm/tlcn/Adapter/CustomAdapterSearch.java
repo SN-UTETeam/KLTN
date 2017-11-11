@@ -57,4 +57,5 @@ public class CustomAdapterSearch extends BaseAdapter {
 
         return convertView;
     }
+
 }

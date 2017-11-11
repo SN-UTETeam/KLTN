@@ -9,15 +9,24 @@ public class UserFollow {
     private String Username;
 
     private String Avatarurl;
+    private String User_id;
 
-    public UserFollow(String username, String avatarurl) {
-
-        Username = username;
-        Avatarurl = avatarurl;
+    public UserFollow(String user_id,String username, String avatarurl) {
+        this.User_id =user_id;
+        this.Username = username;
+        this.Avatarurl = avatarurl;
     }
 
     public UserFollow() {
         ////
+    }
+
+    public String getUser_id() {
+        return User_id;
+    }
+
+    public void setUser_id(String user_id) {
+        User_id = user_id;
     }
 
     public String getUsername() {

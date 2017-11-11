@@ -1,18 +1,12 @@
 package pjm.tlcn.Activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -43,7 +37,7 @@ public static String useridchatwith ="";
         arrayAdapterUserMessage = new ListViewUserMessage(this,R.layout.item_list_message,arrayFollow);
         listview_user_message.setAdapter(arrayAdapterUserMessage);
 
-        fDatabase.addValueEventListener(new ValueEventListener() {
+      /*  fDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 arrayFollow.clear();
@@ -51,7 +45,7 @@ public static String useridchatwith ="";
                     String uid = postSnapshot.getKey();
                     String uname = postSnapshot.getValue().toString();
                     //Log.d(uid,uname);
-                    arrayFollow.add(new Follow(uid,uname));
+                 //   arrayFollow.add(new Follow(uid,uname));
                     arrayAdapterUserMessage.notifyDataSetChanged();
                 }
             }
@@ -65,11 +59,11 @@ public static String useridchatwith ="";
         listview_user_message.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                usernamechatwith = arrayFollow.get(position).getUsername();
-                useridchatwith = arrayFollow.get(position).getUserid();
-                Intent intent = new Intent(TabActivity_message.this,Chat.class);
-                startActivity(intent);
+              //  usernamechatwith = arrayFollow.get(position).getUsername();
+               // useridchatwith = arrayFollow.get(position).getUser_id();
+               *//* Intent intent = new Intent(TabActivity_message.this,Chat.class);
+                startActivity(intent);*//*
             }
-        });
+        });*/
     }
 }

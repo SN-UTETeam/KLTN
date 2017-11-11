@@ -46,7 +46,7 @@ public class ListViewUserMessage extends ArrayAdapter<Follow> {
             viewHolder = (ViewHolder) view.getTag();
         }
         if(arrayFollow.size()>0 && position>=0)
-        viewHolder.tv_user_message.setText(arrayFollow.get(position).getUsername());
+       // viewHolder.tv_user_message.setText(arrayFollow.get(position).getUsername());
         viewHolder.img_user_message.setVisibility(View.VISIBLE);
         //viewHolder.img_user_message.setImageResource(a);
         return view;

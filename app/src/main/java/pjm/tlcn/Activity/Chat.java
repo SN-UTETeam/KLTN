@@ -1,6 +1,7 @@
 package pjm.tlcn.Activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,6 +27,7 @@ import android.widget.Toast;
 import com.firebase.client.Firebase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -42,11 +45,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import pjm.tlcn.Model.Message;
 import pjm.tlcn.R;
 
 import static pjm.tlcn.Activity.Login.firebaseUser;
-import static pjm.tlcn.Activity.TabActivity_message.useridchatwith;
-import static pjm.tlcn.Activity.TabActivity_message.usernamechatwith;
+import static pjm.tlcn.Activity.Login.user;
 
 public class Chat extends AppCompatActivity {
 
@@ -55,7 +58,7 @@ public class Chat extends AppCompatActivity {
     ImageView sendButton,img_chat_image,img_chat_chose,img_chat_camera;
     EditText messageArea;
     ScrollView scrollView;
-    DatabaseReference reference1, reference2;
+    DatabaseReference databaseRef;
     private StorageReference s1Database,s2Database;
     Toolbar toolbar_chat;
     TextView tv_toolbar_chat;
@@ -95,12 +98,19 @@ public class Chat extends AppCompatActivity {
         });
         //
         scrollView.fullScroll(View.FOCUS_DOWN);
-        tv_toolbar_chat.setText(usernamechatwith);
-        //
+       //
+
+        //Get Intent
+        String room_id = getIntent().getExtras().getString("room_id");
+        String user_id = getIntent().getExtras().getString("user_id");
+        String username = getIntent().getExtras().getString("username");
+        final String user_avatar = getIntent().getExtras().getString("user_avatar");
+
+        tv_toolbar_chat.setText(username);
+
         Firebase.setAndroidContext(this);
-        reference1 = FirebaseDatabase.getInstance().getReference().child("Messages").child("/" + firebaseUser.getUid() + "_" + useridchatwith);
-        reference2 = FirebaseDatabase.getInstance().getReference().child("Messages").child("/" + useridchatwith + "_" + firebaseUser.getUid());
-        s1Database = FirebaseStorage.getInstance().getReference().child("ImageChat").child("/" + firebaseUser.getUid() + "_" + useridchatwith);
+        databaseRef = FirebaseDatabase.getInstance().getReference().child("RoomChat").child(room_id);
+        s1Database = FirebaseStorage.getInstance().getReference().child("ImageChat").child("/" + firebaseUser.getUid() + "_" + user_id);
 
         //Open Galery
         img_chat_chose.setOnClickListener(new View.OnClickListener() {
@@ -129,6 +139,8 @@ public class Chat extends AppCompatActivity {
             public void onClick(View v) {
                final String messageText = messageArea.getText().toString();
                final Map<String, String> map = new HashMap<String, String>();
+
+               if(messageArea.getText().toString().length()>0){
                 //Show progressDialog
                 progressDialog = new ProgressDialog(Chat.this);
                 progressDialog.setMax(100);
@@ -148,7 +160,7 @@ public class Chat extends AppCompatActivity {
                                 bitmap_img_capture, width, height, false);
                         bitmap_img_capture.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                         byte[] data = baos.toByteArray();
-                        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                        String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
                         UploadTask uploadTask = s1Database.child("IMG_"+timeStamp).putBytes(data);
                         // Listen for state changes, errors, and completion of the upload.
                         uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -170,20 +182,25 @@ public class Chat extends AppCompatActivity {
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 // Handle successful uploads on complete
                                 uri_img_download = taskSnapshot.getMetadata().getDownloadUrl();
+                                String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                                Message message = new Message();
+                                message.setMessage(messageText+"");
+                                message.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                message.setImage_url(uri_img_download+"");
+                                message.setUser_avatar(user.getAvatarurl());
+                                message.setDatecreated(timeStamp);
 
-                                map.put("message", messageText+"");
-                                map.put("userid", firebaseUser.getUid());
-                                map.put("imageurl",uri_img_download+"");
-                                reference1.push().setValue(map);
-                                reference2.push().setValue(map);
+                                databaseRef.push().setValue(message);
+                                flag_img_capture=false;
                                 flag_img_select=false;
                                 messageArea.setText("");
+                                hiddenKeyboard();
                                 img_chat_image.setVisibility(View.GONE);
                                 progressDialog.dismiss();
                             }
                         });
 
-                    }
+                    }else
                     if(flag_img_capture){
 
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -195,7 +212,7 @@ public class Chat extends AppCompatActivity {
                                 bitmap_img_capture, width, height, false);
                         bitmap_img_capture.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                         byte[] data = baos.toByteArray();
-                        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                        String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
                         UploadTask uploadTask = s1Database.child("IMG_"+timeStamp).putBytes(data);
                         uploadTask.addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -206,47 +223,62 @@ public class Chat extends AppCompatActivity {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 uri_img_download = taskSnapshot.getMetadata().getDownloadUrl();
-                                map.put("message", messageText+"");
-                                map.put("userid", firebaseUser.getUid());
-                                map.put("imageurl",uri_img_download+"");
-                                reference1.push().setValue(map);
-                                reference2.push().setValue(map);
+                                String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                                Message message = new Message();
+                                message.setMessage(messageText+"");
+                                message.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                message.setImage_url(uri_img_download+"");
+                                message.setUser_avatar(user.getAvatarurl());
+                                message.setDatecreated(timeStamp);
+
+                                databaseRef.push().setValue(message);
+                                flag_img_select=false;
                                 flag_img_capture=false;
                                 messageArea.setText("");
+                                progressDialog.dismiss();
+                                hiddenKeyboard();
                                 img_chat_image.setVisibility(View.GONE);
                             }
                         });
                     }
-                    else {
+                    else
+                        if(!flag_img_capture && !flag_img_select){
 
-                        map.put("message", messageText + "");
-                        map.put("userid", firebaseUser.getUid());
-                        map.put("imageurl", "NoImage");
+                        String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                        Message message = new Message();
+                        message.setMessage(messageText+"");
+                        message.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        message.setUser_avatar(user.getAvatarurl());
+                        message.setImage_url("NoImage");
+                        message.setDatecreated(timeStamp);
 
-                        reference1.push().setValue(map);
-                        reference2.push().setValue(map);
+                        databaseRef.push().setValue(message);
 
                         flag_img_select = false;
+                        flag_img_capture=false;
+                        progressDialog.dismiss();
                         messageArea.setText("");
+                        hiddenKeyboard();
                         img_chat_image.setVisibility(View.GONE);
+
                     }
                 }
+               }else
+                   Toast.makeText(getApplicationContext(), "Hãy nhập tin nhắn", Toast.LENGTH_LONG).show();
             }
         });
 
-        reference1.addChildEventListener(new com.google.firebase.database.ChildEventListener() {
+        databaseRef.addChildEventListener(new com.google.firebase.database.ChildEventListener() {
             @Override
             public void onChildAdded(com.google.firebase.database.DataSnapshot dataSnapshot, String s) {
-                Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                String message = map.get("message").toString();
-                String userId = map.get("userid").toString();
-                String imageurl = map.get("imageurl").toString();
 
-                if(userId.equals(firebaseUser.getUid())){
-                    addMessageBox(message, 1,imageurl);
+                Message message = dataSnapshot.getValue(Message.class);
+
+                if(message.getUser_id().equals(firebaseUser.getUid())){
+                    addMessageBox(message, 1);
                 }
                 else{
-                    addMessageBox(message, 2,imageurl);
+                    addMessageBox(message, 2);
                 }
 
             }
@@ -273,31 +305,32 @@ public class Chat extends AppCompatActivity {
         });
     }
 
-    public void addMessageBox(String message, int type, String image){
-
-        LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.FILL_PARENT,1.0f);
-        lp2.setMargins(20,10,20,10);
+    public void addMessageBox(Message message, int type){
         TextView textView = new TextView(Chat.this);
-        textView.setTextSize(20);
-        textView.setPadding(20,10,20,10);
-        textView.setText(message);
-        textView.setLayoutParams(lp2);
-
-
-        LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT,1.0f);
         ImageView imageView = new ImageView(Chat.this);
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        imageView.setLayoutParams(lp1);
-        imageView.getLayoutParams().height = 800;
-        imageView.getLayoutParams().width = 800;
+        LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.FILL_PARENT,1.0f);
+        LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT, 1.0f);
 
-        imageView.setPadding(20, 10, 20, 10);
-        imageView.setVisibility(View.GONE);
+        if(message.getMessage().length()>0){
+            lp2.setMargins(20,10,20,10);
+            textView.setTextSize(20);
+            textView.setPadding(20,10,20,10);
+            textView.setText(message.getMessage());
+            textView.setLayoutParams(lp2);
+        }
 
+        if(message.getImage_url().length()>7) {
+            imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            imageView.setLayoutParams(lp1);
+            imageView.getLayoutParams().height = 800;
+            imageView.getLayoutParams().width = 800;
+            imageView.setPadding(20, 10, 20, 10);
+            imageView.setVisibility(View.GONE);
+        }
 
-        if(!image.equals("NoImage")) {
+        if(!message.getImage_url().equals("NoImage")) {
 
-            Picasso.with(getApplicationContext()).load(image).fit().centerInside().into(imageView);
+            Picasso.with(getApplicationContext()).load(message.getImage_url()).fit().centerInside().into(imageView);
             imageView.setVisibility(View.VISIBLE);
         }
         else
@@ -318,11 +351,11 @@ public class Chat extends AppCompatActivity {
             textView.setTextColor(Color.WHITE);
             textView.setBackgroundResource(R.drawable.receivedmessage);
         }
-        if(!image.equals("NoImage")){
+        if(!message.getImage_url().equals("NoImage")){
             imageView.setVisibility(View.VISIBLE);
             layout.addView(imageView);}
             else imageView.setVisibility(View.GONE);
-        if(!message.equals("null")&&!message.equals(""))layout.addView(textView);
+        if(!message.getMessage().equals("")&&!message.equals(""))layout.addView(textView);
         scrollView.fullScroll(View.FOCUS_DOWN);
 
     }
@@ -363,5 +396,13 @@ public class Chat extends AppCompatActivity {
                 }
             else
                 Toast.makeText(getApplicationContext(), "You haven't Capture Photo",Toast.LENGTH_LONG).show();
+    }
+    private void hiddenKeyboard(){
+        InputMethodManager inputManager =
+                (InputMethodManager) this.
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(
+                this.getCurrentFocus().getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }

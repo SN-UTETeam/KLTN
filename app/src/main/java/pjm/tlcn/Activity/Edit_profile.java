@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -69,7 +70,7 @@ private Bitmap selectedImage;
         btn_done_editprofile = (Button) findViewById(R.id.btn_done_editprofile);
 
         //Firebase
-        uDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
+        uDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         sDatabase = FirebaseStorage.getInstance().getReference().child("AvatarUsers").child(user_id);
 
         //Show progressDialog
@@ -145,6 +146,9 @@ private Bitmap selectedImage;
                         });
                         flag_img_select=false;
                     }
+                    else {
+                    progressDialog.dismiss();
+                    finish();}
                 }
                 else
                     Toast.makeText(getApplicationContext(),"Vui lòng nhập đúng các thông tin!",Toast.LENGTH_LONG).show();

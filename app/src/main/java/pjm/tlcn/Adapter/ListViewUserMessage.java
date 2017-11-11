@@ -10,25 +10,27 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
-import pjm.tlcn.Model.Follow;
+import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
 
 /**
  * Created by Pjm on 11/1/2017.
  */
 
-public class ListViewUserMessage extends ArrayAdapter<Follow> {
+public class ListViewUserMessage extends ArrayAdapter<User> {
     Activity context;
     int layoutId;
-    ArrayList<Follow> arrayFollow;
+    ArrayList<User> arrayUser;
 
-    public ListViewUserMessage(Activity context,int layoutId,ArrayList<Follow> arrayFollow){
-        super(context, layoutId ,arrayFollow);
+    public ListViewUserMessage(Activity context,int layoutId,ArrayList<User> arrayUser){
+        super(context, layoutId ,arrayUser);
         this.context=context;
         this.layoutId=layoutId;
-        this.arrayFollow=arrayFollow;
+        this.arrayUser=arrayUser;
     }
     @NonNull
     @Override
@@ -45,10 +47,13 @@ public class ListViewUserMessage extends ArrayAdapter<Follow> {
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
-        if(arrayFollow.size()>0 && position>=0)
-       // viewHolder.tv_user_message.setText(arrayFollow.get(position).getUsername());
+        if(arrayUser.size()>0 && position>=0)
+        viewHolder.tv_user_message.setText(arrayUser.get(position).getUsername());
+        try{
+            Picasso.with(context).load(arrayUser.get(position).getAvatarurl()).fit().centerInside().into(viewHolder.img_user_message);
+        }
+        catch (Exception e){}
         viewHolder.img_user_message.setVisibility(View.VISIBLE);
-        //viewHolder.img_user_message.setImageResource(a);
         return view;
     }
     static class ViewHolder {

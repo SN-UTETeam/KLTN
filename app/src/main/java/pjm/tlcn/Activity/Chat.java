@@ -5,22 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +24,8 @@ import com.firebase.client.Firebase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -35,16 +33,17 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import pjm.tlcn.Adapter.MessageAdapter;
 import pjm.tlcn.Model.Message;
 import pjm.tlcn.R;
 
@@ -53,15 +52,13 @@ import static pjm.tlcn.Activity.Login.user;
 
 public class Chat extends AppCompatActivity {
 
-    LinearLayout layout;
-    RelativeLayout layout_2;
     ImageView sendButton,img_chat_image,img_chat_chose,img_chat_camera;
     EditText messageArea;
-    ScrollView scrollView;
     DatabaseReference databaseRef;
-    private StorageReference s1Database,s2Database;
+    private StorageReference s1Database;
     Toolbar toolbar_chat;
     TextView tv_toolbar_chat;
+    ListView lv_chat;
     private int RESULT_LOAD_IMG = 1000;
     private static final int REQUEST_CAMERA = 12;
     private Uri uri_img_select;
@@ -69,20 +66,20 @@ public class Chat extends AppCompatActivity {
     public Bitmap bitmap_img_capture;
     private boolean flag_img_select=false,flag_img_capture=false;
     private ProgressDialog progressDialog;
+    private ArrayList<Message> arrayMessage = new ArrayList<Message>();
+    private MessageAdapter messageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        layout = (LinearLayout) findViewById(R.id.layout1);
-        layout_2 = (RelativeLayout)findViewById(R.id.layout2);
+        lv_chat = (ListView) findViewById(R.id.lv_chat);
         sendButton = (ImageView)findViewById(R.id.sendButton);
         img_chat_image = (ImageView) findViewById(R.id.img_chat_image);
         img_chat_camera = (ImageView) findViewById(R.id.img_chat_camera);
         img_chat_chose = (ImageView) findViewById(R.id.img_chat_chose);
         messageArea = (EditText)findViewById(R.id.messageArea);
-        scrollView = (ScrollView)findViewById(R.id.scrollView);
         toolbar_chat = (Toolbar) findViewById(R.id.toolbar_chat);
         tv_toolbar_chat = (TextView) findViewById(R.id.tv_toolbar_chat);
 
@@ -97,7 +94,8 @@ public class Chat extends AppCompatActivity {
             }
         });
         //
-        scrollView.fullScroll(View.FOCUS_DOWN);
+        messageAdapter = new MessageAdapter(this,arrayMessage);
+        lv_chat.setAdapter(messageAdapter);
        //
 
         //Get Intent
@@ -111,6 +109,37 @@ public class Chat extends AppCompatActivity {
         Firebase.setAndroidContext(this);
         databaseRef = FirebaseDatabase.getInstance().getReference().child("RoomChat").child(room_id);
         s1Database = FirebaseStorage.getInstance().getReference().child("ImageChat").child("/" + firebaseUser.getUid() + "_" + user_id);
+        arrayMessage.clear();
+        databaseRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                Message message= dataSnapshot.getValue(Message.class);
+                Log.d("found mess",message.getMessage());
+                arrayMessage.add(message);
+                messageAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         //Open Galery
         img_chat_chose.setOnClickListener(new View.OnClickListener() {
@@ -140,17 +169,17 @@ public class Chat extends AppCompatActivity {
                final String messageText = messageArea.getText().toString();
                final Map<String, String> map = new HashMap<String, String>();
 
-               if(messageArea.getText().toString().length()>0){
                 //Show progressDialog
                 progressDialog = new ProgressDialog(Chat.this);
                 progressDialog.setMax(100);
                 progressDialog.setMessage("Sending....");
                 progressDialog.setTitle("Sending your message....");
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                progressDialog.show();
-                progressDialog.onStart();
+
                 if(!messageText.equals("")||flag_img_select||flag_img_capture){
-                    if(flag_img_select){ //Upload when chosen img form galery
+                    if(flag_img_select){
+                        progressDialog.show();
+                        progressDialog.onStart();// /Upload when chosen img form galery
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         float aspectRatio = bitmap_img_capture.getWidth() /
                                 (float) bitmap_img_capture.getHeight();
@@ -202,7 +231,8 @@ public class Chat extends AppCompatActivity {
 
                     }else
                     if(flag_img_capture){
-
+                        progressDialog.show();
+                        progressDialog.onStart();
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         float aspectRatio = bitmap_img_capture.getWidth() /
                                 (float) bitmap_img_capture.getHeight();
@@ -242,7 +272,7 @@ public class Chat extends AppCompatActivity {
                         });
                     }
                     else
-                        if(!flag_img_capture && !flag_img_select){
+                        if(messageText.length()>0){
 
                         String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
                         Message message = new Message();
@@ -261,104 +291,71 @@ public class Chat extends AppCompatActivity {
                         hiddenKeyboard();
                         img_chat_image.setVisibility(View.GONE);
 
-                    }
+                        }else
+                            Toast.makeText(getApplicationContext(), "Hãy nhập tin nhắn", Toast.LENGTH_LONG).show();
                 }
-               }else
-                   Toast.makeText(getApplicationContext(), "Hãy nhập tin nhắn", Toast.LENGTH_LONG).show();
+
             }
         });
 
-        databaseRef.addChildEventListener(new com.google.firebase.database.ChildEventListener() {
-            @Override
-            public void onChildAdded(com.google.firebase.database.DataSnapshot dataSnapshot, String s) {
-
-                Message message = dataSnapshot.getValue(Message.class);
-
-                if(message.getUser_id().equals(firebaseUser.getUid())){
-                    addMessageBox(message, 1);
-                }
-                else{
-                    addMessageBox(message, 2);
-                }
-
-            }
-
-            @Override
-            public void onChildChanged(com.google.firebase.database.DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(com.google.firebase.database.DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(com.google.firebase.database.DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    public void addMessageBox(Message message, int type){
-        TextView textView = new TextView(Chat.this);
-        ImageView imageView = new ImageView(Chat.this);
-        LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.FILL_PARENT,1.0f);
-        LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT, 1.0f);
-
-        if(message.getMessage().length()>0){
-            lp2.setMargins(20,10,20,10);
-            textView.setTextSize(20);
-            textView.setPadding(20,10,20,10);
-            textView.setText(message.getMessage());
-            textView.setLayoutParams(lp2);
-        }
-
-        if(message.getImage_url().length()>7) {
-            imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            imageView.setLayoutParams(lp1);
-            imageView.getLayoutParams().height = 800;
-            imageView.getLayoutParams().width = 800;
-            imageView.setPadding(20, 10, 20, 10);
-            imageView.setVisibility(View.GONE);
-        }
-
-        if(!message.getImage_url().equals("NoImage")) {
-
-            Picasso.with(getApplicationContext()).load(message.getImage_url()).fit().centerInside().into(imageView);
-            imageView.setVisibility(View.VISIBLE);
-        }
-        else
-            imageView.setVisibility(View.GONE);
-        if(type == 1) {
-            lp2.gravity = Gravity.RIGHT;
-            lp1.gravity = Gravity.RIGHT;
-            lp2.setMargins(200,10,20,10);
-            lp1.setMargins(200,10,20,10);
-            textView.setTextColor(Color.WHITE);
-            textView.setBackgroundResource(R.drawable.sendmessage);
-        }
-        else{
-            lp2.gravity = Gravity.LEFT;
-            lp1.gravity = Gravity.LEFT;
-            lp2.setMargins(20,10,200,10);
-            lp1.setMargins(20,10,200,10);
-            textView.setTextColor(Color.WHITE);
-            textView.setBackgroundResource(R.drawable.receivedmessage);
-        }
-        if(!message.getImage_url().equals("NoImage")){
-            imageView.setVisibility(View.VISIBLE);
-            layout.addView(imageView);}
-            else imageView.setVisibility(View.GONE);
-        if(!message.getMessage().equals("")&&!message.equals(""))layout.addView(textView);
-        scrollView.fullScroll(View.FOCUS_DOWN);
 
     }
+
+//    public void addMessageBox(Message message, int type){
+//        TextView textView = new TextView(Chat.this);
+//        textView = (TextView) findViewById(R.id.text_send_message_body) ;
+//        ImageView imageView = new ImageView(Chat.this);
+//        LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.FILL_PARENT,1.0f);
+//        LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT, 1.0f);
+//
+//        if(message.getMessage().length()>0){
+//            lp2.setMargins(20,10,20,10);
+//            //textView.setTextSize(20);
+//            //textView.setPadding(20,10,20,10);
+//            textView.setText(message.getMessage());
+//            textView.setLayoutParams(lp2);
+//        }
+//
+//        if(message.getImage_url().length()>7) {
+//            imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+//            imageView.setLayoutParams(lp1);
+//            imageView.getLayoutParams().height = 800;
+//            imageView.getLayoutParams().width = 800;
+//            imageView.setPadding(20, 10, 20, 10);
+//            imageView.setVisibility(View.GONE);
+//        }
+//
+//        if(!message.getImage_url().equals("NoImage")) {
+//
+//            Picasso.with(getApplicationContext()).load(message.getImage_url()).fit().centerInside().into(imageView);
+//            imageView.setVisibility(View.VISIBLE);
+//        }
+//        else
+//            imageView.setVisibility(View.GONE);
+//        if(type == 1) {
+//            lp2.gravity = Gravity.RIGHT;
+//            lp1.gravity = Gravity.RIGHT;
+//            lp2.setMargins(200,10,20,10);
+//            lp1.setMargins(200,10,20,10);
+//            //textView.setTextColor(Color.WHITE);
+//            //textView.setBackgroundResource(R.drawable.sendmessage);
+//        }
+//        else{
+//            lp2.gravity = Gravity.LEFT;
+//            lp1.gravity = Gravity.LEFT;
+//            lp2.setMargins(20,10,200,10);
+//            lp1.setMargins(20,10,200,10);
+//            //textView.setTextColor(Color.WHITE);
+//            //textView.setBackgroundResource(R.drawable.receivedmessage);
+//        }
+//        if(!message.getImage_url().equals("NoImage")){
+//            imageView.setVisibility(View.VISIBLE);
+//            layout.addView(imageView);}
+//            else imageView.setVisibility(View.GONE);
+//        if(!message.getMessage().equals("")&&!message.equals(""))layout.addView(textView);
+//        scrollView.fullScroll(View.FOCUS_DOWN);
+//
+//    }
     @Override
     protected void onActivityResult(int reqCode, int resultCode, Intent data) {
         super.onActivityResult(reqCode, resultCode, data);

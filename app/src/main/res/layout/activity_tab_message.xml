@@ -14,9 +14,10 @@
         android:layout_width="match_parent"
         android:layout_height="50dp">
             <ImageButton
+                android:clickable="false"
+                android:background="@color/colorHaftWhite"
                 android:layout_marginLeft="15dp"
                 android:layout_gravity="center"
-                android:background="@drawable/composer_camera"
                 android:layout_width="40dp"
                 android:layout_height="40dp"/>
             <TextView
@@ -29,6 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent" />
             <ImageButton
+                android:id="@+id/img_new_chat"
                 android:layout_marginRight="15dp"
                 android:layout_gravity="center"
                 android:background="@drawable/empty_story_badge"

@@ -24,6 +24,7 @@
             android:gravity="center"
             android:textSize="12dp"
             android:text="hahaha"
+            android:layout_marginLeft="5dp"
             android:id="@+id/follow_username"
             android:textAllCaps="false"
             android:textStyle="bold"

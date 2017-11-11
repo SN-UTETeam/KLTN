@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,8 +20,6 @@ import java.util.List;
 import pjm.tlcn.Adapter.CustomAdapterSearch;
 import pjm.tlcn.Model.Photo;
 import pjm.tlcn.R;
-
-import static pjm.tlcn.Activity.Login.user_id;
 
 public class TabActivity_search extends AppCompatActivity {
     DatabaseReference uDatabase = FirebaseDatabase.getInstance().getReference();
@@ -46,7 +45,7 @@ public class TabActivity_search extends AppCompatActivity {
                 startActivity(timkiem);
             }
         });
-        getData();
+       // getData();
         gridViewSearch = (GridView) findViewById(R.id.grid_search);
         customAdapterSearch = new CustomAdapterSearch(this, gridviewArrayPhoto);
         gridViewSearch.setAdapter(customAdapterSearch);
@@ -55,7 +54,7 @@ public class TabActivity_search extends AppCompatActivity {
 
     void getData() {
 
-        uDatabase.child("Users").addValueEventListener(new ValueEventListener() {
+        uDatabase.child("users").addValueEventListener(new ValueEventListener() {
             @Override
 
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -63,7 +62,7 @@ public class TabActivity_search extends AppCompatActivity {
                 for (DataSnapshot snop : dataSnapshot.getChildren()) {
                     A.add(snop.getKey());
                 }
-                uDatabase.child("Follow").child(user_id).addValueEventListener(new ValueEventListener() {
+                uDatabase.child("followers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot snop : dataSnapshot.getChildren()) {
@@ -86,7 +85,7 @@ public class TabActivity_search extends AppCompatActivity {
                         for (int i = 0; i < size; i++) {
 
                             String key = C.get(i).toString();
-                            uDatabase.child("Images").child(key).addValueEventListener(new ValueEventListener() {
+                            uDatabase.child("photos").child(key).addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
 

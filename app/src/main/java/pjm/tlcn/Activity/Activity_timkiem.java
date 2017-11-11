@@ -5,7 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -22,10 +24,12 @@ import pjm.tlcn.R;
 
 public class Activity_timkiem extends AppCompatActivity {
 
+    public static int iduser=-1;
     ListView list_follow;
     ArrayList<UserFollow> userArrayListFollow = new ArrayList();
     private CustomAdapterListFollow customAdapterListFollow;
     private EditText editText_TimKiem;
+    private ImageView back_Follow;
     DatabaseReference uDatabase= FirebaseDatabase.getInstance().getReference();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,9 +38,30 @@ public class Activity_timkiem extends AppCompatActivity {
 
 
         list_follow =(ListView)findViewById(R.id.list_follow);
+        back_Follow =(ImageView)findViewById(R.id.back_follow);
+        back_Follow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         getData();
         customAdapterListFollow =new CustomAdapterListFollow(this,userArrayListFollow);
         list_follow.setAdapter(customAdapterListFollow);
+      /*  list_follow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent intent = new Intent(Activity_timkiem.this,Activity_viewprofile.class);
+                TextView  textView = (TextView) findViewById(R.id.follow_username);
+
+                String text = textView.getText().toString();
+                intent.putExtra("send", text );
+                Toast.makeText(Activity_timkiem.this, text, Toast.LENGTH_SHORT).show();
+                startActivity(intent);
+            }
+        });*/
+
 
         editText_TimKiem =(EditText)findViewById(R.id.edittext_timkiem);
         // Add Text Change Listener to EditText
@@ -58,8 +83,10 @@ public class Activity_timkiem extends AppCompatActivity {
             }
         });
     }
+
+
     void getData(){
-        uDatabase.child("Users").addValueEventListener(new ValueEventListener() {
+        uDatabase.child("users").addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -69,8 +96,9 @@ public class Activity_timkiem extends AppCompatActivity {
                     for (DataSnapshot snop : dataSnapshot.getChildren()) {
                         UserFollow temp = new UserFollow();
                         temp = snop.getValue(UserFollow.class);
-                        //  Log.d("AAA", temp.getUsername());
+                         Log.d("AAA", temp.getUsername());
                         userArrayListFollow.add(temp);
+                       // Toast.makeText(Activity_timkiem.this, snop.getKey(), Toast.LENGTH_SHORT).show();
                         customAdapterListFollow.notifyDataSetChanged();
                     }
                 } else {

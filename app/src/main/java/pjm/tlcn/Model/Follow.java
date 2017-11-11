@@ -5,31 +5,24 @@ package pjm.tlcn.Model;
  */
 
 public class Follow {
-    private String userid;
-    private String username;
+    private String user_id;
 
 
-    public Follow(String userid, String username) {
-        this.userid = userid;
-        this.username = username;
+
+    public Follow(String user_id) {
+        this.user_id = user_id;
+
     }
     public Follow() {
     }
-    public String getUserid() {
-        return userid;
+    public String getUser_id() {
+        return user_id;
     }
 
-    public void setUserid(String userid) {
-        this.userid = userid;
+    public void setUserid(String user_id) {
+        this.user_id = user_id;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
 
 

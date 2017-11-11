@@ -19,6 +19,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -30,27 +31,34 @@ import pjm.tlcn.R;
 
 @SuppressWarnings("deprecation")
 public class TabActivity_profile extends FragmentActivity {
-    public DatabaseReference mDatabase,uDatabase;
-    private TextView tv_UserName,tv_describer;
+    public DatabaseReference databaseRef;
+    private TextView tv_UserName,tv_describer,tv_following,tv_follower,tv_post;
 
     private Button btn_edit_profile;
     private ImageButton ImgBtn_setting;
     private ImageView img_avatar;
     public String UserName;
     private ViewPager viewPager;
+
+    private int mFollowersCount = 0;
+    private int mFollowingCount = 0;
+    private int mPostsCount = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_profile);
 
         //Firebase
-        uDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        databaseRef = FirebaseDatabase.getInstance().getReference();
 
         //Create Variable
         btn_edit_profile = (Button) findViewById(R.id.btn_edit_profile);
         ImgBtn_setting = (ImageButton) findViewById(R.id.ImgBtn_setting);
         tv_UserName = (TextView) findViewById(R.id.tv_UserName);
         tv_describer = (TextView) findViewById(R.id.tv_describer);
+        tv_following = (TextView) findViewById(R.id.tv_following);
+        tv_follower = (TextView) findViewById(R.id.tv_follower);
+        tv_post = (TextView) findViewById(R.id.tv_post);
         img_avatar = (ImageView) findViewById(R.id.img_avatar);
         viewPager = (ViewPager) findViewById(R.id.materialup_viewpager);
 
@@ -86,7 +94,10 @@ public class TabActivity_profile extends FragmentActivity {
         //End Set Onclick ImgBtn_setting
 
         //Set UserProfile
-        uDatabase.addValueEventListener(new ValueEventListener() {
+        getPostsCount();
+        getFollowersCount();
+        getFollowingCount();
+        databaseRef.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user=dataSnapshot.getValue(User.class);
@@ -94,6 +105,76 @@ public class TabActivity_profile extends FragmentActivity {
                 tv_describer.setText(user.getDescriber());
                 Picasso.with(getApplicationContext()).load(user.getAvatarurl()).fit().centerInside().into(img_avatar);
 
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+    //getFollowersCount
+    private void getFollowersCount(){
+        mFollowersCount = 0;
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference.child("followers")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot singleSnapshot :  dataSnapshot.getChildren()){
+                    //Log.d(TAG, "onDataChange: found follower:" + singleSnapshot.getValue());
+                    mFollowersCount++;
+                }
+                tv_follower.setText(String.valueOf(mFollowersCount));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getFollowingCount(){
+        mFollowingCount = 0;
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference.child("following")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot singleSnapshot :  dataSnapshot.getChildren()){
+                    //Log.d(TAG, "onDataChange: found following user:" + singleSnapshot.getValue());
+                    mFollowingCount++;
+                }
+                tv_following.setText(String.valueOf(mFollowingCount));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getPostsCount(){
+        mPostsCount = 0;
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference.child("user_photos")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot singleSnapshot :  dataSnapshot.getChildren()){
+                    //Log.d(TAG, "onDataChange: found post:" + singleSnapshot.getValue());
+                    mPostsCount++;
+                }
+                tv_post.setText(String.valueOf(mPostsCount));
             }
 
             @Override

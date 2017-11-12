@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp">
+    <LinearLayout
+        android:layout_gravity="center|left"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_marginLeft="5dp"
+            android:id="@+id/img_avatar_viewfollow"
+            android:layout_gravity="center|left"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:id="@+id/tv_username_viewfollow"
+            android:textColor="@color/colorDark"
+            android:gravity="center|left"
+            android:layout_gravity="center"
+            android:text="Username"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:textColor="@color/colorWhite"
+            android:id="@+id/btn_follow_viewfollow"
+            android:background="@drawable/button_follow"
+            android:layout_width="130dp"
+            android:layout_height="30dp"
+            android:text="Theo dõi"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:textAllCaps="false"
+            />
+    </LinearLayout>
+</LinearLayout>

@@ -61,4 +61,5 @@ public class ListViewUserMessage extends ArrayAdapter<User> {
         ImageView img_user_message;
 
     }
+
 }

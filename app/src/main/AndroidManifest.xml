@@ -64,7 +64,8 @@
         <activity android:name=".Activity.Activity_comment" />
         <activity android:name=".Activity.Activity_share_image" />
         <activity android:name=".Activity.ViewCmt_tabProfile" />
-        <activity android:name=".Activity.NewChat"></activity>
+        <activity android:name=".Activity.NewChat" />
+        <activity android:name=".Activity.ViewFollow"></activity>
     </application>
 
 </manifest>

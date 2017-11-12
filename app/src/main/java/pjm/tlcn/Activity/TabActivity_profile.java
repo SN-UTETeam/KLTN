@@ -123,6 +123,18 @@ public class TabActivity_profile extends FragmentActivity {
                 startActivity(intent);
             }
         });
+
+        //View Following
+        tv_following.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TabActivity_profile.this,ViewFollow.class);
+                intent.putExtra("view","following");
+                intent.putExtra("user_id",FirebaseAuth.getInstance().getCurrentUser().getUid());
+                startActivity(intent);
+            }
+        });
+
     }
     //getFollowersCount
     private void getFollowersCount(){

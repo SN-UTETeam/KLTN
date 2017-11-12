@@ -42,7 +42,7 @@ private DatabaseReference uDatabase;
         View v = inflater.inflate(R.layout.fragment_post, container, false);
 
         rv_tabpost = (RecyclerView) v.findViewById(R.id.rv_tabpost);
-
+        loadData();
         recyclerView_tabPost = new RecyclerView_TabPost(photoArrayList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -60,7 +60,6 @@ private DatabaseReference uDatabase;
                 recyclerView_tabPost.notifyDataSetChanged();
             }
         });
-        loadData();
         return v;
     }
 
@@ -71,8 +70,9 @@ private DatabaseReference uDatabase;
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                photoArrayList.clear();
+
                 if(dataSnapshot.getValue()!=null){
+                    photoArrayList.clear();
                     for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
                         Photo photo = new Photo();
                         Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();

@@ -126,7 +126,7 @@ public class TabActivity_profile extends FragmentActivity {
     }
     //getFollowersCount
     private void getFollowersCount(){
-        mFollowersCount = 0;
+
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child("followers")
@@ -134,6 +134,7 @@ public class TabActivity_profile extends FragmentActivity {
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                mFollowersCount = 0;
                 for(DataSnapshot singleSnapshot :  dataSnapshot.getChildren()){
                     //Log.d(TAG, "onDataChange: found follower:" + singleSnapshot.getValue());
                     mFollowersCount++;
@@ -159,6 +160,7 @@ public class TabActivity_profile extends FragmentActivity {
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                mFollowingCount = 0;
                 for(DataSnapshot singleSnapshot :  dataSnapshot.getChildren()){
                     //Log.d(TAG, "onDataChange: found following user:" + singleSnapshot.getValue());
                     mFollowingCount++;
@@ -182,6 +184,7 @@ public class TabActivity_profile extends FragmentActivity {
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                mPostsCount = 0;
                 for(DataSnapshot singleSnapshot :  dataSnapshot.getChildren()){
                     //Log.d(TAG, "onDataChange: found post:" + singleSnapshot.getValue());
                     mPostsCount++;

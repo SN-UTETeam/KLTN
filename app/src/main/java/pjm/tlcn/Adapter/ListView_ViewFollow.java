@@ -99,7 +99,7 @@ public class ListView_ViewFollow extends ArrayAdapter<User> {
                                 final  String keyID = singleSnapshot.getKey();
 
                                 if (mFollowdByCurrentUser[position] &&
-                                        singleSnapshot.getValue(Follow.class)
+                                        singleSnapshot.getValue(Follow.class).getUser_id()
                                                 .equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
 
                                     databaseRef.child("followers")

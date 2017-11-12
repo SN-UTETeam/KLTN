@@ -49,19 +49,6 @@ public class Activity_timkiem extends AppCompatActivity {
         getData();
         customAdapterListFollow =new CustomAdapterListFollow(this,userArrayListFollow);
         list_follow.setAdapter(customAdapterListFollow);
-      /*  list_follow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Intent intent = new Intent(Activity_timkiem.this,Activity_viewprofile.class);
-                TextView  textView = (TextView) findViewById(R.id.follow_username);
-
-                String text = textView.getText().toString();
-                intent.putExtra("send", text );
-                Toast.makeText(Activity_timkiem.this, text, Toast.LENGTH_SHORT).show();
-                startActivity(intent);
-            }
-        });*/
 
 
         editText_TimKiem =(EditText)findViewById(R.id.edittext_timkiem);

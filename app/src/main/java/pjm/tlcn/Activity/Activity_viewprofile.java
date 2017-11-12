@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -41,6 +42,7 @@ public class Activity_viewprofile extends AppCompatActivity {
     private ImageView img_view_avatar_user;
     private ImageButton image_back;
     private ViewPager viewPager;
+    private Toolbar toolbar_viewprofile;
     private Boolean mFollowdByCurrentUser = false;
 
     @Override
@@ -49,18 +51,29 @@ public class Activity_viewprofile extends AppCompatActivity {
         setContentView(R.layout.activity_viewprofile);
         uDatabase = FirebaseDatabase.getInstance().getReference();
 
-
-        tv_ViewUserName = (TextView) findViewById(R.id.tv_ViewUserName);
-        img_view_avatar_user = (ImageView) findViewById(R.id.id_view_image_user);
-        bt_follow_user = (Button) findViewById(R.id.btn_follow_user);
-        Img_nhantin = (Button) findViewById(R.id.imge_nhantin);
-        image_back =(ImageButton) findViewById(R.id.bt_img_back);
-        image_back.setOnClickListener(new View.OnClickListener() {
+        //Set back Toolbar
+        toolbar_viewprofile = (Toolbar) findViewById(R.id.toolbar_view_profile);
+        setSupportActionBar(toolbar_viewprofile);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar_viewprofile.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+       // toolbar_viewprofile.setTitle();
+        tv_ViewUserName = (TextView) findViewById(R.id.tv_ViewUserName);
+        img_view_avatar_user = (ImageView) findViewById(R.id.id_view_image_user);
+        bt_follow_user = (Button) findViewById(R.id.btn_follow_user);
+        Img_nhantin = (Button) findViewById(R.id.imge_nhantin);
+       /* image_back =(ImageButton) findViewById(R.id.bt_img_back);
+        image_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });*/
 
 
         viewPager = (ViewPager) findViewById(R.id.materialup_viewpager_view);
@@ -80,6 +93,7 @@ public class Activity_viewprofile extends AppCompatActivity {
                 User user = dataSnapshot.getValue(User.class);
                 Picasso.with(getApplicationContext()).load(user.getAvatarurl()).fit().centerInside().into(img_view_avatar_user);
                 tv_ViewUserName.setText(user.getUsername());
+               // toolbar_viewprofile.setTitle(user.getUsername());
             }
 
             @Override

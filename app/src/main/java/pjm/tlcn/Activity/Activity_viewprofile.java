@@ -24,7 +24,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import pjm.tlcn.Fragment.Following;
+import pjm.tlcn.Fragment.Saved;
 import pjm.tlcn.Fragment.Likes;
 import pjm.tlcn.Fragment.View_ProfilePost;
 import pjm.tlcn.Model.Follow;
@@ -235,7 +235,7 @@ public class Activity_viewprofile extends AppCompatActivity {
             } else if (i == 1) {
                 return new Likes();
             } else if (i == 2) {
-                return new Following();
+                return new Saved();
             } else {
                 return new View_ProfilePost();
             }

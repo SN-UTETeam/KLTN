@@ -16,11 +16,22 @@
             android:id="@+id/toolbar_view_profile"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_marginRight="20dp"
-            android:background="@color/colorWhite"
+            android:gravity="center"
+            android:layout_gravity="center"
+            app:titleTextColor="@color/colorPrimary"
+            android:background="@color/colorHaftWhite"
             app:layout_scrollFlags="scroll|enterAlways|snap">
 
-            <include layout="@layout/tolbar" />
+            <TextView
+                android:layout_marginRight="65dp"
+                android:id="@+id/tv_username_viewprofile"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimary"
+                android:gravity="center"
+                android:textSize="16dp"
+                android:text="Username"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
         </android.support.v7.widget.Toolbar>
 
         <android.support.design.widget.CollapsingToolbarLayout

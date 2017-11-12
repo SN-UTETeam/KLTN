@@ -63,7 +63,7 @@ public class Activity_viewprofile extends AppCompatActivity {
             }
         });
        // toolbar_viewprofile.setTitle();
-        tv_ViewUserName = (TextView) findViewById(R.id.tv_ViewUserName);
+        tv_ViewUserName = (TextView) findViewById(R.id.tv_username_viewprofile);
         img_view_avatar_user = (ImageView) findViewById(R.id.id_view_image_user);
         bt_follow_user = (Button) findViewById(R.id.btn_follow_user);
         Img_nhantin = (Button) findViewById(R.id.imge_nhantin);

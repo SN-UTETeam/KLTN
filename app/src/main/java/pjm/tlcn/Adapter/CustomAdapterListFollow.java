@@ -11,7 +11,6 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.squareup.picasso.Picasso;
@@ -34,6 +33,7 @@ public class CustomAdapterListFollow extends BaseAdapter implements Filterable {
     TextView usename_follow;
     LayoutInflater inflater = null;
     ImageLoader imageLoader;
+    public static   String putkey ="";
     public CustomAdapterListFollow(Activity ac, ArrayList<UserFollow> itemsDisplayed) {
         this.ac = ac;
         this.itemsDisplayed=itemsDisplayed;
@@ -72,10 +72,10 @@ public class CustomAdapterListFollow extends BaseAdapter implements Filterable {
                 Intent intent = new Intent(ac,Activity_viewprofile.class);
                // TextView  textView = (TextView) findViewById(R.id.follow_username);
 
-                String test = itemsDisplayed.get(position).getUser_id();
+                 putkey = itemsDisplayed.get(position).getUser_id();
                 //String key =itemsDisplayed.get(position).g
-                intent.putExtra("send", test );
-                Toast.makeText(ac, test, Toast.LENGTH_SHORT).show();
+                intent.putExtra("send", putkey );
+             //   Toast.makeText(ac, test, Toast.LENGTH_SHORT).show();
                 v.getContext().startActivity( intent);
               //  TextView  textView = (TextView) findViewById(R.id.follow_username);
 
@@ -126,8 +126,8 @@ public class CustomAdapterListFollow extends BaseAdapter implements Filterable {
                        // String image =items.get(i).getAvatarurl();
                         if (items.get(i).getUsername().toLowerCase()
                                 .contains(constraint)) {
-                            UserFollow u =new UserFollow(items.get(i).getUsername(),items.get(i).getAvatarurl(),items.get(i).getUser_id());
-                            FilteredArrayNames.add(new UserFollow(u.getUsername(),u.getAvatarurl(),u.getUser_id()));
+                            UserFollow u =new UserFollow(items.get(i).getUser_id(),items.get(i).getUsername(),items.get(i).getAvatarurl());
+                            FilteredArrayNames.add(new UserFollow(u.getUser_id(),u.getUsername(),u.getAvatarurl()));
                         }
                     }
 

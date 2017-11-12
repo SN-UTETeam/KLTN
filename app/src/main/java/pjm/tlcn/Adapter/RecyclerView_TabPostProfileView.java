@@ -35,19 +35,20 @@ import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
 
 import static pjm.tlcn.Activity.Login.user;
+import static pjm.tlcn.Adapter.CustomAdapterListFollow.putkey;
 
 /**
- * Created by Pjm on 11/8/2017.
+ * Created by Phu on 11/8/2017.
  */
 
-public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabPost.RecyclerViewHolder>{
+public class RecyclerView_TabPostProfileView extends RecyclerView.Adapter<RecyclerView_TabPostProfileView.RecyclerViewHolder>{
     private ArrayList<Photo> item = new ArrayList<Photo>();
     Bundle bundle;
     private Context context;
     public static String img_id;
     private StringBuilder[] mUsers ;
     private DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
-    public RecyclerView_TabPost(ArrayList<Photo> item) {
+    public RecyclerView_TabPostProfileView(ArrayList<Photo> item) {
         this.item = item;
     }
     private Boolean[] mLikedByCurrentUser;
@@ -68,13 +69,15 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
         for(int i=0;i<mUsers.length;i++)
             mUsers[i] = new StringBuilder();
 
-        View view = inflater.inflate(R.layout.item_post_tab_profile, parent, false);
+        View view = inflater.inflate(R.layout.custom_item_recyclerview_postviewprofile, parent, false);
         return new RecyclerViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final RecyclerViewHolder holder, final int position) {
-        databaseRef.child("users").child(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
+       // Intent intent = getIntent();
+       // final String key = intent.getStringExtra("send");
+        databaseRef.child("users").child(putkey).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
@@ -105,62 +108,62 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                             .child("users")
                             .orderByChild("user_id")
                             .equalTo(singleSnapshot.getValue(Like.class).getUser_id());
-                                    query.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                            for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+                            for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
 //                                                Log.d("RecyclerView_Tabpost", "onDataChange: found like: " +
 //                                                        singleSnapshot.getValue(User.class).getUsername());
 
-                                                mUsers[position].append(singleSnapshot.getValue(User.class).getUsername());
-                                                mUsers[position].append(",");
-                                            }
-                                            String[] splitUsers = mUsers[position].toString().split(",");
-                                            if(mUsers[position].toString().contains(user.getUsername() + ",")){
-                                                mLikedByCurrentUser[position] = true;
-                                                holder.img_like_tabpost.setImageResource(R.drawable.direct_heart);
-                                            }else{
-                                                mLikedByCurrentUser[position] = false;
-                                            }
+                                mUsers[position].append(singleSnapshot.getValue(User.class).getUsername());
+                                mUsers[position].append(",");
+                            }
+                            String[] splitUsers = mUsers[position].toString().split(",");
+                            if(mUsers[position].toString().contains(user.getUsername() + ",")){
+                                mLikedByCurrentUser[position] = true;
+                                holder.img_like_tabpost.setImageResource(R.drawable.direct_heart);
+                            }else{
+                                mLikedByCurrentUser[position] = false;
+                            }
 
-                                            int length = splitUsers.length;
-                                            //Log.d("length split:"+position+": ",length+"");
-                                            if(length == 1){
-                                                mLikesString[position] = "Người thích: " +"<b>" + splitUsers[0] + "</b>";
-                                            }
-                                            else if(length == 2){
-                                                mLikesString[position] = "Người thích: " + "<b>" + splitUsers[0] + "</b>"
-                                                        + " và " + "<b>" + splitUsers[1] + "</b>";
-                                            }
-                                            else if(length == 3){
-                                                mLikesString[position] = "Người thích: " + "<b>" + splitUsers[0] + "</b>"
-                                                        + ", " + "<b>" + splitUsers[1] + "</b>"
-                                                        + " và " + "<b>" + splitUsers[2] + "</b>";
+                            int length = splitUsers.length;
+                            //Log.d("length split:"+position+": ",length+"");
+                            if(length == 1){
+                                mLikesString[position] = "Người thích: " +"<b>" + splitUsers[0] + "</b>";
+                            }
+                            else if(length == 2){
+                                mLikesString[position] = "Người thích: " + "<b>" + splitUsers[0] + "</b>"
+                                        + " và " + "<b>" + splitUsers[1] + "</b>";
+                            }
+                            else if(length == 3){
+                                mLikesString[position] = "Người thích: " + "<b>" + splitUsers[0] + "</b>"
+                                        + ", " + "<b>" + splitUsers[1] + "</b>"
+                                        + " và " + "<b>" + splitUsers[2] + "</b>";
 
-                                            }
-                                            else if(length == 4){
-                                                mLikesString[position] = "Người thích: " + "<b>" + splitUsers[0] + "</b>"
-                                                        + ", " + "<b>" + splitUsers[1] + "</b>"
-                                                        + ", " + "<b>" + splitUsers[2] + "</b>"
-                                                        + " và " + "<b>" + splitUsers[3] + "</b>";
-                                            }
-                                            else if(length > 4){
-                                                mLikesString[position] = "Người thích: " + "<b>" + splitUsers[0] + "</b>"
-                                                        + ", " + "<b>" + splitUsers[1] + "</b>"
-                                                        + ", " + "<b>" + splitUsers[2] + "</b>"
-                                                        + " và " + "<b>" + (splitUsers.length-3) + "</b>" + " người khác";
-                                            }
-                                            //Log.d("likes string: " +position+": ",mLikesString[position]);
-                                            holder.tv_likes_tabpost.setVisibility(View.VISIBLE);
-                                            holder.tv_likes_tabpost.setText(Html.fromHtml(mLikesString[position]+""));
-                                        }
+                            }
+                            else if(length == 4){
+                                mLikesString[position] = "Người thích: " + "<b>" + splitUsers[0] + "</b>"
+                                        + ", " + "<b>" + splitUsers[1] + "</b>"
+                                        + ", " + "<b>" + splitUsers[2] + "</b>"
+                                        + " và " + "<b>" + splitUsers[3] + "</b>";
+                            }
+                            else if(length > 4){
+                                mLikesString[position] = "Người thích: " + "<b>" + splitUsers[0] + "</b>"
+                                        + ", " + "<b>" + splitUsers[1] + "</b>"
+                                        + ", " + "<b>" + splitUsers[2] + "</b>"
+                                        + " và " + "<b>" + (splitUsers.length-3) + "</b>" + " người khác";
+                            }
+                            //Log.d("likes string: " +position+": ",mLikesString[position]);
+                            holder.tv_likes_tabpost.setVisibility(View.VISIBLE);
+                            holder.tv_likes_tabpost.setText(Html.fromHtml(mLikesString[position]+""));
+                        }
 
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-                                        }
-                                    });
+                        }
+                    });
                 }
                 if(!dataSnapshot.exists()){
                     mLikesString[position] = "";
@@ -210,15 +213,15 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
             if(elapsedMonths>1)
                 diffTime= elapsedMonths +" tháng" + diffTime;
             else
-                if(elapsedDays>1)
-                    diffTime= elapsedDays +" ngày"+ diffTime;
-                 else
-                    if(elapsedHours>1)
-                        diffTime= elapsedHours +" giờ"+ diffTime;
-                 else
-                    if(elapsedMinutes>1)
-                        diffTime= elapsedMinutes +" phút"+ diffTime;
-                    else diffTime="Vừa xong";
+            if(elapsedDays>1)
+                diffTime= elapsedDays +" ngày"+ diffTime;
+            else
+            if(elapsedHours>1)
+                diffTime= elapsedHours +" giờ"+ diffTime;
+            else
+            if(elapsedMinutes>1)
+                diffTime= elapsedMinutes +" phút"+ diffTime;
+            else diffTime="Vừa xong";
 
             holder.tv_time_tabpost.setText(diffTime);
         } catch (ParseException e) {
@@ -250,7 +253,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                                         .child("likes")
                                         .child(keyID)
                                         .removeValue();
-        ///
+                                ///
                                 databaseRef.child("user_photos")
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(item.get(position).getPhoto_id())
@@ -367,16 +370,16 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
         ImageView img_avatar_tabpost,img_image_tabpost,img_cmt_tabpost,img_like_tabpost;
         public RecyclerViewHolder(View itemView) {
             super(itemView);
-            img_cmt_tabpost = (ImageView) itemView.findViewById(R.id.img_cmt_tabpost);
-            img_like_tabpost = (ImageView) itemView.findViewById(R.id.img_like_tabpost);
-            tv_username_tabpost = (TextView) itemView.findViewById(R.id.tv_username_tabpost);
-            tv_likes_tabpost = (TextView) itemView.findViewById(R.id.tv_likes_tabpost);
-            tv_status_tabpost = (TextView) itemView.findViewById(R.id.tv_status_tabpost);
-            tv_comments_tabpost = (TextView) itemView.findViewById(R.id.tv_comments_tabpost);
-            img_avatar_tabpost = (ImageView) itemView.findViewById(R.id.img_avatar_tabpost);
-            img_image_tabpost = (ImageView) itemView.findViewById(R.id.img_image_tabpost);
-            tv_time_tabpost = (TextView) itemView.findViewById(R.id.tv_time_tabpost);
-            tv_username = (TextView) itemView.findViewById(R.id.tv_username);
+            img_cmt_tabpost = (ImageView) itemView.findViewById(R.id.img_cmt_tab_post_view);
+            img_like_tabpost = (ImageView) itemView.findViewById(R.id.img_like_tab_post_view);
+            tv_username_tabpost = (TextView) itemView.findViewById(R.id.tv_username_tab_post_view);
+            tv_likes_tabpost = (TextView) itemView.findViewById(R.id.tv_likes_tab_post_view);
+            tv_status_tabpost = (TextView) itemView.findViewById(R.id.tv_status_tab_post_view);
+            tv_comments_tabpost = (TextView) itemView.findViewById(R.id.tv_comments_tab_post_view);
+            img_avatar_tabpost = (ImageView) itemView.findViewById(R.id.img_avatar_tab_post_view);
+            img_image_tabpost = (ImageView) itemView.findViewById(R.id.img_image_tab_post_view);
+            tv_time_tabpost = (TextView) itemView.findViewById(R.id.tv_time_tab_post_view);
+            tv_username = (TextView) itemView.findViewById(R.id.tv_username_view);
         }
     }
 }

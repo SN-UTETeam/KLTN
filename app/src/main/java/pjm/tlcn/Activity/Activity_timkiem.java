@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -92,15 +93,20 @@ public class Activity_timkiem extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 if (dataSnapshot.getValue() != null) {
-                    userArrayListFollow.clear();
-                    for (DataSnapshot snop : dataSnapshot.getChildren()) {
-                        UserFollow temp = new UserFollow();
-                        temp = snop.getValue(UserFollow.class);
-                         Log.d("AAA", temp.getUsername());
-                        userArrayListFollow.add(temp);
-                       // Toast.makeText(Activity_timkiem.this, snop.getKey(), Toast.LENGTH_SHORT).show();
-                        customAdapterListFollow.notifyDataSetChanged();
-                    }
+
+                     Log.d("usser",FirebaseAuth.getInstance().getCurrentUser().getUid());
+                      userArrayListFollow.clear();
+                      for (DataSnapshot snop : dataSnapshot.getChildren()) {
+
+
+                              UserFollow temp = new UserFollow();
+                              temp = snop.getValue(UserFollow.class);
+                              Log.d("AAA", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                              userArrayListFollow.add(temp);
+                              // Toast.makeText(Activity_timkiem.this, snop.getKey(), Toast.LENGTH_SHORT).show();
+                              customAdapterListFollow.notifyDataSetChanged();
+
+                  }
                 } else {
                     Log.d("list", "NUL");
                 }

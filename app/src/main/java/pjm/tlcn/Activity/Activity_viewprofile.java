@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -27,7 +26,7 @@ import com.squareup.picasso.Picasso;
 
 import pjm.tlcn.Fragment.Following;
 import pjm.tlcn.Fragment.Likes;
-import pjm.tlcn.Fragment.Post;
+import pjm.tlcn.Fragment.View_ProfilePost;
 import pjm.tlcn.Model.Follow;
 import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
@@ -86,9 +85,11 @@ public class Activity_viewprofile extends AppCompatActivity {
                 for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
                     if(key.equals(singleSnapshot.getValue(Follow.class).getUser_id())){
                         Img_nhantin.setVisibility(View.VISIBLE);
+                        mFollowdByCurrentUser=true;
                         bt_follow_user.setText("Đang theo dõi");
                         bt_follow_user.setTextColor(Color.BLACK);
                         bt_follow_user.setBackgroundResource(R.drawable.button_edit_profile);
+                        Log.d("Is follow",mFollowdByCurrentUser.toString());
                     }
                 }
             }
@@ -116,27 +117,33 @@ public class Activity_viewprofile extends AppCompatActivity {
                 bt_follow_user.setTextColor(Color.BLACK);
                 bt_follow_user.setBackgroundResource(R.drawable.button_edit_profile);*/
                 Query query = uDatabase.child("followers").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                query.addValueEventListener(new ValueEventListener() {
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                            String keyID = singleSnapshot.getKey();
-
+                          final  String keyID = singleSnapshot.getKey();
+                            Log.d("Boolen",mFollowdByCurrentUser.toString());
+                            Log.d("Found user",singleSnapshot.getValue(Follow.class)
+                                    .getUser_id() + " == " + FirebaseAuth.getInstance().getCurrentUser().getUid());
                             if (mFollowdByCurrentUser &&
                                     singleSnapshot.getValue(Follow.class)
-                                            .getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                                Log.d("cay",singleSnapshot.getKey());
+                                            .getUser_id().equals(String.valueOf(key))) {
+
                                 uDatabase.child("followers")
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                        .child(singleSnapshot.getKey())
+                                        .child(keyID)
                                         .removeValue();
+                                Log.d("Clear",keyID);
 
-                                Toast.makeText(Activity_viewprofile.this, singleSnapshot.getKey(), Toast.LENGTH_SHORT).show();
+                              //  Toast.makeText(Activity_viewprofile.this, FirebaseAuth.getInstance().getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
                                 uDatabase.child("following")
                                         .child(key)
-                                        .child(singleSnapshot.getKey())
+                                        .child(keyID)
                                         .removeValue();
+                                mFollowdByCurrentUser=false;
+                                bt_follow_user.setText("Theo dõi");
                                 bt_follow_user.setBackgroundResource(R.drawable.custom_button_viewprofile);
+                                bt_follow_user.setTextColor(Color.WHITE);
                                 Img_nhantin.setVisibility(View.GONE);
                                 //End Setup
                             }
@@ -159,13 +166,12 @@ public class Activity_viewprofile extends AppCompatActivity {
                                         .child(newkey)
                                         .setValue(following);
 
-
+                                Img_nhantin.setVisibility(View.VISIBLE);
                                 bt_follow_user.setText("Đang theo dõi");
                                 bt_follow_user.setTextColor(Color.BLACK);
                                 bt_follow_user.setBackgroundResource(R.drawable.button_edit_profile);
-                                Img_nhantin.setVisibility(View.VISIBLE);
+
                                 mFollowdByCurrentUser = true;
-                                break;
                             }
                         }
                         if (!dataSnapshot.exists()) {
@@ -225,13 +231,13 @@ public class Activity_viewprofile extends AppCompatActivity {
         @Override
         public Fragment getItem(int i) {
             if (i == 0) {
-                return new Post();
+                return new View_ProfilePost();
             } else if (i == 1) {
                 return new Likes();
             } else if (i == 2) {
                 return new Following();
             } else {
-                return new Post();
+                return new View_ProfilePost();
             }
         }
 

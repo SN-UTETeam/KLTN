@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,32 +20,32 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import pjm.tlcn.Adapter.RecyclerView_TabPost;
+import pjm.tlcn.Adapter.RecyclerView_TabPostProfileView;
 import pjm.tlcn.Model.Comment;
 import pjm.tlcn.Model.Photo;
 import pjm.tlcn.R;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
-public class Post extends Fragment{
-private RecyclerView rv_tabpost;
-SwipeRefreshLayout mSwipeRefreshLayout;
-private RecyclerView_TabPost recyclerView_tabPost;
-private ArrayList<Photo> photoArrayList = new ArrayList<Photo>();
-private DatabaseReference uDatabase;
 
+public class View_ProfilePost extends Fragment {
+    private RecyclerView rv_tabpostView;
+    SwipeRefreshLayout mSwipeRefreshLayout;
+    private RecyclerView_TabPostProfileView recyclerView_tabPostProfileView;
+    private ArrayList<Photo> photoArrayList = new ArrayList<Photo>();
+    private DatabaseReference uDatabase;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_post, container, false);
+        // Inflate the layout for this fragment
+        View v =inflater.inflate(R.layout.fragment_view__profile_post, container, false);
+        rv_tabpostView = (RecyclerView) v.findViewById(R.id.rv_tabpostView);
 
-        rv_tabpost = (RecyclerView) v.findViewById(R.id.rv_tabpost);
-
-        recyclerView_tabPost = new RecyclerView_TabPost(photoArrayList);
+        recyclerView_tabPostProfileView = new RecyclerView_TabPostProfileView(photoArrayList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        rv_tabpost.setLayoutManager(layoutManager);
-        rv_tabpost.setAdapter(recyclerView_tabPost);
+        rv_tabpostView.setLayoutManager(layoutManager);
+        rv_tabpostView.setAdapter(recyclerView_tabPostProfileView);
 
         //Swipe
         mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_container);
@@ -56,7 +55,7 @@ private DatabaseReference uDatabase;
                 mSwipeRefreshLayout.setRefreshing(false);
                 photoArrayList.clear();
                 loadData();
-                recyclerView_tabPost.notifyDataSetChanged();
+                recyclerView_tabPostProfileView.notifyDataSetChanged();
             }
         });
         loadData();
@@ -65,13 +64,19 @@ private DatabaseReference uDatabase;
 
     public void loadData(){
         //Firebase
-        uDatabase = FirebaseDatabase.getInstance().getReference().child("user_photos").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        //get key tu ben adapter
+       final String key_user = getActivity().getIntent().getStringExtra("send");
+       // Intent intent = getIntent();
+       // final String key = intent.getStringExtra("send");
+
+        uDatabase = FirebaseDatabase.getInstance().getReference().child("user_photos").child(key_user);
         uDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 photoArrayList.clear();
                 if(dataSnapshot.getValue()!=null){
                     for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+
                         Photo photo = new Photo();
                         Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
 
@@ -95,7 +100,7 @@ private DatabaseReference uDatabase;
                         photoArrayList.add(photo);
                     }
                     Collections.reverse(photoArrayList);
-                    recyclerView_tabPost.notifyDataSetChanged();
+                    recyclerView_tabPostProfileView.notifyDataSetChanged();
                 }
             }
 
@@ -105,4 +110,7 @@ private DatabaseReference uDatabase;
             }
         });
     }
+
+
+
 }

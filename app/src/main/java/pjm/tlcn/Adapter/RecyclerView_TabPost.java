@@ -74,7 +74,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
 
     @Override
     public void onBindViewHolder(final RecyclerViewHolder holder, final int position) {
-        databaseRef.child("users").child(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
+        databaseRef.child("users").child(item.get(position).getUser_id()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
@@ -252,7 +252,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                                         .removeValue();
         ///
                                 databaseRef.child("user_photos")
-                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child(item.get(position).getUser_id())
                                         .child(item.get(position).getPhoto_id())
                                         .child("likes")
                                         .child(keyID)

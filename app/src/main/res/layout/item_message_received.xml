@@ -10,8 +10,8 @@
     android:layout_width="match_parent"
 
     android:layout_height="wrap_content"
-
-    android:paddingTop="8dp">
+    android:paddingBottom="5dp"
+    android:paddingTop="5dp">
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/image_message_profile"
         android:layout_width="40dp"
@@ -24,10 +24,11 @@
         android:adjustViewBounds="true"
         android:visibility="gone"
         android:id="@+id/image_message_body"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="200dp"
         app:layout_constraintLeft_toRightOf="@+id/image_message_profile"
-        android:layout_marginLeft="8dp"
+        android:layout_marginRight="100dp"
+        android:layout_marginLeft="50dp"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="4dp" />
 
@@ -37,7 +38,8 @@
         android:background="@drawable/rounded_rectangle_blue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxWidth="350dp"
+        android:maxWidth="250dp"
+        android:layout_marginRight="200dp"
         android:padding="8dp"
         android:textColor="#ffffff"
         android:layout_marginTop="4dp"
@@ -55,6 +57,7 @@
         android:layout_marginLeft="4dp"
         app:layout_constraintBottom_toBottomOf="@+id/text_message_body" />
     <TextView
+        android:layout_marginRight="100dp"
         android:visibility="gone"
         android:id="@+id/text_message_time_image"
         android:text="11:40"

@@ -52,7 +52,7 @@ private ImageButton img_new_chat;
         listViewUserMessage = new ListViewUserMessage(this,R.layout.item_list_message,arrayUser);
         listview_user_message.setAdapter(listViewUserMessage);
 
-        databaseRef.child("Chat").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseRef.child("Chat").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 arrayUser.clear();

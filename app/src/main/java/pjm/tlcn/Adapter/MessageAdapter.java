@@ -83,13 +83,13 @@ public class MessageAdapter extends BaseAdapter{
 
         if(items.get(position).getMessage().length()>0) {
             if(items.get(position).getImage_url().length()>7){
-                text_message_time.setText(items.get(position).getDatecreated());
+                text_message_time.setText(items.get(position).getDatecreated().toString().substring(11,16));
                 text_message_body.setText(items.get(position).getMessage());
                 Picasso.with(activity).load(items.get(position).getImage_url()).fit().centerInside().into(image_message_body);
                 image_message_body.setVisibility(View.VISIBLE);
             }
             else {
-                text_message_time.setText(items.get(position).getDatecreated());
+                text_message_time.setText(items.get(position).getDatecreated().toString().substring(11,16));
                 text_message_body.setText(items.get(position).getMessage());
             }
         }
@@ -97,7 +97,7 @@ public class MessageAdapter extends BaseAdapter{
             text_message_body.setVisibility(View.GONE);
             Picasso.with(activity).load(items.get(position).getImage_url()).fit().centerInside().into(image_message_body);
             image_message_body.setVisibility(View.VISIBLE);
-            text_message_time_image.setText(items.get(position).getDatecreated());
+            text_message_time_image.setText(items.get(position).getDatecreated().toString().substring(11,16));
             text_message_time_image.setVisibility(View.VISIBLE);
             text_message_time.setVisibility(View.GONE);
         }

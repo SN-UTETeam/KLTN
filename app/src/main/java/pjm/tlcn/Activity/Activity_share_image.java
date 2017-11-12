@@ -123,8 +123,6 @@ public class Activity_share_image extends AppCompatActivity {
                         photo.setPhoto_id(newPhotoKey);
 
                         //insert into database
-                        databaseRef.child("user_photos").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(newPhotoKey)
-                                .setValue(photo);
                         databaseRef.child("photos").child(newPhotoKey).setValue(photo);
                         progressDialog.dismiss();
                         Intent it = new Intent();

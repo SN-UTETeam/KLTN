@@ -13,6 +13,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -69,8 +70,9 @@ public class View_ProfilePost extends Fragment {
        // Intent intent = getIntent();
        // final String key = intent.getStringExtra("send");
 
-        uDatabase = FirebaseDatabase.getInstance().getReference().child("user_photos").child(key_user);
-        uDatabase.addValueEventListener(new ValueEventListener() {
+        uDatabase = FirebaseDatabase.getInstance().getReference().child("photos");
+        Query query = uDatabase.orderByChild("user_id").equalTo(key_user);
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 photoArrayList.clear();

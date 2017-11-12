@@ -243,7 +243,7 @@ public class TabActivity_profile extends FragmentActivity {
 
                case 1: return "Đã thích";
 
-               case 2: return "Đang theo dõi";
+               case 2: return "Đã lưu";
                default:
                    return null;
            }

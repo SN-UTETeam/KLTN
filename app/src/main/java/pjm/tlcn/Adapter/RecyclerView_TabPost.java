@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
         this.item = item;
     }
     private Boolean[] mLikedByCurrentUser;
+    private Boolean[] mSavedByCurrentUser;
     private String[] mLikesString;
 
     @Override
@@ -60,6 +62,9 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
 
         mLikedByCurrentUser = new Boolean[item.size()];
         Arrays.fill(mLikedByCurrentUser, Boolean.FALSE);
+
+        mSavedByCurrentUser = new Boolean[item.size()];
+        Arrays.fill(mSavedByCurrentUser, Boolean.FALSE);
 
         mLikesString = new String[item.size()];
         Arrays.fill(mLikesString,"");
@@ -89,8 +94,34 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
             }
         });
         Picasso.with(context).load(item.get(position).getImage_path()).fit().centerCrop().into(holder.img_image_tabpost);
-        //GetLike
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        //Get Saved
+        Query query1= reference.child("saved").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        query1.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                   if(singleSnapshot.child("photo_id").getValue().toString().equals(item.get(position).getPhoto_id())){
+                       mSavedByCurrentUser[position]=true;
+                       holder.img_save_tabpost.setImageResource(R.drawable.ufi_save_active);
+                   }
+                }
+                if(!dataSnapshot.exists()){
+                    mSavedByCurrentUser[position] = false;
+                    holder.img_save_tabpost.setImageResource(R.drawable.ufi_save);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+        //GetLike
+
         Query query = reference
                 .child("photos")
                 .child(item.get(position).getPhoto_id())
@@ -335,6 +366,65 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                 context.startActivity(intent);
             }
         });
+
+        holder.img_save_tabpost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                //Get Saved
+                Query query= reference.child("saved").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                            Log.d("Found ",singleSnapshot.child("photo_id").getValue().toString());
+                            Log.d("item",item.get(position).getPhoto_id());
+                            Log.d("Saved",mSavedByCurrentUser[position].toString());
+                            if(mSavedByCurrentUser[position] && singleSnapshot.child("photo_id").getValue().toString().equals(item.get(position).getPhoto_id())){
+                                Log.d("remove",singleSnapshot.getKey());
+                                holder.img_save_tabpost.setImageResource(R.drawable.ufi_save);
+                                databaseRef.child("saved")
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child(singleSnapshot.getKey())
+                                        .removeValue();
+                                mSavedByCurrentUser[position]=false;
+                                break;
+
+                            }
+                            else
+                                if (!mSavedByCurrentUser[position]){
+                                    Log.d("save",item.get(position).getPhoto_id());
+                                    String newkey=databaseRef.push().getKey();
+                                    databaseRef.child("saved")
+                                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                            .child(newkey)
+                                            .child("photo_id")
+                                            .setValue(item.get(position).getPhoto_id());
+                                    mSavedByCurrentUser[position]=true;
+                                    holder.img_save_tabpost.setImageResource(R.drawable.ufi_save_active);
+                                    break;
+                                }
+                        }
+                        if(!dataSnapshot.exists()){
+                            Log.d("save",item.get(position).getPhoto_id());
+                            String newkey=databaseRef.push().getKey();
+                            databaseRef.child("saved")
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .child(newkey)
+                                    .child("photo_id")
+                                    .setValue(item.get(position).getPhoto_id());
+                            mSavedByCurrentUser[position]=true;
+                            holder.img_save_tabpost.setImageResource(R.drawable.ufi_save_active);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -345,7 +435,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
 
     public class RecyclerViewHolder extends RecyclerView.ViewHolder {
         TextView tv_username_tabpost,tv_likes_tabpost,tv_status_tabpost,tv_comments_tabpost,tv_time_tabpost,tv_username;
-        ImageView img_avatar_tabpost,img_image_tabpost,img_cmt_tabpost,img_like_tabpost;
+        ImageView img_avatar_tabpost,img_image_tabpost,img_cmt_tabpost,img_like_tabpost,img_save_tabpost;
         public RecyclerViewHolder(View itemView) {
             super(itemView);
             img_cmt_tabpost = (ImageView) itemView.findViewById(R.id.img_cmt_tabpost);
@@ -358,6 +448,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
             img_image_tabpost = (ImageView) itemView.findViewById(R.id.img_image_tabpost);
             tv_time_tabpost = (TextView) itemView.findViewById(R.id.tv_time_tabpost);
             tv_username = (TextView) itemView.findViewById(R.id.tv_username);
+            img_save_tabpost = (ImageView) itemView.findViewById(R.id.img_save_tabpost);
         }
     }
 }

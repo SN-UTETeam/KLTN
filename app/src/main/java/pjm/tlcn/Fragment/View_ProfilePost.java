@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import pjm.tlcn.Adapter.RecyclerView_TabPostProfileView;
+import pjm.tlcn.Adapter.RecyclerView_TabPost;
 import pjm.tlcn.Model.Comment;
 import pjm.tlcn.Model.Photo;
 import pjm.tlcn.R;
@@ -31,7 +31,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class View_ProfilePost extends Fragment {
     private RecyclerView rv_tabpostView;
     SwipeRefreshLayout mSwipeRefreshLayout;
-    private RecyclerView_TabPostProfileView recyclerView_tabPostProfileView;
+    private RecyclerView_TabPost recyclerView_tabPostProfileView;
     private ArrayList<Photo> photoArrayList = new ArrayList<Photo>();
     private DatabaseReference uDatabase;
     @Override
@@ -41,7 +41,7 @@ public class View_ProfilePost extends Fragment {
         View v =inflater.inflate(R.layout.fragment_view__profile_post, container, false);
         rv_tabpostView = (RecyclerView) v.findViewById(R.id.rv_tabpostView);
 
-        recyclerView_tabPostProfileView = new RecyclerView_TabPostProfileView(photoArrayList);
+        recyclerView_tabPostProfileView = new RecyclerView_TabPost(photoArrayList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rv_tabpostView.setLayoutManager(layoutManager);

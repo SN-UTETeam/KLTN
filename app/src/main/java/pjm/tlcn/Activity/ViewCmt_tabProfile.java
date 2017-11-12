@@ -61,6 +61,7 @@ public class ViewCmt_tabProfile extends AppCompatActivity {
         final String photo_id = getIntent().getExtras().getString("photo_id");
         final String caption = getIntent().getExtras().getString("caption");
         String image_path = getIntent().getExtras().getString("image_path");
+        final String user_id = getIntent().getExtras().getString("user_id");
         cmt_tabProfiles = getIntent().getParcelableArrayListExtra("ArrayComment");
         ref_img = getIntent().getExtras().getString("ref_img");
 
@@ -116,7 +117,7 @@ public class ViewCmt_tabProfile extends AppCompatActivity {
                             .child(commentID)
                             .setValue(comment);
                     databaseRef.child("user_photos")
-                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .child(user_id)
                             .child(photo_id)
                             .child("comments")
                             .child(commentID)

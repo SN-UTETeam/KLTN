@@ -82,15 +82,19 @@ public class MessageAdapter extends BaseAdapter{
         Picasso.with(activity).load(items.get(position).getUser_avatar()).fit().centerInside().into(image_message_profile);
 
         if(items.get(position).getMessage().length()>0) {
-            if(items.get(position).getImage_url().length()>7){
+            if(items.get(position).getImage_url().length()>10){
                 text_message_time.setText(items.get(position).getDatecreated().toString().substring(11,16));
                 text_message_body.setText(items.get(position).getMessage());
+                text_message_body.setVisibility(View.VISIBLE);
+                text_message_time.setVisibility(View.VISIBLE);
                 Picasso.with(activity).load(items.get(position).getImage_url()).fit().centerInside().into(image_message_body);
                 image_message_body.setVisibility(View.VISIBLE);
             }
             else {
                 text_message_time.setText(items.get(position).getDatecreated().toString().substring(11,16));
                 text_message_body.setText(items.get(position).getMessage());
+                image_message_body.setVisibility(View.GONE);
+                text_message_time_image.setVisibility(View.GONE);
             }
         }
         else {

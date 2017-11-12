@@ -175,7 +175,7 @@ public class Chat extends AppCompatActivity {
                 progressDialog.setTitle("Sending your message....");
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 
-                if(!messageText.equals("")||flag_img_select||flag_img_capture){
+                if(messageText.trim().length()>0||flag_img_select||flag_img_capture){
                     if(flag_img_select){
                         progressDialog.show();
                         progressDialog.onStart();// /Upload when chosen img form galery
@@ -271,7 +271,7 @@ public class Chat extends AppCompatActivity {
                         });
                     }
                     else
-                        if(messageText.length()>0){
+                        if(messageText.trim().length()>0){
 
                         String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
                         Message message = new Message();
@@ -291,7 +291,7 @@ public class Chat extends AppCompatActivity {
                         img_chat_image.setVisibility(View.GONE);
 
                         }else
-                            Toast.makeText(getApplicationContext(), "Hãy nhập tin nhắn", Toast.LENGTH_LONG).show();
+                            Toast.makeText(Chat.this, "Hãy nhập tin nhắn", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -300,61 +300,7 @@ public class Chat extends AppCompatActivity {
 
     }
 
-//    public void addMessageBox(Message message, int type){
-//        TextView textView = new TextView(Chat.this);
-//        textView = (TextView) findViewById(R.id.text_send_message_body) ;
-//        ImageView imageView = new ImageView(Chat.this);
-//        LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.FILL_PARENT,1.0f);
-//        LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT, 1.0f);
-//
-//        if(message.getMessage().length()>0){
-//            lp2.setMargins(20,10,20,10);
-//            //textView.setTextSize(20);
-//            //textView.setPadding(20,10,20,10);
-//            textView.setText(message.getMessage());
-//            textView.setLayoutParams(lp2);
-//        }
-//
-//        if(message.getImage_url().length()>7) {
-//            imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-//            imageView.setLayoutParams(lp1);
-//            imageView.getLayoutParams().height = 800;
-//            imageView.getLayoutParams().width = 800;
-//            imageView.setPadding(20, 10, 20, 10);
-//            imageView.setVisibility(View.GONE);
-//        }
-//
-//        if(!message.getImage_url().equals("NoImage")) {
-//
-//            Picasso.with(getApplicationContext()).load(message.getImage_url()).fit().centerInside().into(imageView);
-//            imageView.setVisibility(View.VISIBLE);
-//        }
-//        else
-//            imageView.setVisibility(View.GONE);
-//        if(type == 1) {
-//            lp2.gravity = Gravity.RIGHT;
-//            lp1.gravity = Gravity.RIGHT;
-//            lp2.setMargins(200,10,20,10);
-//            lp1.setMargins(200,10,20,10);
-//            //textView.setTextColor(Color.WHITE);
-//            //textView.setBackgroundResource(R.drawable.sendmessage);
-//        }
-//        else{
-//            lp2.gravity = Gravity.LEFT;
-//            lp1.gravity = Gravity.LEFT;
-//            lp2.setMargins(20,10,200,10);
-//            lp1.setMargins(20,10,200,10);
-//            //textView.setTextColor(Color.WHITE);
-//            //textView.setBackgroundResource(R.drawable.receivedmessage);
-//        }
-//        if(!message.getImage_url().equals("NoImage")){
-//            imageView.setVisibility(View.VISIBLE);
-//            layout.addView(imageView);}
-//            else imageView.setVisibility(View.GONE);
-//        if(!message.getMessage().equals("")&&!message.equals(""))layout.addView(textView);
-//        scrollView.fullScroll(View.FOCUS_DOWN);
-//
-//    }
+
     @Override
     protected void onActivityResult(int reqCode, int resultCode, Intent data) {
         super.onActivityResult(reqCode, resultCode, data);

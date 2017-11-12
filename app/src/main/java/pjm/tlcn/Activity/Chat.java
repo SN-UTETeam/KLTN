@@ -11,7 +11,6 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -105,7 +104,6 @@ public class Chat extends AppCompatActivity {
         final String user_avatar = getIntent().getExtras().getString("user_avatar");
 
         tv_toolbar_chat.setText(username);
-
         Firebase.setAndroidContext(this);
         databaseRef = FirebaseDatabase.getInstance().getReference().child("RoomChat").child(room_id);
         s1Database = FirebaseStorage.getInstance().getReference().child("ImageChat").child("/" + firebaseUser.getUid() + "_" + user_id);
@@ -115,9 +113,10 @@ public class Chat extends AppCompatActivity {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
                 Message message= dataSnapshot.getValue(Message.class);
-                Log.d("found mess",message.getMessage());
+                //Log.d("found mess",message.getMessage());
                 arrayMessage.add(message);
                 messageAdapter.notifyDataSetChanged();
+                lv_chat.setSelection(arrayMessage.size()-1);
             }
 
             @Override

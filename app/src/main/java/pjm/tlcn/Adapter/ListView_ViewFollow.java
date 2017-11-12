@@ -54,8 +54,6 @@ public class ListView_ViewFollow extends ArrayAdapter<User> {
             viewHolder.tv_username_viewlike.setText(items.get(position).getUsername());
             Picasso.with(context).load(items.get(position).getAvatarurl()).fit().centerInside().into(viewHolder.img_avatar_viewlike);
 
-
-
         }
 
         return view;

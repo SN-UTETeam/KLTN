@@ -14,6 +14,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -65,8 +66,9 @@ private DatabaseReference uDatabase;
 
     public void loadData(){
         //Firebase
-        uDatabase = FirebaseDatabase.getInstance().getReference().child("user_photos").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        uDatabase.addValueEventListener(new ValueEventListener() {
+        uDatabase = FirebaseDatabase.getInstance().getReference().child("photos");
+        Query query = uDatabase.orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 photoArrayList.clear();

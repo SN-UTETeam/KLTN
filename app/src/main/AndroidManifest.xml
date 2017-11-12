@@ -65,6 +65,7 @@
         <activity android:name=".Activity.Activity_share_image" />
         <activity android:name=".Activity.ViewCmt_tabProfile" />
         <activity android:name=".Activity.Activity_viewprofile" />
+        <activity android:name=".Activity.ViewFollow"/>
     </application>
 
 </manifest>

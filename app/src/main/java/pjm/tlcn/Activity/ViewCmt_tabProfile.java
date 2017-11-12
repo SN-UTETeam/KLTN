@@ -116,12 +116,6 @@ public class ViewCmt_tabProfile extends AppCompatActivity {
                             .child("comments")
                             .child(commentID)
                             .setValue(comment);
-                    databaseRef.child("user_photos")
-                            .child(user_id)
-                            .child(photo_id)
-                            .child("comments")
-                            .child(commentID)
-                            .setValue(comment);
                     edt_cmt_tabprofile.setText("");
                     hiddenKeyboard();
 

@@ -251,13 +251,6 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                                         .child(keyID)
                                         .removeValue();
         ///
-                                databaseRef.child("user_photos")
-                                        .child(item.get(position).getUser_id())
-                                        .child(item.get(position).getPhoto_id())
-                                        .child("likes")
-                                        .child(keyID)
-                                        .removeValue();
-
                                 holder.img_like_tabpost.setImageResource(R.drawable.ufi_heart_bold);
                                 holder.tv_likes_tabpost.setText("Người thích: ");
                                 //Setup like
@@ -277,13 +270,6 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                                         .child(newLikeID)
                                         .setValue(like);
 
-                                databaseRef.child("user_photos")
-                                        .child(item.get(position).getUser_id())
-                                        .child(item.get(position).getPhoto_id())
-                                        .child("likes")
-                                        .child(newLikeID)
-                                        .setValue(like);
-
                                 holder.img_like_tabpost.setImageResource(R.drawable.direct_heart);
                                 break;
                             }
@@ -295,13 +281,6 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                             Like like = new Like();
                             like.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
                             databaseRef.child("photos")
-                                    .child(item.get(position).getPhoto_id())
-                                    .child("likes")
-                                    .child(newLikeID)
-                                    .setValue(like);
-
-                            databaseRef.child("user_photos")
-                                    .child(item.get(position).getUser_id())
                                     .child(item.get(position).getPhoto_id())
                                     .child("likes")
                                     .child(newLikeID)

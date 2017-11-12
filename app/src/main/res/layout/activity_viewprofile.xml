@@ -23,14 +23,15 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_gravity="left"
-                android:layout_marginLeft="10dp"
+                android:id="@+id/bt_img_back"
+                android:layout_marginLeft="5dp"
                 android:background="@drawable/nav_arrow_back" />
 
             <TextView
                 android:id="@+id/tv_ViewUserName"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="10dp"
                 android:gravity="left|center"
                 android:paddingRight="45dp"
                 android:text="UserName"

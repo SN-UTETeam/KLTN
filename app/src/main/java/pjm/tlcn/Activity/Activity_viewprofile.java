@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,6 +39,7 @@ public class Activity_viewprofile extends AppCompatActivity {
     private Button bt_follow_user;
     private Button Img_nhantin;
     private ImageView img_view_avatar_user;
+    private ImageButton image_back;
     private ViewPager viewPager;
     private Boolean mFollowdByCurrentUser = false;
 
@@ -52,6 +54,15 @@ public class Activity_viewprofile extends AppCompatActivity {
         img_view_avatar_user = (ImageView) findViewById(R.id.id_view_image_user);
         bt_follow_user = (Button) findViewById(R.id.btn_follow_user);
         Img_nhantin = (Button) findViewById(R.id.imge_nhantin);
+        image_back =(ImageButton) findViewById(R.id.bt_img_back);
+        image_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
         viewPager = (ViewPager) findViewById(R.id.materialup_viewpager_view);
         //Create Tabhost
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.materialup_tabs_view);

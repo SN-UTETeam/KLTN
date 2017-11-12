@@ -23,7 +23,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import pjm.tlcn.Fragment.Following;
+import pjm.tlcn.Fragment.Saved;
 import pjm.tlcn.Fragment.Likes;
 import pjm.tlcn.Fragment.Post;
 import pjm.tlcn.Model.User;
@@ -123,6 +123,18 @@ public class TabActivity_profile extends FragmentActivity {
                 startActivity(intent);
             }
         });
+
+        //View Saved
+        tv_following.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TabActivity_profile.this,ViewFollow.class);
+                intent.putExtra("view","following");
+                intent.putExtra("user_id",FirebaseAuth.getInstance().getCurrentUser().getUid());
+                startActivity(intent);
+            }
+        });
+
     }
     //getFollowersCount
     private void getFollowersCount(){
@@ -218,7 +230,7 @@ public class TabActivity_profile extends FragmentActivity {
             } else if (i == 1){
                 return new Likes();
             } else if (i == 2){
-                return new Following();
+                return new Saved();
             } else {
                 return new Post();
             }

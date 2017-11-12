@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -91,46 +92,71 @@ public class ListView_ViewFollow extends ArrayAdapter<User> {
             viewHolder.btn_follow_viewfollow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Query query = databaseRef.child("followers").child(items.get(position).getUser_id());
-                    query.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                                final  String keyID = singleSnapshot.getKey();
+                    if(items.size()>0) {
+                        Query query = databaseRef.child("followers").child(items.get(position).getUser_id());
+                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                                    final String keyID = singleSnapshot.getKey();
 
-                                if (mFollowdByCurrentUser[position] &&
-                                        singleSnapshot.getValue(Follow.class).getUser_id()
-                                                .equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                    if (mFollowdByCurrentUser[position] &&
+                                            singleSnapshot.getValue(Follow.class).getUser_id()
+                                                    .equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
 
-                                    databaseRef.child("followers")
-                                            .child(items.get(position).getUser_id())
-                                            .child(keyID)
-                                            .removeValue();
+                                        databaseRef.child("followers")
+                                                .child(items.get(position).getUser_id())
+                                                .child(keyID)
+                                                .removeValue();
 
-                                    databaseRef.child("following")
-                                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                            .child(keyID)
-                                            .removeValue();
+                                        databaseRef.child("following")
+                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                .child(keyID)
+                                                .removeValue();
 
-                                    mFollowdByCurrentUser[position]=false;
+                                        mFollowdByCurrentUser[position] = false;
 
-                                    viewHolder.btn_follow_viewfollow.setBackgroundResource(R.drawable.button_follow);
-                                    viewHolder.btn_follow_viewfollow.setText("Theo dõi");
-                                    viewHolder.btn_follow_viewfollow.setTextColor(Color.WHITE);
+                                        viewHolder.btn_follow_viewfollow.setBackgroundResource(R.drawable.button_follow);
+                                        viewHolder.btn_follow_viewfollow.setText("Theo dõi");
+                                        viewHolder.btn_follow_viewfollow.setTextColor(Color.WHITE);
+                                        notifyDataSetChanged();
 
-                                    //End Setup
+                                        //End Setup
+                                    }
+                                    //case2: The user has not liked the photo
+                                    else if (!mFollowdByCurrentUser[position]) {
+                                        //add new follow
+                                        String newkey = databaseRef.push().getKey();
+                                        //Log.d("Like","here");
+                                        Follow fl = new Follow();
+                                        fl.setUser_id(items.get(position).getUser_id());
+                                        // following
+                                        Follow following = new Follow();
+                                        following.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                                        databaseRef.child("followers")
+                                                .child(items.get(position).getUser_id())
+                                                .child(newkey)
+                                                .setValue(following);
+                                        databaseRef.child("following")
+                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                .child(newkey)
+                                                .setValue(fl);
+
+                                        viewHolder.btn_follow_viewfollow.setBackgroundResource(R.drawable.button_following);
+                                        viewHolder.btn_follow_viewfollow.setText("Đang theo dõi");
+                                        viewHolder.btn_follow_viewfollow.setTextColor(Color.BLUE);
+                                        mFollowdByCurrentUser[position] = true;
+                                        notifyDataSetChanged();
+                                    }
                                 }
-                                //case2: The user has not liked the photo
-                                else if (!mFollowdByCurrentUser[position]) {
-                                    //add new follow
+                                if (!dataSnapshot.exists()) {
                                     String newkey = databaseRef.push().getKey();
-                                    //Log.d("Like","here");
                                     Follow fl = new Follow();
                                     fl.setUser_id(items.get(position).getUser_id());
                                     // following
                                     Follow following = new Follow();
                                     following.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
                                     databaseRef.child("followers")
                                             .child(items.get(position).getUser_id())
                                             .child(newkey)
@@ -143,41 +169,22 @@ public class ListView_ViewFollow extends ArrayAdapter<User> {
                                     viewHolder.btn_follow_viewfollow.setBackgroundResource(R.drawable.button_following);
                                     viewHolder.btn_follow_viewfollow.setText("Đang theo dõi");
                                     viewHolder.btn_follow_viewfollow.setTextColor(Color.BLUE);
-                                    mFollowdByCurrentUser[position]= true;
+                                    mFollowdByCurrentUser[position] = true;
+                                    notifyDataSetChanged();
                                 }
                             }
-                            if (!dataSnapshot.exists()) {
-                                String newkey = databaseRef.push().getKey();
-                                Follow fl = new Follow();
-                                fl.setUser_id(items.get(position).getUser_id());
-                                // following
-                                Follow following = new Follow();
-                                following.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                databaseRef.child("followers")
-                                        .child(items.get(position).getUser_id())
-                                        .child(newkey)
-                                        .setValue(following);
-                                databaseRef.child("following")
-                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                        .child(newkey)
-                                        .setValue(fl);
 
-                                viewHolder.btn_follow_viewfollow.setBackgroundResource(R.drawable.button_following);
-                                viewHolder.btn_follow_viewfollow.setText("Đang theo dõi");
-                                viewHolder.btn_follow_viewfollow.setTextColor(Color.BLUE);
-                                mFollowdByCurrentUser[position]= true;
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
                             }
-                        }
-
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
+                        });
+                    }
+                    else Toast.makeText(context,"Danh sách này không tồn tại! Vui lòng Refresh lại trang",Toast.LENGTH_SHORT).show();
                 }
             });
-        }
+    }
 
         return view;
     }

@@ -82,6 +82,7 @@ public class CustomAdapterListFollow extends BaseAdapter implements Filterable {
             }
         });
 
+
         ///set text
          usename_follow.setText(itemsDisplayed.get(position).getUsername());
         Picasso

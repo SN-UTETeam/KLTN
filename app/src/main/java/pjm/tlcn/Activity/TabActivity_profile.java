@@ -131,7 +131,7 @@ public class TabActivity_profile extends FragmentActivity {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child("followers")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot singleSnapshot :  dataSnapshot.getChildren()){
@@ -156,7 +156,7 @@ public class TabActivity_profile extends FragmentActivity {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child("following")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot singleSnapshot :  dataSnapshot.getChildren()){
@@ -177,9 +177,9 @@ public class TabActivity_profile extends FragmentActivity {
         mPostsCount = 0;
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child("user_photos")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        Query query = reference.child("photos")
+                .orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot singleSnapshot :  dataSnapshot.getChildren()){

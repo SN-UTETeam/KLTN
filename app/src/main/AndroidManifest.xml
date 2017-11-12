@@ -66,6 +66,7 @@
         <activity android:name=".Activity.ViewCmt_tabProfile" />
         <activity android:name=".Activity.Activity_viewprofile" />
         <activity android:name=".Activity.ViewFollow"/>
+        <activity android:name=".Activity.NewChat"/>
     </application>
 
 </manifest>

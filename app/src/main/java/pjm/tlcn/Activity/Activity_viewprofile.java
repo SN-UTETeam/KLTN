@@ -78,12 +78,12 @@ public class Activity_viewprofile extends AppCompatActivity {
         });
 
         //Get UserFollow
-        Query query = uDatabase.child("followers").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        Query query = uDatabase.child("followers").child(key);
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
-                    if(key.equals(singleSnapshot.getValue(Follow.class).getUser_id())){
+                    if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(singleSnapshot.getValue(Follow.class).getUser_id())){
                         Img_nhantin.setVisibility(View.VISIBLE);
                         mFollowdByCurrentUser=true;
                         bt_follow_user.setText("Đang theo dõi");
@@ -116,27 +116,27 @@ public class Activity_viewprofile extends AppCompatActivity {
                 bt_follow_user.setText("Đang theo dõi");
                 bt_follow_user.setTextColor(Color.BLACK);
                 bt_follow_user.setBackgroundResource(R.drawable.button_edit_profile);*/
-                Query query = uDatabase.child("followers").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                Query query = uDatabase.child("following").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                           final  String keyID = singleSnapshot.getKey();
-                            Log.d("Boolen",mFollowdByCurrentUser.toString());
-                            Log.d("Found user",singleSnapshot.getValue(Follow.class)
-                                    .getUser_id() + " == " + FirebaseAuth.getInstance().getCurrentUser().getUid());
+//                            Log.d("Boolen",mFollowdByCurrentUser.toString());
+//                            Log.d("Found user",singleSnapshot.getValue(Follow.class)
+//                                    .getUser_id() + " == " + FirebaseAuth.getInstance().getCurrentUser().getUid());
                             if (mFollowdByCurrentUser &&
                                     singleSnapshot.getValue(Follow.class)
                                             .getUser_id().equals(String.valueOf(key))) {
 
-                                uDatabase.child("followers")
+                                uDatabase.child("following")
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(keyID)
                                         .removeValue();
                                 Log.d("Clear",keyID);
 
                               //  Toast.makeText(Activity_viewprofile.this, FirebaseAuth.getInstance().getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
-                                uDatabase.child("following")
+                                uDatabase.child("followers")
                                         .child(key)
                                         .child(keyID)
                                         .removeValue();
@@ -157,11 +157,11 @@ public class Activity_viewprofile extends AppCompatActivity {
                                 // following
                                 Follow following = new Follow();
                                 following.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                uDatabase.child("followers")
+                                uDatabase.child("following")
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(newkey)
                                         .setValue(fl);
-                                uDatabase.child("following")
+                                uDatabase.child("followers")
                                         .child(key)
                                         .child(newkey)
                                         .setValue(following);
@@ -181,11 +181,11 @@ public class Activity_viewprofile extends AppCompatActivity {
                             // following
                             Follow following = new Follow();
                             following.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                            uDatabase.child("followers")
+                            uDatabase.child("following")
                                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                     .child(newkey)
                                     .setValue(fl);
-                            uDatabase.child("following")
+                            uDatabase.child("followers")
                                     .child(key)
                                     .child(newkey)
                                     .setValue(following);

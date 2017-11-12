@@ -68,12 +68,12 @@ public class ListView_ViewFollow extends ArrayAdapter<User> {
 
             //Set following
             //Get UserFollow
-            Query query = databaseRef.child("followers").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            Query query = databaseRef.child("followers").child(items.get(position).getUser_id());
             query.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
-                        if(items.get(position).getUser_id().equals(singleSnapshot.getValue(Follow.class).getUser_id())){
+                        if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(singleSnapshot.getValue(Follow.class).getUser_id())){
                             mFollowdByCurrentUser[position]=true;
                             viewHolder.btn_follow_viewfollow.setBackgroundResource(R.drawable.button_following);
                             viewHolder.btn_follow_viewfollow.setText("Đang theo dõi");
@@ -97,8 +97,7 @@ public class ListView_ViewFollow extends ArrayAdapter<User> {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                                 final  String keyID = singleSnapshot.getKey();
-                                //Log.d("Found user",singleSnapshot.getValue(Follow.class)
-                                //        .getUser_id() + " == " + FirebaseAuth.getInstance().getCurrentUser().getUid());
+
                                 if (mFollowdByCurrentUser[position] &&
                                         singleSnapshot.getValue(Follow.class)
                                                 .equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {

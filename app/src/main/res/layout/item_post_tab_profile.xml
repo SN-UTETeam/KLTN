@@ -57,7 +57,25 @@
             android:layout_width="20dp"
             android:background="@drawable/ufi_comment_bold"
             android:layout_height="20dp" />
+        <ImageView
+            android:id="@+id/img_share_tabpost"
+            android:layout_marginLeft="15dp"
+            android:layout_width="20dp"
+            android:background="@drawable/ufi_direct_share_bold"
+            android:layout_height="20dp" />
+        <ImageView
+            android:layout_weight="1"
+            android:background="@color/colorWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <ImageView
+            android:id="@+id/img_save_tabpost"
+            android:layout_marginRight="5dp"
+            android:layout_width="20dp"
+            android:background="@drawable/ufi_save"
+            android:layout_height="20dp" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"

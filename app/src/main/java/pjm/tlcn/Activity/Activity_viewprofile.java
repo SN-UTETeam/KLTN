@@ -91,7 +91,7 @@ public class Activity_viewprofile extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 Picasso.with(getApplicationContext()).load(user.getAvatarurl()).fit().centerInside().into(img_view_avatar_user);
-                tv_ViewUserName.setText(user.getUsername());
+               tv_ViewUserName.setText(user.getUsername());
                // toolbar_viewprofile.setTitle(user.getUsername());
             }
 

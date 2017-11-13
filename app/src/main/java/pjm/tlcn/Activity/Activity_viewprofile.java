@@ -114,7 +114,8 @@ public class Activity_viewprofile extends AppCompatActivity {
                         bt_follow_user.setText("Đang theo dõi");
                         bt_follow_user.setTextColor(Color.BLACK);
                         bt_follow_user.setBackgroundResource(R.drawable.button_edit_profile);
-                        Log.d("Is follow",mFollowdByCurrentUser.toString());
+                      //  Log.d("Is follow",mFollowdByCurrentUser.toString());
+                       // key_followers =si
                     }
                 }
             }

@@ -3,6 +3,7 @@ package pjm.tlcn.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.LinearLayout;
@@ -12,12 +13,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import pjm.tlcn.Adapter.CustomAdapterSearch;
+import pjm.tlcn.Model.Follow;
 import pjm.tlcn.Model.Photo;
 import pjm.tlcn.R;
 
@@ -26,8 +31,8 @@ public class TabActivity_search extends AppCompatActivity {
     private ArrayList<Photo> gridviewArrayPhoto = new ArrayList<Photo>();
     private CustomAdapterSearch customAdapterSearch;
     GridView gridViewSearch;
-    List A = new ArrayList();
-    List B = new ArrayList();
+    ArrayList A = new ArrayList();
+    ArrayList B = new ArrayList();
     // List c =new ArrayList<>();
 
 
@@ -45,7 +50,7 @@ public class TabActivity_search extends AppCompatActivity {
                 startActivity(timkiem);
             }
         });
-       // getData();
+        getData();
         gridViewSearch = (GridView) findViewById(R.id.grid_search);
         customAdapterSearch = new CustomAdapterSearch(this, gridviewArrayPhoto);
         gridViewSearch.setAdapter(customAdapterSearch);
@@ -62,15 +67,16 @@ public class TabActivity_search extends AppCompatActivity {
                 for (DataSnapshot snop : dataSnapshot.getChildren()) {
                     A.add(snop.getKey());
                 }
-                uDatabase.child("followers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                uDatabase.child("following").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot snop : dataSnapshot.getChildren()) {
-                            //  mangkey.add(snop.getKey());
-                            B.add(snop.getKey());
+
+                            B.add(snop.getValue(Follow.class).getUser_id());
                         }
                         for (int i = 0; i < A.size(); i++) {
                             String a = A.get(i).toString();
+                          //  Log.d("mangB",a);
 
                             if (B.contains(a)) {
                                 B.remove(a);
@@ -82,22 +88,42 @@ public class TabActivity_search extends AppCompatActivity {
                         C.addAll(A);
                         C.addAll(B);
                         int size = C.size();
+                        gridviewArrayPhoto.clear();
                         for (int i = 0; i < size; i++) {
 
-                            String key = C.get(i).toString();
-                            uDatabase.child("photos").child(key).addValueEventListener(new ValueEventListener() {
+                          final  String key = C.get(i).toString();
+                            Log.d("keyne",key);
+
+                          DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                            Query query = reference.child("photos")
+                                    .orderByChild("user_id").equalTo(key);
+
+                            query.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-
+                                    //if(key.equals(dataSnapshot.getValue(Photo.class).getUser_id()))
                                     if (dataSnapshot.getValue() != null) {
-                                        gridviewArrayPhoto.clear();
-                                        for (DataSnapshot snop : dataSnapshot.getChildren()) {
+                                      //
+                                            for (DataSnapshot snop : dataSnapshot.getChildren()) {
+                                               // Log.d("keyuser",snop.getValue(Photo.class).getUser_id().toString());
+                                                 // if(snop.getValue(Photo.class).getUser_id().equals(key)){
 
-                                            Photo temp = new Photo();
-                                            temp = snop.getValue(Photo.class);
-                                            gridviewArrayPhoto.add(temp);
-                                            customAdapterSearch.notifyDataSetChanged();
+                                                Photo photo = new Photo();
+                                                Map<String, Object> objectMap = (HashMap<String, Object>) snop.getValue();
+
+                                                photo.setCaption(objectMap.get("caption").toString());
+                                                photo.setPhoto_id(objectMap.get("photo_id").toString());
+                                                photo.setUser_id(objectMap.get("user_id").toString());
+                                                photo.setDate_created(objectMap.get("date_created").toString());
+                                                photo.setImage_path(objectMap.get("image_path").toString());
+                                                // Photo temp = new Photo();
+                                                // temp = snop.getValue(Photo.class);
+                                                gridviewArrayPhoto.add(photo);
+
+                                          //  }
                                         }
+                                       // Collections.reverse(gridviewArrayPhoto);
+                                        customAdapterSearch.notifyDataSetChanged();
                                     } else {
                                     }
 

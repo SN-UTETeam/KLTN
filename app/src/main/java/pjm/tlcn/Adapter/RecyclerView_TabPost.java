@@ -45,7 +45,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
     private ArrayList<Photo> item = new ArrayList<Photo>();
     Bundle bundle;
     private Context context;
-    public static String img_id;
+    public static String img_id="";
     private StringBuilder[] mUsers ;
     private DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
     public RecyclerView_TabPost(ArrayList<Photo> item) {
@@ -93,6 +93,11 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
 
             }
         });
+
+        //get key photo
+        img_id =item.get(position).getPhoto_id();
+
+
         Picasso.with(context).load(item.get(position).getImage_path()).fit().centerCrop().into(holder.img_image_tabpost);
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -449,6 +454,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
             tv_time_tabpost = (TextView) itemView.findViewById(R.id.tv_time_tabpost);
             tv_username = (TextView) itemView.findViewById(R.id.tv_username);
             img_save_tabpost = (ImageView) itemView.findViewById(R.id.img_save_tabpost);
+
         }
     }
 }

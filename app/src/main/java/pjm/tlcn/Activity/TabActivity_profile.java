@@ -39,10 +39,11 @@ public class TabActivity_profile extends FragmentActivity {
     private ImageView img_avatar;
     public String UserName;
     private ViewPager viewPager;
-
     private int mFollowersCount = 0;
     private int mFollowingCount = 0;
     private int mPostsCount = 0;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

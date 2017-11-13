@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -23,9 +24,9 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import pjm.tlcn.Fragment.Saved;
 import pjm.tlcn.Fragment.Likes;
 import pjm.tlcn.Fragment.Post;
+import pjm.tlcn.Fragment.Saved;
 import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
 
@@ -38,6 +39,7 @@ public class TabActivity_profile extends FragmentActivity {
     private ImageButton ImgBtn_setting;
     private ImageView img_avatar;
     public String UserName;
+    private TabLayout tabLayout;
     private ViewPager viewPager;
     private int mFollowersCount = 0;
     private int mFollowingCount = 0;
@@ -62,13 +64,17 @@ public class TabActivity_profile extends FragmentActivity {
         tv_post = (TextView) findViewById(R.id.tv_post);
         img_avatar = (ImageView) findViewById(R.id.img_avatar);
         viewPager = (ViewPager) findViewById(R.id.materialup_viewpager);
+        tabLayout = (TabLayout) findViewById(R.id.materialup_tabs);
 
 
         //Create Tabhost
-        final TabLayout tabLayout = (TabLayout) findViewById(R.id.materialup_tabs);
-
-        viewPager.setAdapter(new TabsAdapter(getSupportFragmentManager()));
+        TabsAdapter tabsAdapter = new TabsAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(tabsAdapter);
         tabLayout.setupWithViewPager(viewPager);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.setTabsFromPagerAdapter(tabsAdapter);
+        tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
+        viewPager.setOffscreenPageLimit(2);
 
         //End Create Tabhost
 
@@ -213,7 +219,6 @@ public class TabActivity_profile extends FragmentActivity {
     }
 
     private static class TabsAdapter extends FragmentPagerAdapter {
-        private static final int TAB_COUNT = 3;
 
         TabsAdapter(FragmentManager fm) {
             super(fm);
@@ -221,33 +226,38 @@ public class TabActivity_profile extends FragmentActivity {
 
         @Override
         public int getCount() {
-            return TAB_COUNT;
+            return 3;
         }
 
         @Override
         public Fragment getItem(int i) {
-            if (i == 0) {
-                return new Post();
-            } else if (i == 1){
-                return new Likes();
-            } else if (i == 2){
-                return new Saved();
-            } else {
-                return new Post();
+            switch (i){
+                case 0: {Log.d("return tab post",i+"");
+                            return new Post();
+
+                        }
+                case 1: {Log.d("return tab like",i+"");
+                            return new Likes();
+                        }
+                case 2: {Log.d("return tab saved",i+"");
+                            return new Saved();
+                        }
+                default: {Log.d("return tab post",i+"");
+                    return new Post();}
             }
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-           switch (position){
-               case 0: return "Bài viết";
+            switch (position){
+                case 0: return "Bài viết";
 
-               case 1: return "Đã thích";
+                case 1: return "Đã thích";
 
-               case 2: return "Đã lưu";
-               default:
-                   return null;
-           }
+                case 2: return "Đã lưu";
+                default:
+                    return null;
+            }
         }
     }
 

@@ -67,6 +67,7 @@
         <activity android:name=".Activity.Activity_viewprofile" />
         <activity android:name=".Activity.ViewFollow"/>
         <activity android:name=".Activity.NewChat"/>
+        <activity android:name=".Activity.ViewLike"/>
     </application>
 
 </manifest>

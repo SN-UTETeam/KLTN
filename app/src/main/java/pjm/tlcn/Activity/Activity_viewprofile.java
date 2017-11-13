@@ -26,8 +26,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import pjm.tlcn.Fragment.Saved;
-import pjm.tlcn.Fragment.Likes;
+import pjm.tlcn.Fragment.NoPermission;
 import pjm.tlcn.Fragment.View_ProfilePost;
 import pjm.tlcn.Model.Follow;
 import pjm.tlcn.Model.User;
@@ -259,9 +258,9 @@ public class Activity_viewprofile extends AppCompatActivity {
             if (i == 0) {
                 return new View_ProfilePost();
             } else if (i == 1) {
-                return new Likes();
+                return new NoPermission();
             } else if (i == 2) {
-                return new Saved();
+                return new NoPermission();
             } else {
                 return new View_ProfilePost();
             }
@@ -272,10 +271,8 @@ public class Activity_viewprofile extends AppCompatActivity {
             switch (position) {
                 case 0:
                     return "Bài viết";
-
                 case 1:
                     return "Đã thích";
-
                 case 2:
                     return "Đang theo dõi";
                 default:

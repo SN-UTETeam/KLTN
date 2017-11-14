@@ -88,7 +88,7 @@ public class Activity_timkiem extends AppCompatActivity {
 
                               UserFollow temp = new UserFollow();
                               temp = snop.getValue(UserFollow.class);
-                              Log.d("AAA", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                              //Log.d("AAA", FirebaseAuth.getInstance().getCurrentUser().getUid());
                               userArrayListFollow.add(temp);
                               // Toast.makeText(Activity_timkiem.this, snop.getKey(), Toast.LENGTH_SHORT).show();
                               customAdapterListFollow.notifyDataSetChanged();

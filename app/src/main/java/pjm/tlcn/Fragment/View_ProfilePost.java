@@ -67,6 +67,7 @@ public class View_ProfilePost extends Fragment {
         //Firebase
         //get key tu ben adapter
        final String key_user = getActivity().getIntent().getStringExtra("send");
+    //   Log.d("getkey_u",key_user);
        // Intent intent = getIntent();
        // final String key = intent.getStringExtra("send");
 

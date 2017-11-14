@@ -1,6 +1,7 @@
 package pjm.tlcn.Adapter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import pjm.tlcn.Activity.Activity_view_photo_search;
 import pjm.tlcn.Model.Photo;
 import pjm.tlcn.R;
 
@@ -22,6 +24,7 @@ public class CustomAdapterSearch extends BaseAdapter {
     ArrayList<Photo> photo_shes;
     Activity ac;
     ImageView image_search;
+    public static String key_discover ="";
     public CustomAdapterSearch(Activity ac, ArrayList<Photo> photo_shes) {
         this.ac = ac;
         this.photo_shes = photo_shes;
@@ -47,6 +50,19 @@ public class CustomAdapterSearch extends BaseAdapter {
         LayoutInflater l = ac.getLayoutInflater();
         convertView = l.inflate(R.layout.custom_adapter_search, null);
         image_search =(ImageView)convertView.findViewById(R.id.image_search);
+
+        //intent view photo
+        image_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ac,Activity_view_photo_search.class);
+                v.getContext().startActivity( intent);
+                // get key image
+                 key_discover = photo_shes.get(position).getUser_id();
+             //   Log.d("discover",key_discover.toString());
+               // intent.putExtra("sen", key_discover.toString() );
+            }
+        });
 
         Picasso
                 .with(ac)

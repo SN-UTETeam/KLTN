@@ -136,11 +136,6 @@ public class Activity_viewprofile extends AppCompatActivity {
         bt_follow_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*uDatabase.child("followers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().child("user_id").setValue(key);
-                Img_nhantin.setVisibility(View.VISIBLE);
-                bt_follow_user.setText("Đang theo dõi");
-                bt_follow_user.setTextColor(Color.BLACK);
-                bt_follow_user.setBackgroundResource(R.drawable.button_edit_profile);*/
                 Query query = uDatabase.child("following").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override

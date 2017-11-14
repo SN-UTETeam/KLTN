@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorWhite"
+    android:layout_height="match_parent"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:background="@color/colorWhite"
+        android:orientation="horizontal"
+        android:layout_height="40dp">
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/back_discover"
+            android:background="@drawable/nav_arrow_back"
+            android:layout_height="25dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="Khám phá"
+            android:id="@+id/tv_discover"
+            android:textColor="@color/colorDark"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:textSize="15dp"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center|center_horizontal"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:background="@color/colorWhite"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_discover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
+</LinearLayout>

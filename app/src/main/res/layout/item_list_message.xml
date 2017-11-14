@@ -7,6 +7,12 @@
     android:layout_marginBottom="5dp"
     android:layout_width="match_parent"
     android:layout_height="50dp">
+        <LinearLayout
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_marginLeft="15dp"
             android:id="@+id/img_user_message"
@@ -30,5 +36,5 @@
             android:background="@drawable/browser_forward_inactive"
             android:layout_width="20dp"
             android:layout_height="20dp" />
-
+        </LinearLayout>
 </LinearLayout>

@@ -33,7 +33,6 @@
         <activity android:name=".Activity.TabActivity_profile" />
         <activity android:name=".Activity.MainActivity" />
         <activity android:name=".Activity.Register" />
-        <activity android:name=".Activity.RegisterWithEmail" />
         <activity android:name=".Activity.Set_password" />
         <activity android:name=".Activity.Edit_profile" />
         <activity android:name=".Activity.Setting" />

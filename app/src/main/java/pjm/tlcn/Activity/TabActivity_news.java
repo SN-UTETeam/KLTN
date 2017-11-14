@@ -2,6 +2,7 @@ package pjm.tlcn.Activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -45,6 +46,9 @@ public class TabActivity_news extends AppCompatActivity {
     private Boolean flag_selected=false;
     private  static final int  REQUEST_CAMERA = 12,REQUEST_DONE=13;
     public static Bitmap bitmap_photo;
+    private Uri imageUri;
+    private ContentValues values;
+    private String imageurl;
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -132,7 +136,16 @@ public class TabActivity_news extends AppCompatActivity {
         img_camera_tabnew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                //startActivityForResult(intent, REQUEST_CAMERA);
+
+                values = new ContentValues();
+                values.put(MediaStore.Images.Media.TITLE, "New Picture");
+                values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
+                imageUri = getContentResolver().insert(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                 startActivityForResult(intent, REQUEST_CAMERA);
             }
         });
@@ -145,14 +158,33 @@ public class TabActivity_news extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK) {
-            bitmap_photo = (Bitmap) data.getExtras().get("data");
-            tab_news_imageview.setImageBitmap(bitmap_photo);
-            flag_selected=true;
-            btcancel.setVisibility(View.VISIBLE);
-            btnext.setVisibility(View.VISIBLE);
+//            bitmap_photo = (Bitmap) data.getExtras().get("data");
+//            tab_news_imageview.setImageBitmap(bitmap_photo);
+//            flag_selected=true;
+//            btcancel.setVisibility(View.VISIBLE);
+//            btnext.setVisibility(View.VISIBLE);
+
+            try {
+                bitmap_photo = MediaStore.Images.Media.getBitmap(
+                        getContentResolver(), imageUri);
+                tab_news_imageview.setImageBitmap(bitmap_photo);
+                imageurl = getRealPathFromURI(imageUri);
+                flag_selected=true;
+                btcancel.setVisibility(View.VISIBLE);
+                btnext.setVisibility(View.VISIBLE);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
-
+    public String getRealPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
+        int column_index = cursor
+                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
 
 
     public class ImageAdapter extends BaseAdapter {

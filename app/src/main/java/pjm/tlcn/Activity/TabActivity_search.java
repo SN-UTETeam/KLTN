@@ -46,55 +46,58 @@ public class TabActivity_search extends AppCompatActivity {
                 startActivity(timkiem);
             }
         });
-        getData();
-        gridViewSearch = (GridView) findViewById(R.id.grid_search);
-        customAdapterSearch = new CustomAdapterSearch(this, gridviewArrayPhoto);
-        gridViewSearch.setAdapter(customAdapterSearch);
 
-    }
-
-    void getData() {
-        uDatabase.child("users").addValueEventListener(new ValueEventListener() {
+        uDatabase.child("following").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                B.clear();
                 for (DataSnapshot snop : dataSnapshot.getChildren()) {
-                    A.add(snop.getKey());
+                        //Log.d("Found B",snop.getValue(Follow.class).getUser_id());
+                    B.add(snop.getValue(Follow.class).getUser_id());
                 }
 
-                uDatabase.child("following").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                uDatabase.child("users").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        A.clear();
                         for (DataSnapshot snop : dataSnapshot.getChildren()) {
+                           // Log.d("Found A",snop.getKey());
+                            A.add(snop.getKey());
 
-                            B.add(snop.getValue(Follow.class).getUser_id());
                         }
-                        for (int i = 0; i < A.size(); i++) {
-                            String a = A.get(i).toString();
-                            if (B.contains(a)) {
-                                B.remove(a);
-                                A.remove(a);
-                                i--;
-                            }
-                        }
+//                        for (int i = 0; i < A.size(); i++) {
+//                            String tru = A.get(i).toString();
+//                            if (B.contains(tru)) {
+//                                B.remove(tru);
+//                                A.remove(tru);
+//                                //i--;
+//                            }
+//                        }
+//
+                      for(int i=0;i<B.size();i++){
+                            if(A.contains(B.get(i)))
+                                A.remove(B.get(i));
+                      }
+
+                        //
                         ArrayList<String> C = new ArrayList<>();
+                        C.clear();
                         C.addAll(A);
-                        C.addAll(B);
+                    //    C.addAll(B);
                         C.remove(FirebaseAuth.getInstance().getCurrentUser().getUid());
                         int size = C.size();
-
+                        gridviewArrayPhoto.clear();
                         for (int i = 0; i < size; i++) {
-                            final String key = C.get(i).toString();
-                            Log.d("keyne", key);
+                            String key = C.get(i).toString();
+                            Log.d("keyne",i +" = " +key);
                             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                             Query query = reference.child("photos")
                                     .orderByChild("user_id").equalTo(key);
-
-                            query.addValueEventListener(new ValueEventListener() {
+                            query.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-
                                     if (dataSnapshot.getValue() != null) {
-                                         gridviewArrayPhoto.clear();
+
                                         for (DataSnapshot snop : dataSnapshot.getChildren()) {
                                             Photo photo = new Photo();
                                             Map<String, Object> objectMap = (HashMap<String, Object>) snop.getValue();
@@ -105,6 +108,7 @@ public class TabActivity_search extends AppCompatActivity {
                                             photo.setImage_path(objectMap.get("image_path").toString());
                                             // Photo temp = new Photo();
                                             // temp = snop.getValue(Photo.class);
+                                            Log.d("Found user",photo.getUser_id());
                                             gridviewArrayPhoto.add(photo);
                                         }
                                         Collections.reverse(gridviewArrayPhoto);
@@ -114,20 +118,120 @@ public class TabActivity_search extends AppCompatActivity {
                                     }
 
                                 }
+
                                 @Override
                                 public void onCancelled(DatabaseError databaseError) {
                                 }
                             });
                         }
                     }
+
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                     }
                 });
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+
+
+
+        gridViewSearch = (GridView) findViewById(R.id.grid_search);
+        customAdapterSearch = new CustomAdapterSearch(this, gridviewArrayPhoto);
+        gridViewSearch.setAdapter(customAdapterSearch);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    void getData() {
+
+
+      /*  uDatabase.child("following").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                gridviewArrayPhoto.clear();
+                for (DataSnapshot snop : dataSnapshot.getChildren()) {
+
+                    B.add(snop.getValue(Follow.class).getUser_id());
+                   // B.remove(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                    Query query = reference.child("photos")
+                            .orderByChild("user_id").equalTo(snop.getValue(Follow.class).getUser_id());
+
+                    query.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            if (dataSnapshot.getValue() != null) {
+                             //   gridviewArrayPhoto.clear();
+                                for (DataSnapshot snop : dataSnapshot.getChildren()) {
+                                    Photo photo = new Photo();
+                                    Map<String, Object> objectMap = (HashMap<String, Object>) snop.getValue();
+                                    photo.setCaption(objectMap.get("caption").toString());
+                                    photo.setPhoto_id(objectMap.get("photo_id").toString());
+                                    photo.setUser_id(objectMap.get("user_id").toString());
+                                    photo.setDate_created(objectMap.get("date_created").toString());
+                                    photo.setImage_path(objectMap.get("image_path").toString());
+                                    // Photo temp = new Photo();
+                                    // temp = snop.getValue(Photo.class);
+                                    gridviewArrayPhoto.add(photo);
+                                }
+                                Collections.reverse(gridviewArrayPhoto);
+                                customAdapterSearch.notifyDataSetChanged();
+                            } else {
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    });
+
+                }
+               *//* for (int i = 0; i < A.size(); i++) {
+                    String a = A.get(i).toString();
+                    if (B.contains(a)) {
+                        B.remove(a);
+                        A.remove(a);
+                        i--;
+                    }
+                }
+                ArrayList<String> C = new ArrayList<>();
+                C.addAll(A);
+                C.addAll(B);
+                C.remove(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                int size = C.size();*//*
+
+
+                   // Log.d("keyne", key);
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });*/
+
+
     }
 }

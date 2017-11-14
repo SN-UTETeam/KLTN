@@ -69,11 +69,6 @@ public class Activity_view_photo_search extends AppCompatActivity {
 */
     }
     public void loadData() {
-        //Firebase
-        //get key tu ben adapter
-       // Intent intent = getIntent();
-       // final String key_user =  intent.getStringExtra("sen");
-       // Log.d("key_discover",key_user);
 
 
 

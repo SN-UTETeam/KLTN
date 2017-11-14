@@ -24,19 +24,19 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import pjm.tlcn.Fragment.Likes;
-import pjm.tlcn.Fragment.Post;
+import pjm.tlcn.Fragment.PostGrid;
+import pjm.tlcn.Fragment.PostList;
 import pjm.tlcn.Fragment.Saved;
 import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
 
 @SuppressWarnings("deprecation")
-public class TabActivity_profile extends FragmentActivity {
+public class TabActivity_profile extends FragmentActivity{
     public DatabaseReference databaseRef;
     private TextView tv_UserName,tv_describer,tv_following,tv_follower,tv_post;
 
     private Button btn_edit_profile;
-    private ImageButton ImgBtn_setting;
+    private ImageButton ImgBtn_setting,button_saved;
     private ImageView img_avatar;
     public String UserName;
     private TabLayout tabLayout;
@@ -57,6 +57,7 @@ public class TabActivity_profile extends FragmentActivity {
         //Create Variable
         btn_edit_profile = (Button) findViewById(R.id.btn_edit_profile);
         ImgBtn_setting = (ImageButton) findViewById(R.id.ImgBtn_setting);
+        button_saved = (ImageButton) findViewById(R.id.button_saved);
         tv_UserName = (TextView) findViewById(R.id.tv_UserName);
         tv_describer = (TextView) findViewById(R.id.tv_describer);
         tv_following = (TextView) findViewById(R.id.tv_following);
@@ -69,13 +70,14 @@ public class TabActivity_profile extends FragmentActivity {
 
         //Create Tabhost
         TabsAdapter tabsAdapter = new TabsAdapter(getSupportFragmentManager());
+        viewPager.setOffscreenPageLimit(1);
         viewPager.setAdapter(tabsAdapter);
         tabLayout.setupWithViewPager(viewPager);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.setTabsFromPagerAdapter(tabsAdapter);
-        tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
-        viewPager.setOffscreenPageLimit(2);
 
+        tabLayout.setTabsFromPagerAdapter(tabsAdapter);
+        tabLayout.getTabAt(0).setIcon(R.drawable.profile_grid);
+        tabLayout.getTabAt(1).setIcon(R.drawable.profile_list);
+        tabLayout.getTabAt(2).setIcon(R.drawable.profile_save);
         //End Create Tabhost
 
         //Start Set Onclick btn_edit_profile
@@ -99,6 +101,15 @@ public class TabActivity_profile extends FragmentActivity {
             }
         });
         //End Set Onclick ImgBtn_setting
+
+        //Start intent Saved
+        button_saved.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TabActivity_profile.this, pjm.tlcn.Activity.Saved.class);
+                startActivity(intent);
+            }
+        });
 
         //Set UserProfile
         getPostsCount();
@@ -233,32 +244,29 @@ public class TabActivity_profile extends FragmentActivity {
         public Fragment getItem(int i) {
             switch (i){
                 case 0: {Log.d("return tab post",i+"");
-                            return new Post();
+                            return new PostGrid();
 
                         }
                 case 1: {Log.d("return tab like",i+"");
-                            return new Likes();
+
+                            return new PostList();
                         }
                 case 2: {Log.d("return tab saved",i+"");
-                            return new Saved();
-                        }
+                    return new Saved();
+                }
                 default: {Log.d("return tab post",i+"");
-                    return new Post();}
+                    return new PostGrid();}
             }
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position){
-                case 0: return "Bài viết";
-
-                case 1: return "Đã thích";
-
-                case 2: return "Đã lưu";
-                default:
                     return null;
-            }
         }
+    }
+
+    public void SetCurrentTab(int i){
+        viewPager.setCurrentItem(i);
     }
 
 }

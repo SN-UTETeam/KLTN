@@ -87,7 +87,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
             @Override
             public void onClick(View v) {
                 viewHolder.image_like.setBackgroundResource(R.drawable.direct_heart);
-              //  uDatabase.child("Likes").child(id_image).child(user_id).setValue(user.getUsername());
+              //  uDatabase.child("PostGrid").child(id_image).child(user_id).setValue(user.getUsername());
                 //uDatabase.child("Images").child(user_id).child(id_image).child("likes").setValue(items.get(position).getLikes()+1);
 
             }

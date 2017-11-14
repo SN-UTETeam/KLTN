@@ -29,7 +29,7 @@ import pjm.tlcn.R;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
-public class Post extends Fragment{
+public class PostList extends Fragment{
 private RecyclerView rv_tabpost;
 SwipeRefreshLayout mSwipeRefreshLayout;
 private RecyclerView_TabPost recyclerView_tabPost;
@@ -107,4 +107,16 @@ private DatabaseReference uDatabase;
             }
         });
     }
+//    @Override
+//    public void setUserVisibleHint(boolean isVisibleToUser) {
+//        super.setUserVisibleHint(isVisibleToUser);
+//        if (isVisibleToUser) {
+//            TabActivity_profile profile = (TabActivity_profile) getActivity();
+//            profile.SetTablayout(1);
+//
+//
+//        }else{
+//            // fragment is no longer visible
+//        }
+//    }
 }

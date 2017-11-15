@@ -31,7 +31,7 @@ public class Activity_view_photo_search extends AppCompatActivity {
     ImageView back_Discover;
     ListView list_Discover;
     private RecyclerView rv_tabpost;
-   // SwipeRefreshLayout mSwipeRefreshLayout;
+    // SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView_TabDiscover recyclerView_tabDiscover;
     private ArrayList<Photo> photoArrayList = new ArrayList<Photo>();
     private DatabaseReference uDatabase;
@@ -46,7 +46,7 @@ public class Activity_view_photo_search extends AppCompatActivity {
                 finish();
             }
         });
-       // list_Discover =(ListView)findViewById(R.id.list_discover);
+        // list_Discover =(ListView)findViewById(R.id.list_discover);
         rv_tabpost = (RecyclerView) findViewById(R.id.rv_discover);
         loadData();
         recyclerView_tabDiscover = new RecyclerView_TabDiscover(photoArrayList);
@@ -56,7 +56,7 @@ public class Activity_view_photo_search extends AppCompatActivity {
         rv_tabpost.setAdapter(recyclerView_tabDiscover);
 
         //Swipe
-    //    mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_container);
+        //    mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_container);
        /* mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -72,47 +72,47 @@ public class Activity_view_photo_search extends AppCompatActivity {
 
 
 
-            uDatabase = FirebaseDatabase.getInstance().getReference().child("photos");
-            Query query = uDatabase.orderByChild("user_id").equalTo(key_discover);
-            query.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    photoArrayList.clear();
-                    if (dataSnapshot.getValue() != null) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+        uDatabase = FirebaseDatabase.getInstance().getReference().child("photos");
+        Query query = uDatabase.orderByChild("user_id").equalTo(key_discover);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                photoArrayList.clear();
+                if (dataSnapshot.getValue() != null) {
+                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            Photo photo = new Photo();
-                            Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+                        Photo photo = new Photo();
+                        Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
 
-                            photo.setCaption(objectMap.get("caption").toString());
-                            photo.setPhoto_id(objectMap.get("photo_id").toString());
-                            photo.setUser_id(objectMap.get("user_id").toString());
-                            photo.setDate_created(objectMap.get("date_created").toString());
-                            photo.setImage_path(objectMap.get("image_path").toString());
+                        photo.setCaption(objectMap.get("caption").toString());
+                        photo.setPhoto_id(objectMap.get("photo_id").toString());
+                        photo.setUser_id(objectMap.get("user_id").toString());
+                        photo.setDate_created(objectMap.get("date_created").toString());
+                        photo.setImage_path(objectMap.get("image_path").toString());
 
-                            ArrayList<Comment> comments = new ArrayList<Comment>();
-                            for (DataSnapshot dSnapshot : singleSnapshot
-                                    .child("comments").getChildren()) {
-                                Comment comment = new Comment();
-                                comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                                comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                                comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-                                comments.add(comment);
-                            }
-
-                            photo.setComments(comments);
-                            photoArrayList.add(photo);
+                        ArrayList<Comment> comments = new ArrayList<Comment>();
+                        for (DataSnapshot dSnapshot : singleSnapshot
+                                .child("comments").getChildren()) {
+                            Comment comment = new Comment();
+                            comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+                            comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+                            comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                            comments.add(comment);
                         }
-                        Collections.reverse(photoArrayList);
-                        recyclerView_tabDiscover.notifyDataSetChanged();
+
+                        photo.setComments(comments);
+                        photoArrayList.add(photo);
                     }
+                    Collections.reverse(photoArrayList);
+                    recyclerView_tabDiscover.notifyDataSetChanged();
                 }
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                }
-            });
+            }
+        });
 
     }
 }

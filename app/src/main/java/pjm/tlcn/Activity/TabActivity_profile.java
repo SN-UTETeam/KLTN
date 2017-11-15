@@ -73,7 +73,7 @@ public class TabActivity_profile extends FragmentActivity{
         viewPager.setOffscreenPageLimit(1);
         viewPager.setAdapter(tabsAdapter);
         tabLayout.setupWithViewPager(viewPager);
-
+        viewPager.setOffscreenPageLimit(3);
         tabLayout.setTabsFromPagerAdapter(tabsAdapter);
         tabLayout.getTabAt(0).setIcon(R.drawable.profile_grid);
         tabLayout.getTabAt(1).setIcon(R.drawable.profile_list);

@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -18,7 +19,6 @@ import pjm.tlcn.R;
 
 import static pjm.tlcn.Activity.Login.firebaseUser;
 import static pjm.tlcn.Activity.Login.user;
-import static pjm.tlcn.Activity.Login.user_id;
 
 public class Set_password extends AppCompatActivity {
     public DatabaseReference mDatabase,uDatabase;
@@ -34,7 +34,7 @@ public class Set_password extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_password);
         //Firebase
-        uDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
+        uDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         //Set mapped
         toolbar_changepassword = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_changepassword);
         tv_done_changepassword = (TextView) findViewById(R.id.tv_done_changepassword);
@@ -57,30 +57,40 @@ public class Set_password extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ChangePassWord(edt_current_password.getText().toString(),edt_new_password.getText().toString(),edt_confirm_password.getText().toString());
-                finish();
+
             }
         });
     }
 
     private void ChangePassWord(String pold,String pnew,String pconfirm){
-        final String newPass=pnew;
-        //Check new password
-        if(pnew.length() <6 ||pconfirm.length()<6||!pnew.equals(pconfirm))
-            flag = false;
+        final String newPass = pnew;
         CurrentPW = user.getPassword();
-        //CurrentPW = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("password").getRef().toString();
-        // Log.d(pold,pnew);
-        //Log.w("Old pass",CurrentPW);
-        if(pold.equals(CurrentPW)&&flag){
-            firebaseUser.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful()){
-                    uDatabase.child("password").setValue(newPass);
-                    Toast.makeText(getApplicationContext(),"Change password Successful!",Toast.LENGTH_SHORT).show();
+        flag=true;
+        if(pnew.length() < 6 || pconfirm.length() < 6)
+            Toast.makeText(getApplicationContext(), "Mật khẩu mới quá ngắn!", Toast.LENGTH_SHORT).show();
+        else
+            if(!pold.equals(CurrentPW))
+                Toast.makeText(getApplicationContext(), "Mật khẩu cũ không đúng!", Toast.LENGTH_SHORT).show();
+        else
+        {
+            if (pnew.length() < 6 || pconfirm.length() < 6 || !pnew.equals(pconfirm))
+                flag = false;
+            if (pold.equals(CurrentPW) && flag) {
+                firebaseUser.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            uDatabase.child("password").setValue(newPass);
+                            Toast.makeText(getApplicationContext(), "Change password Successful!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
                     }
-                }
-            });
+                });
+            }
+            else
+                Toast.makeText(getApplicationContext(), "Sai thông tin!", Toast.LENGTH_SHORT).show();
+
         }
+
     }
 }

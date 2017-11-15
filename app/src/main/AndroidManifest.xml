@@ -26,17 +26,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.TabActivity_home" />
-        <activity android:name=".Activity.TabActivity_search" />
-        <activity android:name=".Activity.TabActivity_news" />
-        <activity android:name=".Activity.TabActivity_message" />
-        <activity android:name=".Activity.TabActivity_profile" />
-        <activity android:name=".Activity.MainActivity" />
-        <activity android:name=".Activity.Register" />
-        <activity android:name=".Activity.Set_password" />
-        <activity android:name=".Activity.Edit_profile" />
-        <activity android:name=".Activity.Setting" />
-        <activity android:name=".Activity.Activity_timkiem" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -58,15 +47,29 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+        <activity android:name=".Activity.TabActivity_home" />
+        <activity android:name=".Activity.TabActivity_search" />
+        <activity android:name=".Activity.TabActivity_news" />
+        <activity android:name=".Activity.TabActivity_message" />
+        <activity android:name=".Activity.TabActivity_profile" />
+        <activity android:name=".Activity.MainActivity" />
+        <activity android:name=".Activity.Register" />
+        <activity android:name=".Activity.Set_password" />
+        <activity android:name=".Activity.Edit_profile" />
+        <activity android:name=".Activity.Setting" />
+        <activity android:name=".Activity.Activity_timkiem" />
         <activity android:name=".Activity.TabActivity_viewall" />
         <activity android:name=".Activity.Chat" />
         <activity android:name=".Activity.Activity_comment" />
         <activity android:name=".Activity.Activity_share_image" />
         <activity android:name=".Activity.ViewCmt_tabProfile" />
         <activity android:name=".Activity.Activity_viewprofile" />
-        <activity android:name=".Activity.ViewFollow"/>
-        <activity android:name=".Activity.NewChat"/>
-        <activity android:name=".Activity.ViewLike"/>
+        <activity android:name=".Activity.ViewFollow" />
+        <activity android:name=".Activity.NewChat" />
+        <activity android:name=".Activity.ViewLike" />
+        <activity android:name=".Activity.Saved" />
+        <activity android:name=".Activity.Activity_view_photo_search"/>
+        <activity android:name=".Activity.SavedPhoto"></activity>
     </application>
 
 </manifest>

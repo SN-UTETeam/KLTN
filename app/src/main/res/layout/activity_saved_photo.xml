@@ -1,14 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context="pjm.tlcn.Activity.Saved">
+    tools:context="pjm.tlcn.Activity.SavedPhoto">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_saved"
-        app:title="Bài viết đã lưu"
+        android:id="@+id/toolbar_saved_photo"
+        app:title="Hình ảnh đã lưu"
         app:titleTextColor="@color/colorPrimary"
         android:background="@color/colorHaftWhite"
         android:layout_width="match_parent"
@@ -16,16 +17,15 @@
     </android.support.v7.widget.Toolbar>
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:layout_marginTop="10dp"
-        android:id="@+id/saved_swipe_container"
+        android:id="@+id/swipe_saved_photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_tabsaved"
+            android:layout_margin="5dp"
+            android:id="@+id/rc_saved_photo"
+            android:stretchMode="columnWidth"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </android.support.v7.widget.RecyclerView>
-
+            android:layout_height="match_parent" />
     </android.support.v4.widget.SwipeRefreshLayout>
+
 </LinearLayout>

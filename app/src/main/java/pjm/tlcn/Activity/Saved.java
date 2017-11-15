@@ -5,7 +5,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -26,6 +28,7 @@ import pjm.tlcn.Model.Photo;
 import pjm.tlcn.R;
 
 public class Saved extends AppCompatActivity {
+    Toolbar toolbar_saved;
     private RecyclerView rv_tabsaved;
     SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView_TabPost recyclerView_tabSaved;
@@ -35,6 +38,18 @@ public class Saved extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_saved);
+
+        //Set back Toolbar
+        toolbar_saved = (Toolbar) findViewById(R.id.toolbar_saved);
+        setSupportActionBar(toolbar_saved);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar_saved.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         rv_tabsaved = (RecyclerView) findViewById(R.id.rv_tabsaved);
         loadData();

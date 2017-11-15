@@ -1,8 +1,10 @@
 package pjm.tlcn.Activity;
 
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -67,6 +69,9 @@ public class Chat extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private ArrayList<Message> arrayMessage = new ArrayList<Message>();
     private MessageAdapter messageAdapter;
+    private Uri imageUri;
+    private ContentValues values;
+    private String imageurl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,8 +160,14 @@ public class Chat extends AppCompatActivity {
         img_chat_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, REQUEST_CAMERA);
+                values = new ContentValues();
+                values.put(MediaStore.Images.Media.TITLE, "New Picture");
+                values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
+                imageUri = getContentResolver().insert(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                startActivityForResult(intent, REQUEST_CAMERA);
             }
         });
 
@@ -325,8 +336,13 @@ public class Chat extends AppCompatActivity {
         if(reqCode==REQUEST_CAMERA)
             if(resultCode==RESULT_OK){
                 try {
-                    bitmap_img_capture = (Bitmap) data.getExtras().get("data");
+                    bitmap_img_capture = MediaStore.Images.Media.getBitmap(
+                            getContentResolver(), imageUri);
                     img_chat_image.setImageBitmap(bitmap_img_capture);
+                    imageurl = getRealPathFromURI(imageUri);
+
+                    //bitmap_img_capture = (Bitmap) data.getExtras().get("data");
+                    //img_chat_image.setImageBitmap(bitmap_img_capture);
                     img_chat_image.setVisibility(View.VISIBLE);
                     flag_img_capture = true;
                     flag_img_select=false;
@@ -339,6 +355,16 @@ public class Chat extends AppCompatActivity {
             else
                 Toast.makeText(getApplicationContext(), "You haven't Capture Photo",Toast.LENGTH_LONG).show();
     }
+
+    public String getRealPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
+        int column_index = cursor
+                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
+
     private void hiddenKeyboard(){
         InputMethodManager inputManager =
                 (InputMethodManager) this.

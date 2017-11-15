@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +54,7 @@ private Uri uri_img_select,uri_img_download;
 private boolean flag_img_select=false;
 private ProgressDialog progressDialog;
 private Bitmap selectedImage;
+    private LinearLayout changepassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,7 @@ private Bitmap selectedImage;
         edt_phonenumber_editprofile = (EditText) findViewById(R.id.edt_phonenumber_editprofile);
         edt_email_editprofile = (EditText) findViewById(R.id.edt_email_editprofile);
         btn_done_editprofile = (Button) findViewById(R.id.btn_done_editprofile);
+        changepassword = (LinearLayout) findViewById(R.id.changepassword);
 
         //Firebase
         uDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -164,6 +167,15 @@ private Bitmap selectedImage;
                 photoPickerIntent.setType("image/*");
                 photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
+            }
+        });
+
+        //Set Click Change password
+        changepassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(),Set_password.class);
+                startActivity(intent);
             }
         });
 

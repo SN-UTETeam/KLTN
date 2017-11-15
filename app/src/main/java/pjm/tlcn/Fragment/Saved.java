@@ -23,7 +23,7 @@ public class Saved extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            Intent intent =new Intent(getContext(), pjm.tlcn.Activity.Saved.class);
+            Intent intent =new Intent(getActivity(), pjm.tlcn.Activity.SavedPhoto.class);
             startActivityForResult(intent,17);
 
 
@@ -40,4 +40,5 @@ public class Saved extends Fragment {
             profile.SetCurrentTab(0);
         }
     }
+
 }

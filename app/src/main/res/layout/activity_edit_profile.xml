@@ -146,6 +146,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
-
+        <LinearLayout
+            android:id="@+id/changepassword"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+            <TextView
+                android:layout_weight="1"
+                android:gravity="center|left"
+                android:layout_marginLeft="10dp"
+                android:text="Đổi mật khẩu"
+                android:textColor="@color/colorDark"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"/>
+            <ImageView
+                android:id="@+id/img_changepassword"
+                android:layout_marginRight="20dp"
+                android:layout_gravity="center|right"
+                android:background="@drawable/browser_forward_inactive"
+                android:layout_width="20dp"
+                android:layout_height="20dp" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

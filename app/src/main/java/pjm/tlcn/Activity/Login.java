@@ -1,6 +1,5 @@
 package pjm.tlcn.Activity;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +35,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
@@ -52,7 +53,8 @@ public class Login extends AppCompatActivity {
     public static FirebaseUser firebaseUser;
     public static User user;
     public static String user_id;
-    private ProgressDialog progressDialog;
+    private AVLoadingIndicatorView av_progressdialog;
+    private LinearLayout ln_avi;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,10 +65,11 @@ public class Login extends AppCompatActivity {
 
         //Create variable
         btn_login = (Button) findViewById(R.id.btn_login);
-        progress_bar_login = (ProgressBar) findViewById(R.id.progress_bar_login);
+        av_progressdialog = (AVLoadingIndicatorView) findViewById(R.id.av_progressdialog);
         textview_dangky = (TextView) findViewById(R.id.textview_dangky);
         edt_EmailLogin = (EditText) findViewById(R.id.edt_EmailLogin);
         edt_PassWordLogin = (EditText) findViewById(R.id.edt_PassWordLogin);
+        ln_avi = (LinearLayout) findViewById(R.id.ln_avi);
         edt_PassWordLogin.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
 
@@ -74,14 +77,8 @@ public class Login extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         uDatabase = FirebaseDatabase.getInstance().getReference().child("users");
-
+        startAnim();
         //Show progressDialog
-        progressDialog = new ProgressDialog(Login.this);
-        progressDialog.setMax(100);
-        progressDialog.setMessage("Đang xử lý...");
-        progressDialog.setTitle("Đang tiến hành đăng nhập....");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.dismiss();
 
         if(isLoggedIn()){
             firebaseUser=mAuth.getCurrentUser();
@@ -108,7 +105,7 @@ public class Login extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(),"You must enter an Password",Toast.LENGTH_LONG).show();
                 else
                 {
-                    progressDialog.show();
+                    startAnim();
                     mAuth.signInWithEmailAndPassword(edt_EmailLogin.getText().toString(), edt_PassWordLogin.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -128,11 +125,11 @@ public class Login extends AppCompatActivity {
                                 });
                                 firebaseUser = mAuth.getCurrentUser();
                                 Intent intent = new Intent(Login.this, MainActivity.class);
-                                progressDialog.dismiss();
+                                stopAnim();
                                 startActivity(intent);
                                 finish();
                             } else {
-                                progressDialog.dismiss();
+                                stopAnim();
                                 Toast.makeText(Login.this,task.getException().toString(), Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -162,7 +159,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
-                progressDialog.show();
+                startAnim();
                 handleFacebookAccessToken(loginResult.getAccessToken().getToken());
             }
             @Override
@@ -188,7 +185,7 @@ public class Login extends AppCompatActivity {
     // [START auth_with_facebook]
     private void handleFacebookAccessToken(String token) {
         //Log.d(TAG, "handleFacebookAccessToken:" + token);
-        progressDialog.show();
+        startAnim();
         AuthCredential credential = FacebookAuthProvider.getCredential(token);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -208,7 +205,7 @@ public class Login extends AppCompatActivity {
                                                     firebaseUser.getPhotoUrl().toString()+"");
                             mDatabase.child("users").child(firebaseUser.getUid()).setValue(user);
                             Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                            progressDialog.dismiss();
+                            stopAnim();
                             startActivity(intent);
                             finish();
                             //updateUI(user);
@@ -217,7 +214,7 @@ public class Login extends AppCompatActivity {
                             //Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(Login.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            progressDialog.dismiss();
+                            stopAnim();
 
                         }
 
@@ -262,4 +259,15 @@ public class Login extends AppCompatActivity {
         return string.replace(",", ".");
     }
 
+    void startAnim(){
+        ln_avi.setVisibility(View.VISIBLE);
+        av_progressdialog.show();
+        // or avi.smoothToShow();
+    }
+
+    void stopAnim(){
+        av_progressdialog.hide();
+        ln_avi.setVisibility(View.GONE);
+        // or avi.smoothToHide();
+    }
 }

@@ -7,13 +7,22 @@
     android:layout_height="match_parent"
     tools:context="pjm.tlcn.Activity.Login"
     android:orientation="vertical">
-    <ProgressBar
-        android:id="@+id/progress_bar_login"
+    <LinearLayout
+        android:id="@+id/ln_avi"
+        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone" />
+        android:layout_height="match_parent">
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/av_progressdialog"
+        android:layout_gravity="center"
+        android:background="@color/colorHaftWhite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/AVLoadingIndicatorView.Small"
+        app:indicatorName="BallClipRotateMultipleIndicator"
+        app:indicatorColor="@color/colorPrimary"
+        />
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

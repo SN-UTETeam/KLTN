@@ -2,10 +2,12 @@ package pjm.tlcn.Fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -26,9 +28,10 @@ import pjm.tlcn.R;
 
 
 public class PostGrid extends Fragment {
-GridView grid_postgrid;
 PostGrid_Adapter postGrid_adapter;
+RecyclerView recyclerView;
 ArrayList<Photo> arrayPhoto = new ArrayList<Photo>();
+SwipeRefreshLayout mSwipeRefreshLayout;
 DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,11 +40,12 @@ DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
         View v = inflater.inflate(R.layout.fragment_postgrid, container, false);
 
         //Set  grid view
-        grid_postgrid = (GridView) v.findViewById(R.id.grid_postgrid);
-        postGrid_adapter = new PostGrid_Adapter(getContext(),arrayPhoto);
-        grid_postgrid.setAdapter(postGrid_adapter);
+        recyclerView = (RecyclerView) v.findViewById(R.id.rc_postgird);
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(),3,GridLayoutManager.VERTICAL, false));
 
-        //Loaddata
+        postGrid_adapter = new PostGrid_Adapter(getContext(),arrayPhoto);
+        recyclerView.setAdapter(postGrid_adapter);
+        //Loadadta
         Query query = databaseRef.child("photos").orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -71,9 +75,54 @@ DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
             }
         });
 
+        //Swipe
+        mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.postgrid_swipe);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mSwipeRefreshLayout.setRefreshing(false);
+                arrayPhoto.clear();
+                LoadData();
+                postGrid_adapter.notifyDataSetChanged();
+            }
+        });
+
+
+
+
         return v;
     }
+    public void LoadData(){
+        //Loaddata
+        Query query = databaseRef.child("photos").orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue()!=null){
+                    arrayPhoto.clear();
+                    for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+                        Photo photo = new Photo();
+                        Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
 
+                        photo.setCaption(objectMap.get("caption").toString());
+                        photo.setPhoto_id(objectMap.get("photo_id").toString());
+                        photo.setUser_id(objectMap.get("user_id").toString());
+                        photo.setDate_created(objectMap.get("date_created").toString());
+                        photo.setImage_path(objectMap.get("image_path").toString());
+
+                        arrayPhoto.add(photo);
+                    }
+                    Collections.reverse(arrayPhoto);
+                    postGrid_adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 //    @Override
 //    public void setUserVisibleHint(boolean isVisibleToUser) {
 //        super.setUserVisibleHint(isVisibleToUser);

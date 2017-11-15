@@ -73,7 +73,6 @@
             android:id="@+id/img_save_tabpost"
             android:layout_marginRight="5dp"
             android:layout_width="20dp"
-            android:background="@drawable/ufi_save"
             android:layout_height="20dp" />
     </LinearLayout>
 

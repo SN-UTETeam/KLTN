@@ -1,13 +1,13 @@
 package pjm.tlcn.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -20,54 +20,62 @@ import pjm.tlcn.R;
  * Created by Pjm on 11/14/2017.
  */
 
-public class PostGrid_Adapter extends BaseAdapter {
-    ArrayList<Photo> items;
-    Context context;
-    ImageView image_search;
+public class PostGrid_Adapter extends RecyclerView.Adapter<PostGrid_Adapter.RecyclerViewHolder> {
+
+    private ArrayList<Photo> items;
+    private Context context;
+
     public PostGrid_Adapter(Context context, ArrayList<Photo> items) {
-        this.context = context;
         this.items = items;
+        this.context = context;
     }
 
     @Override
-    public int getCount() {
-        return items.size();
+    public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        context=parent.getContext();
+
+        View view = inflater.inflate(R.layout.item_postgird, parent, false);
+        return new RecyclerViewHolder(view);
     }
 
     @Override
-    public Object getItem(int position) {
-        return null;
+    public void onBindViewHolder(PostGrid_Adapter.RecyclerViewHolder holder, int position) {
+        try {
+            DisplayMetrics displaymetrics = new DisplayMetrics();
+            ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+
+            int devicewidth = displaymetrics.widthPixels / 3;
+
+            int deviceheight = displaymetrics.heightPixels / 4;
+
+            holder.imageView.getLayoutParams().width = devicewidth;
+
+            //if you need same height as width you can set devicewidth in holder.image_view.getLayoutParams().height
+            holder.imageView.getLayoutParams().height = devicewidth;
+            Picasso.with(context)
+                    .load(items.get(position).getImage_path())
+                    //.fit()
+                    .resize(devicewidth,devicewidth)
+                    .centerCrop()
+                    .into(holder.imageView);
+        }
+        catch (Exception e){
+
+        }
     }
 
     @Override
-    public long getItemId(int position) {
-        return 0;
+    public int getItemCount() {
+        return this.items.size();
     }
+    public class RecyclerViewHolder extends RecyclerView.ViewHolder {
+        ImageView imageView;
+        public RecyclerViewHolder(View itemView) {
+            super(itemView);
+                imageView =(ImageView) itemView.findViewById(R.id.ImageView_postgrid);
 
-    @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        LayoutInflater l = LayoutInflater.from(context);
-        convertView = l.inflate(R.layout.item_postgird, null);
-        image_search =(ImageView)convertView.findViewById(R.id.ImageView_postgrid);
-
-        //intent view photo
-        image_search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context,"Clicked",Toast.LENGTH_SHORT).show();
-            }
-        });
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-        int noOfColumns = (int) (dpWidth);
-        Picasso
-                .with(context)
-                .load(items.get(position).getImage_path())
-                .resize(noOfColumns,noOfColumns)
-                .centerCrop()
-                .into(image_search);
-
-        return convertView;
+        }
     }
-
 }

@@ -125,10 +125,12 @@ public class Activity_share_image extends AppCompatActivity {
                         //insert into database
                         databaseRef.child("photos").child(newPhotoKey).setValue(photo);
                         dialog.dismiss();
-                        Intent it = new Intent();
-                        setResult(Activity.RESULT_OK, it);
+                        Intent intent = new Intent();
+                        intent.putExtra("result","ok");
+                        setResult(Activity.RESULT_OK,intent);
                         finish();
                         Toast.makeText(getApplication(),"Đăng tải thành công!!!",Toast.LENGTH_SHORT);
+                        finish();
                     }
                 });
 

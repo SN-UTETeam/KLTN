@@ -265,6 +265,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
         holder.img_like_tabpost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("Click Like",position+"");
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                 Query query = reference
                         .child("photos")
@@ -285,9 +286,13 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                                         .child("likes")
                                         .child(keyID)
                                         .removeValue();
+                                Log.d("Set Remove",1+"");
                                 holder.img_like_tabpost.setImageResource(R.drawable.ufi_heart_bold);
                                 holder.tv_likes_tabpost.setText("Người thích: ");
-                                //Setup like
+                                mLikedByCurrentUser[position]=false;
+                                break;
+                               //Setlike
+
                                 //End Setup
                             }
                             //case2: The user has not liked the photo
@@ -302,12 +307,16 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                                         .child("likes")
                                         .child(newLikeID)
                                         .setValue(like);
+                                Log.d("Set Like",1+"");
+                                mLikedByCurrentUser[position]=true;
                                 holder.img_like_tabpost.setImageResource(R.drawable.direct_heart);
                                 break;
                             }
                         }
                         if(!dataSnapshot.exists()){
                             //add new like
+//                            mLikedByCurrentUser[position]=false;
+//                            mLikesString[position]="";
                             String newLikeID = databaseRef.push().getKey();
                             //Log.d("Like","here");
                             Like like = new Like();
@@ -317,9 +326,9 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                                     .child("likes")
                                     .child(newLikeID)
                                     .setValue(like);
+                            mLikedByCurrentUser[position]=true;
                             holder.img_like_tabpost.setImageResource(R.drawable.direct_heart);
 
-                            //break;
                         }
                     }
 
@@ -377,9 +386,9 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                            Log.d("Found ",singleSnapshot.child("photo_id").getValue().toString());
-                            Log.d("item",item.get(position).getPhoto_id());
-                            Log.d("Saved",mSavedByCurrentUser[position].toString());
+                            //Log.d("Found ",singleSnapshot.child("photo_id").getValue().toString());
+                            //Log.d("item",item.get(position).getPhoto_id());
+                            //Log.d("Saved",mSavedByCurrentUser[position].toString());
                             if(mSavedByCurrentUser[position] && singleSnapshot.child("photo_id").getValue().toString().equals(item.get(position).getPhoto_id())){
                                 Log.d("remove",singleSnapshot.getKey());
                                 holder.img_save_tabpost.setImageResource(R.drawable.ufi_save);

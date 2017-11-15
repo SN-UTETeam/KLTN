@@ -1,12 +1,13 @@
 package pjm.tlcn.Activity;
 
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -14,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -66,7 +68,7 @@ public class Chat extends AppCompatActivity {
     public Uri uri_img_download;
     public Bitmap bitmap_img_capture;
     private boolean flag_img_select=false,flag_img_capture=false;
-    private ProgressDialog progressDialog;
+    private Dialog dialog;
     private ArrayList<Message> arrayMessage = new ArrayList<Message>();
     private MessageAdapter messageAdapter;
     private Uri imageUri;
@@ -179,17 +181,17 @@ public class Chat extends AppCompatActivity {
                final String messageText = messageArea.getText().toString();
                final Map<String, String> map = new HashMap<String, String>();
 
-                //Show progressDialog
-                progressDialog = new ProgressDialog(Chat.this);
-                progressDialog.setMax(100);
-                progressDialog.setMessage("Sending....");
-                progressDialog.setTitle("Sending your message....");
-                progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                ///Created Dialog
+                dialog = new Dialog(Chat.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setCancelable(false);
+                dialog.setContentView(R.layout.custom_dialog);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                dialog.show();
 
                 if(messageText.trim().length()>0||flag_img_select||flag_img_capture){
                     if(flag_img_select){
-                        progressDialog.show();
-                        progressDialog.onStart();// /Upload when chosen img form galery
+                        dialog.show();
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         float aspectRatio = bitmap_img_capture.getWidth() /
                                 (float) bitmap_img_capture.getHeight();
@@ -198,22 +200,20 @@ public class Chat extends AppCompatActivity {
                         bitmap_img_capture = Bitmap.createScaledBitmap(
                                 bitmap_img_capture, width, height, false);
                         bitmap_img_capture.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                        byte[] data = baos.toByteArray();
+                        final byte[] data = baos.toByteArray();
                         String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
                         UploadTask uploadTask = s1Database.child("IMG_"+timeStamp).putBytes(data);
                         // Listen for state changes, errors, and completion of the upload.
                         uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                                final double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                                int currentprogress = (int) progress;
-                                progressDialog.setProgress(currentprogress);
+
                             }
 
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception exception) {
-                                progressDialog.dismiss();
+                                dialog.dismiss();
                                 Toast.makeText(Chat.this, "Lỗi", Toast.LENGTH_SHORT).show();
                             }
                         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -235,14 +235,13 @@ public class Chat extends AppCompatActivity {
                                 messageArea.setText("");
                                 hiddenKeyboard();
                                 img_chat_image.setVisibility(View.GONE);
-                                progressDialog.dismiss();
+                                dialog.dismiss();
                             }
                         });
 
                     }else
                     if(flag_img_capture){
-                        progressDialog.show();
-                        progressDialog.onStart();
+                        dialog.show();
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         float aspectRatio = bitmap_img_capture.getWidth() /
                                 (float) bitmap_img_capture.getHeight();
@@ -275,7 +274,7 @@ public class Chat extends AppCompatActivity {
                                 flag_img_select=false;
                                 flag_img_capture=false;
                                 messageArea.setText("");
-                                progressDialog.dismiss();
+                                dialog.dismiss();
                                 hiddenKeyboard();
                                 img_chat_image.setVisibility(View.GONE);
                             }
@@ -296,13 +295,14 @@ public class Chat extends AppCompatActivity {
 
                         flag_img_select = false;
                         flag_img_capture=false;
-                        progressDialog.dismiss();
+                        dialog.dismiss();
                         messageArea.setText("");
                         hiddenKeyboard();
                         img_chat_image.setVisibility(View.GONE);
 
-                        }else
-                            Toast.makeText(Chat.this, "Hãy nhập tin nhắn", Toast.LENGTH_SHORT).show();
+                        }else{
+                            dialog.dismiss();
+                            Toast.makeText(Chat.this, "Hãy nhập tin nhắn", Toast.LENGTH_SHORT).show();}
                 }
 
             }

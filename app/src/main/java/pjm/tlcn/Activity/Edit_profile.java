@@ -1,14 +1,16 @@
 package pjm.tlcn.Activity;
 
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -52,7 +54,7 @@ private EditText edt_username_editprofile,edt_describer_editprofile,edt_phonenum
 private int RESULT_LOAD_IMG = 1000;
 private Uri uri_img_select,uri_img_download;
 private boolean flag_img_select=false;
-private ProgressDialog progressDialog;
+private Dialog dialog;
 private Bitmap selectedImage;
     private LinearLayout changepassword;
 
@@ -76,13 +78,12 @@ private Bitmap selectedImage;
         uDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         sDatabase = FirebaseStorage.getInstance().getReference().child("AvatarUsers").child(user_id);
 
-        //Show progressDialog
-        progressDialog = new ProgressDialog(Edit_profile.this);
-        progressDialog.setMax(100);
-        progressDialog.setMessage("Chỉnh sửa thông tin....");
-        progressDialog.setTitle("Đang thực hiện....");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.onStart();
+        //Created Dialog
+        dialog = new Dialog(Edit_profile.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.custom_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         //Check null
         if(edt_email_editprofile.getText().toString().equals("null")) edt_email_editprofile.setEnabled(true);
         //Start Set Onclick btn_edit_profile_cancel
@@ -102,7 +103,7 @@ private Bitmap selectedImage;
                         edt_phonenumber_editprofile.getText().toString().length()>=10 &&
                         edt_describer_editprofile.getText().toString().length()>0)
                 {
-                    progressDialog.show();
+                    dialog.show();
                     uDatabase.child("username").setValue(edt_username_editprofile.getText().toString());
                     uDatabase.child("describer").setValue(edt_describer_editprofile.getText().toString());
                     uDatabase.child("phonenumber").setValue(edt_phonenumber_editprofile.getText().toString());
@@ -118,22 +119,20 @@ private Bitmap selectedImage;
                         selectedImage = Bitmap.createScaledBitmap(
                                 selectedImage, width, height, false);
                         selectedImage.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                        byte[] data = baos.toByteArray();
+                        final byte[] data = baos.toByteArray();
                         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
                         UploadTask uploadTask = sDatabase.child("IMG_"+timeStamp).putBytes(data);
                         uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                                final double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                                int currentprogress = (int) progress;
-                                progressDialog.setProgress(currentprogress);
+
                             }
 
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception exception) {
                                 // Handle unsuccessful uploads
-                                progressDialog.dismiss();
+                                dialog.dismiss();
                                 Toast.makeText(Edit_profile.this, "Lỗi", Toast.LENGTH_SHORT).show();
                             }
                         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -142,7 +141,7 @@ private Bitmap selectedImage;
                                 Date currentTime = Calendar.getInstance().getTime();
                                 uri_img_download = taskSnapshot.getMetadata().getDownloadUrl();
                                 uDatabase.child("avatarurl").setValue(uri_img_download.toString());
-                                progressDialog.dismiss();
+                                dialog.dismiss();
                                 Toast.makeText(getApplication(),"Chỉnh sửa thành công thành công!!!",Toast.LENGTH_SHORT);
                                 finish();
                             }
@@ -150,11 +149,12 @@ private Bitmap selectedImage;
                         flag_img_select=false;
                     }
                     else {
-                    progressDialog.dismiss();
+                    dialog.dismiss();
                     finish();}
                 }
-                else
-                    Toast.makeText(getApplicationContext(),"Vui lòng nhập đúng các thông tin!",Toast.LENGTH_LONG).show();
+                else{
+                    dialog.dismiss();
+                    Toast.makeText(getApplicationContext(),"Vui lòng nhập đúng các thông tin!",Toast.LENGTH_LONG).show();}
             }
         });
 

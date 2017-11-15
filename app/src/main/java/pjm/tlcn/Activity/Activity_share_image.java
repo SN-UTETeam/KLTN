@@ -1,14 +1,16 @@
 package pjm.tlcn.Activity;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -42,7 +44,7 @@ public class Activity_share_image extends AppCompatActivity {
     private DatabaseReference databaseRef;
     private StorageReference storageRef;
     private Uri uri_img_download;
-    private ProgressDialog progressDialog;
+    private Dialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,14 +70,13 @@ public class Activity_share_image extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //Show progressDialog
-                progressDialog = new ProgressDialog(Activity_share_image.this);
-                progressDialog.setMax(100);
-                progressDialog.setMessage("Uploading....");
-                progressDialog.setTitle("Uploading your status....");
-                progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                progressDialog.show();
-                progressDialog.onStart();
+                //Created Dialog
+                dialog = new Dialog(Activity_share_image.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setCancelable(false);
+                dialog.setContentView(R.layout.custom_dialog);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                dialog.show();
 
                 //Optimze Picture
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -88,23 +89,22 @@ public class Activity_share_image extends AppCompatActivity {
                         bitmap_photo, width, height, false);
                 bitmap_photo.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] data = baos.toByteArray();
-                final String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+
 
                 //Upload to Storage
+                final String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
                 UploadTask uploadTask = storageRef.child(FirebaseAuth.getInstance().getUid()).child("photos").child("IMG_"+timeStamp).putBytes(data);
                 uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        final double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                        int currentprogress = (int) progress;
-                        progressDialog.setProgress(currentprogress);
+
                     }
 
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
                         // Handle unsuccessful uploads
-                        progressDialog.dismiss();
+                        dialog.dismiss();
                         Toast.makeText(Activity_share_image.this, "Lỗi", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -124,7 +124,7 @@ public class Activity_share_image extends AppCompatActivity {
 
                         //insert into database
                         databaseRef.child("photos").child(newPhotoKey).setValue(photo);
-                        progressDialog.dismiss();
+                        dialog.dismiss();
                         Intent it = new Intent();
                         setResult(Activity.RESULT_OK, it);
                         finish();

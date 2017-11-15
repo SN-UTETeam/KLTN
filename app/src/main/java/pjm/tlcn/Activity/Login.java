@@ -1,15 +1,17 @@
 package pjm.tlcn.Activity;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +37,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.wang.avi.AVLoadingIndicatorView;
 
 import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
@@ -49,12 +50,11 @@ public class Login extends AppCompatActivity {
     private LoginButton loginButton;
     private TextView textview_dangky;
     private EditText edt_EmailLogin,edt_PassWordLogin;
-    private ProgressBar progress_bar_login;
+    private ProgressBar login_progressbar;
     public static FirebaseUser firebaseUser;
     public static User user;
     public static String user_id;
-    private AVLoadingIndicatorView av_progressdialog;
-    private LinearLayout ln_avi;
+    public Dialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,11 +65,10 @@ public class Login extends AppCompatActivity {
 
         //Create variable
         btn_login = (Button) findViewById(R.id.btn_login);
-        av_progressdialog = (AVLoadingIndicatorView) findViewById(R.id.av_progressdialog);
+
         textview_dangky = (TextView) findViewById(R.id.textview_dangky);
         edt_EmailLogin = (EditText) findViewById(R.id.edt_EmailLogin);
         edt_PassWordLogin = (EditText) findViewById(R.id.edt_PassWordLogin);
-        ln_avi = (LinearLayout) findViewById(R.id.ln_avi);
         edt_PassWordLogin.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
 
@@ -77,8 +76,15 @@ public class Login extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         uDatabase = FirebaseDatabase.getInstance().getReference().child("users");
-        startAnim();
         //Show progressDialog
+
+        //Created Dialog
+        dialog = new Dialog(Login.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.custom_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
 
         if(isLoggedIn()){
             firebaseUser=mAuth.getCurrentUser();
@@ -105,7 +111,7 @@ public class Login extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(),"You must enter an Password",Toast.LENGTH_LONG).show();
                 else
                 {
-                    startAnim();
+                    dialog.show();
                     mAuth.signInWithEmailAndPassword(edt_EmailLogin.getText().toString(), edt_PassWordLogin.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -125,11 +131,11 @@ public class Login extends AppCompatActivity {
                                 });
                                 firebaseUser = mAuth.getCurrentUser();
                                 Intent intent = new Intent(Login.this, MainActivity.class);
-                                stopAnim();
+                                dialog.dismiss();
                                 startActivity(intent);
                                 finish();
                             } else {
-                                stopAnim();
+                                dialog.dismiss();
                                 Toast.makeText(Login.this,task.getException().toString(), Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -159,7 +165,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
-                startAnim();
+                dialog.show();
                 handleFacebookAccessToken(loginResult.getAccessToken().getToken());
             }
             @Override
@@ -185,7 +191,7 @@ public class Login extends AppCompatActivity {
     // [START auth_with_facebook]
     private void handleFacebookAccessToken(String token) {
         //Log.d(TAG, "handleFacebookAccessToken:" + token);
-        startAnim();
+        dialog.show();
         AuthCredential credential = FacebookAuthProvider.getCredential(token);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -205,7 +211,7 @@ public class Login extends AppCompatActivity {
                                                     firebaseUser.getPhotoUrl().toString()+"");
                             mDatabase.child("users").child(firebaseUser.getUid()).setValue(user);
                             Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                            stopAnim();
+                            dialog.dismiss();
                             startActivity(intent);
                             finish();
                             //updateUI(user);
@@ -214,7 +220,7 @@ public class Login extends AppCompatActivity {
                             //Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(Login.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            stopAnim();
+
 
                         }
 
@@ -259,15 +265,5 @@ public class Login extends AppCompatActivity {
         return string.replace(",", ".");
     }
 
-    void startAnim(){
-        ln_avi.setVisibility(View.VISIBLE);
-        av_progressdialog.show();
-        // or avi.smoothToShow();
-    }
 
-    void stopAnim(){
-        av_progressdialog.hide();
-        ln_avi.setVisibility(View.GONE);
-        // or avi.smoothToHide();
-    }
 }

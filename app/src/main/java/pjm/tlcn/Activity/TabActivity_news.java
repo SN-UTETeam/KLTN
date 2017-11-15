@@ -70,6 +70,9 @@ public class TabActivity_news extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_news);
 
+        MainActivity mainActivity = (MainActivity) getParent();
+        mainActivity.CheckPermission();
+
         tab_news_imageview = (ImageView) findViewById(R.id.tab_news_imageview);
         img_camera_tabnew = (ImageView) findViewById(R.id.img_camera_tabnew);
         gridview = (GridView) findViewById(R.id.tab_news_gridview);
@@ -175,6 +178,10 @@ public class TabActivity_news extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+        if (requestCode==REQUEST_DONE && requestCode==Activity.RESULT_OK){
+            MainActivity mainActivity = (MainActivity) getParent();
+            mainActivity.setCurrentTab(0);
         }
     }
     public String getRealPathFromURI(Uri contentUri) {

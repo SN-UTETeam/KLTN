@@ -190,4 +190,8 @@ public class MainActivity extends TabActivity {
         }
     }
 
+    public void setCurrentTab(int i){
+        Tabhost_main.setCurrentTab(i);
+    }
+
 }

@@ -46,7 +46,7 @@ public class TabActivity_news extends AppCompatActivity {
     private Boolean flag_selected=false;
     private  static final int  REQUEST_CAMERA = 12,REQUEST_DONE=13;
     public static Bitmap bitmap_photo;
-    private Uri imageUri;
+    public static Uri imageUri;
     private ContentValues values;
     private String imageurl;
     @Override
@@ -126,6 +126,7 @@ public class TabActivity_news extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     File f = new File(mUrls[position].getPath());
+                    imageUri=mUrls[position];
                     bitmap_photo = BitmapFactory.decodeFile(f.getPath());
                     tab_news_imageview.setImageURI(mUrls[position]);
                     flag_selected=true;

@@ -46,7 +46,7 @@ public class TabActivity_news extends AppCompatActivity {
     private Boolean flag_selected=false;
     private  static final int  REQUEST_CAMERA = 12,REQUEST_DONE=13;
     public static Bitmap bitmap_photo;
-    private Uri imageUri;
+    public static Uri imageUri;
     private ContentValues values;
     private String imageurl;
     @Override
@@ -126,6 +126,7 @@ public class TabActivity_news extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     File f = new File(mUrls[position].getPath());
+                    imageUri=mUrls[position];
                     bitmap_photo = BitmapFactory.decodeFile(f.getPath());
                     tab_news_imageview.setImageURI(mUrls[position]);
                     flag_selected=true;
@@ -161,12 +162,6 @@ public class TabActivity_news extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK) {
-//            bitmap_photo = (Bitmap) data.getExtras().get("data");
-//            tab_news_imageview.setImageBitmap(bitmap_photo);
-//            flag_selected=true;
-//            btcancel.setVisibility(View.VISIBLE);
-//            btnext.setVisibility(View.VISIBLE);
-
             try {
                 bitmap_photo = MediaStore.Images.Media.getBitmap(
                         getContentResolver(), imageUri);
@@ -179,9 +174,11 @@ public class TabActivity_news extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-        if (requestCode==REQUEST_DONE && requestCode==Activity.RESULT_OK){
-            MainActivity mainActivity = (MainActivity) getParent();
-            mainActivity.setCurrentTab(0);
+        if (requestCode==REQUEST_DONE){
+            if(resultCode==Activity.RESULT_OK) {
+                MainActivity mainActivity = (MainActivity) getParent();
+                mainActivity.setCurrentTab(0);
+            }
         }
     }
     public String getRealPathFromURI(Uri contentUri) {

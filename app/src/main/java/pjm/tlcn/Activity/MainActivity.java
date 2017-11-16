@@ -65,6 +65,8 @@ public class MainActivity extends TabActivity {
         TabHost.TabSpec Tabhost4 = Tabhost_main.newTabSpec("Tab4");
         TabHost.TabSpec Tabhost5 = Tabhost_main.newTabSpec("Tab5");
 
+
+
         //Create Tab1 - TabActivity_main
         Tabhost1.setIndicator("", getResources().getDrawable(R.drawable.tab1_selector));
         Tabhost1.setContent(new Intent(this, TabActivity_home.class));
@@ -92,12 +94,17 @@ public class MainActivity extends TabActivity {
         Tabhost_main.addTab(Tabhost4);
         Tabhost_main.addTab(Tabhost5);
 
+
+
+
+
+
         Tabhost_main.getTabWidget().setBackgroundResource(R.color.colorHaftWhite);
         Tabhost_main.getTabWidget().setStripEnabled(false);
 
         //Set Icon
         for (int i = 0; i < Tabhost_main.getTabWidget().getChildCount(); i++) {
-            Tabhost_main.getTabWidget().getChildAt(i).setPadding(50, 50, 50, 50);
+            Tabhost_main.getTabWidget().getChildAt(i).setPadding(10, 10, 10, 10);
         }
     }
     @Override

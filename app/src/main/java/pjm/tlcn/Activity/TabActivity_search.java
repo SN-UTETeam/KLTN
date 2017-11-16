@@ -90,14 +90,13 @@ public class TabActivity_search extends AppCompatActivity {
                         for (int i = 0; i < size; i++) {
                             String key = C.get(i).toString();
                             Log.d("keyne",i +" = " +key);
-                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                          DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                             Query query = reference.child("photos")
-                                    .orderByChild("user_id").equalTo(key);
+                                   .orderByChild("user_id").equalTo(key);
                             query.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.getValue() != null) {
-
                                         for (DataSnapshot snop : dataSnapshot.getChildren()) {
                                             Photo photo = new Photo();
                                             Map<String, Object> objectMap = (HashMap<String, Object>) snop.getValue();
@@ -106,9 +105,10 @@ public class TabActivity_search extends AppCompatActivity {
                                             photo.setUser_id(objectMap.get("user_id").toString());
                                             photo.setDate_created(objectMap.get("date_created").toString());
                                             photo.setImage_path(objectMap.get("image_path").toString());
+                                           // photo.set
                                             // Photo temp = new Photo();
                                             // temp = snop.getValue(Photo.class);
-                                            Log.d("Found user",photo.getUser_id());
+                                            Log.d("Found user", objectMap.get("user_id").toString());
                                             gridviewArrayPhoto.add(photo);
                                         }
                                         Collections.reverse(gridviewArrayPhoto);

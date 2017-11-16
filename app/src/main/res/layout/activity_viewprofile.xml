@@ -169,7 +169,7 @@
                                 android:layout_height="30dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/custom_button_viewprofile"
-                                android:text="Theo dỏi"
+                                android:text="Theo dõi"
                                 android:textAllCaps="false"
                                 android:textColor="@color/colorWhite" />
 

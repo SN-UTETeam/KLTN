@@ -2,6 +2,7 @@ package pjm.tlcn.Adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import pjm.tlcn.Activity.ViewOnePost;
 import pjm.tlcn.Model.Photo;
 import pjm.tlcn.R;
 
@@ -41,14 +43,13 @@ public class PostGrid_Adapter extends RecyclerView.Adapter<PostGrid_Adapter.Recy
     }
 
     @Override
-    public void onBindViewHolder(PostGrid_Adapter.RecyclerViewHolder holder, int position) {
-        try {
-            DisplayMetrics displaymetrics = new DisplayMetrics();
+    public void onBindViewHolder(PostGrid_Adapter.RecyclerViewHolder holder, final int position) {
+         DisplayMetrics displaymetrics = new DisplayMetrics();
             ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
 
             int devicewidth = displaymetrics.widthPixels / 3;
 
-            int deviceheight = displaymetrics.heightPixels / 4;
+            //int deviceheight = displaymetrics.heightPixels / 4;
 
             holder.imageView.getLayoutParams().width = devicewidth;
 
@@ -60,10 +61,16 @@ public class PostGrid_Adapter extends RecyclerView.Adapter<PostGrid_Adapter.Recy
                     .resize(devicewidth,devicewidth)
                     .centerCrop()
                     .into(holder.imageView);
-        }
-        catch (Exception e){
 
-        }
+            holder.imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, ViewOnePost.class);
+                    intent.putExtra("photo_id",items.get(position).getPhoto_id());
+                    intent.putExtra("user_id",items.get(position).getUser_id());
+                    context.startActivity(intent);
+                }
+            });
     }
 
     @Override

@@ -68,8 +68,9 @@
         <activity android:name=".Activity.NewChat" />
         <activity android:name=".Activity.ViewLike" />
         <activity android:name=".Activity.Saved" />
-        <activity android:name=".Activity.Activity_view_photo_search"/>
-        <activity android:name=".Activity.SavedPhoto"></activity>
+        <activity android:name=".Activity.Activity_view_photo_search" />
+        <activity android:name=".Activity.SavedPhoto" />
+        <activity android:name=".Activity.ViewOnePost"></activity>
     </application>
 
 </manifest>

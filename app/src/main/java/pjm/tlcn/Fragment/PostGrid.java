@@ -88,8 +88,6 @@ DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
         });
 
 
-
-
         return v;
     }
     public void LoadData(){

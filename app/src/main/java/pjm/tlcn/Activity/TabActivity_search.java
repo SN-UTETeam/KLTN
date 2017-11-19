@@ -13,7 +13,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -33,6 +32,7 @@ public class TabActivity_search extends AppCompatActivity {
     GridView gridViewSearch;
     ArrayList A = new ArrayList();
     ArrayList B = new ArrayList();
+    ArrayList<String> C = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,24 +80,24 @@ public class TabActivity_search extends AppCompatActivity {
                       }
 
                         //
-                        ArrayList<String> C = new ArrayList<>();
+
                         C.clear();
                         C.addAll(A);
                     //    C.addAll(B);
                         C.remove(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                        int size = C.size();
-                        gridviewArrayPhoto.clear();
-                        for (int i = 0; i < size; i++) {
-                            String key = C.get(i).toString();
-                            Log.d("keyne",i +" = " +key);
-                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                            Query query = reference.child("photos")
-                                    .orderByChild("user_id").equalTo(key);
-                            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                      final   int size = C.size();
+
+
+
+                        //  DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                          //  Query query = reference.child("photos")
+                                //   .orderByChild("user_id").equalTo(key);
+                            uDatabase.child("photos").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.getValue() != null) {
 
+                                    if (dataSnapshot.getValue() != null) {
+                                        gridviewArrayPhoto.clear();
                                         for (DataSnapshot snop : dataSnapshot.getChildren()) {
                                             Photo photo = new Photo();
                                             Map<String, Object> objectMap = (HashMap<String, Object>) snop.getValue();
@@ -106,10 +106,25 @@ public class TabActivity_search extends AppCompatActivity {
                                             photo.setUser_id(objectMap.get("user_id").toString());
                                             photo.setDate_created(objectMap.get("date_created").toString());
                                             photo.setImage_path(objectMap.get("image_path").toString());
+                                           // photo.set
                                             // Photo temp = new Photo();
                                             // temp = snop.getValue(Photo.class);
-                                            Log.d("Found user",photo.getUser_id());
-                                            gridviewArrayPhoto.add(photo);
+                                         //   for(i =0;i<key.si)
+                                            for (int i = 0; i < size; i++) {
+                                                final String key = C.get(i).toString();
+
+                                                if(photo.getUser_id().equals(key)){
+                                                    gridviewArrayPhoto.add(photo);
+                                                    Log.d("keyne",i +" = " +key);
+                                                    //   Log.d("mang",gridviewArrayPhoto.toString());
+                                                   Log.d("Found user", photo.getUser_id());
+                                                 //   Log.d("keyphoto",photo.getPhoto_id());
+
+
+                                                }
+
+                                            }
+
                                         }
                                         Collections.reverse(gridviewArrayPhoto);
                                         customAdapterSearch.notifyDataSetChanged();
@@ -123,7 +138,7 @@ public class TabActivity_search extends AppCompatActivity {
                                 public void onCancelled(DatabaseError databaseError) {
                                 }
                             });
-                        }
+
                     }
 
                     @Override

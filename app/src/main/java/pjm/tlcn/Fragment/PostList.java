@@ -18,6 +18,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -95,7 +96,7 @@ private DatabaseReference uDatabase;
                         photo.setComments(comments);
                         photoArrayList.add(photo);
                     }
-                    //Collections.reverse(photoArrayList);
+                    Collections.reverse(photoArrayList);
                     recyclerView_tabPost.notifyDataSetChanged();
                 }
             }

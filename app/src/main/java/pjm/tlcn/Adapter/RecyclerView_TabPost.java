@@ -200,6 +200,8 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                 if(!dataSnapshot.exists()){
                     mLikesString[position] = "";
                     mLikedByCurrentUser[position] = false;
+                    holder.tv_likes_tabpost.setVisibility(View.GONE);
+                    holder.tv_likes_tabpost.setText("");
                 }
             }
 
@@ -288,7 +290,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                                         .removeValue();
                                 Log.d("Set Remove",1+"");
                                 holder.img_like_tabpost.setImageResource(R.drawable.ufi_heart_bold);
-                                holder.tv_likes_tabpost.setText("Người thích: ");
+                                //holder.tv_likes_tabpost.setText(getLikeString(position)+"");
                                 mLikedByCurrentUser[position]=false;
                                 break;
                                //Setlike
@@ -310,6 +312,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                                 Log.d("Set Like",1+"");
                                 mLikedByCurrentUser[position]=true;
                                 holder.img_like_tabpost.setImageResource(R.drawable.direct_heart);
+                               // holder.tv_likes_tabpost.setText(getLikeString(position)+"");
                                 break;
                             }
                         }
@@ -328,6 +331,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                                     .setValue(like);
                             mLikedByCurrentUser[position]=true;
                             holder.img_like_tabpost.setImageResource(R.drawable.direct_heart);
+                            //holder.tv_likes_tabpost.setText(getLikeString(position)+"");
 
                         }
                     }
@@ -460,5 +464,91 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
             img_save_tabpost = (ImageView) itemView.findViewById(R.id.img_save_tabpost);
 
         }
+    }
+
+    public String getLikeString(final int position2){
+        //GetLike
+
+        Query query = databaseRef
+                .child("photos")
+                .child(item.get(position2).getPhoto_id())
+                .child("likes");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+               final StringBuilder mUser = new StringBuilder();
+                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                    Query query = reference
+                            .child("users")
+                            .orderByChild("user_id")
+                            .equalTo(singleSnapshot.getValue(Like.class).getUser_id());
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+//                                                Log.d("RecyclerView_Tabpost", "onDataChange: found like: " +
+//                                                        singleSnapshot.getValue(User.class).getUsername());
+
+                                mUser.append(singleSnapshot.getValue(User.class).getUsername());
+                                mUser.append(",");
+                            }
+                            String[] splitUsers = mUser.toString().split(",");
+//                            if(mUser.toString().contains(user.getUsername() + ",")){
+//                                mLikedByCurrentUser[position2] = true;
+//                            }else{
+//                                mLikedByCurrentUser[position2] = false;
+//                            }
+
+                            int length = splitUsers.length;
+                            //Log.d("length split:"+position+": ",length+"");
+                            if(length == 1){
+                                mLikesString[position2] = "Người thích: " +"<b>" + splitUsers[0] + "</b>";
+                            }
+                            else if(length == 2){
+                                mLikesString[position2] = "Người thích: " + "<b>" + splitUsers[0] + "</b>"
+                                        + " và " + "<b>" + splitUsers[1] + "</b>";
+                            }
+                            else if(length == 3){
+                                mLikesString[position2] = "Người thích: " + "<b>" + splitUsers[0] + "</b>"
+                                        + ", " + "<b>" + splitUsers[1] + "</b>"
+                                        + " và " + "<b>" + splitUsers[2] + "</b>";
+
+                            }
+                            else if(length == 4){
+                                mLikesString[position2] = "Người thích: " + "<b>" + splitUsers[0] + "</b>"
+                                        + ", " + "<b>" + splitUsers[1] + "</b>"
+                                        + ", " + "<b>" + splitUsers[2] + "</b>"
+                                        + " và " + "<b>" + splitUsers[3] + "</b>";
+                            }
+                            else if(length > 4){
+                                mLikesString[position2] = "Người thích: " + "<b>" + splitUsers[0] + "</b>"
+                                        + ", " + "<b>" + splitUsers[1] + "</b>"
+                                        + ", " + "<b>" + splitUsers[2] + "</b>"
+                                        + " và " + "<b>" + (splitUsers.length-3) + "</b>" + " người khác";
+                            }
+                            //Log.d("likes string: " +position+": ",mLikesString[position]);
+                            //holder.tv_likes_tabpost.setVisibility(View.VISIBLE);
+                            //holder.tv_likes_tabpost.setText(Html.fromHtml(mLikesString[position2]+""));
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+                if(!dataSnapshot.exists()){
+                    mLikesString[position2] = "";
+                   // mLikedByCurrentUser[position2] = false;
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        return mLikesString[position2]+"";
     }
 }

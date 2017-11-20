@@ -17,7 +17,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,8 +44,7 @@ public class ViewCmt_tabProfile extends AppCompatActivity {
         rc_cmt_tabprofile = (RecyclerView) findViewById(R.id.rc_cmt_tabprofile);
         edt_cmt_tabprofile = (EditText) findViewById(R.id.edt_cmt_tabprofile);
         img_sendcmt_tabprofile = (ImageView) findViewById(R.id.img_sendcmt_tabprofile);
-        img_tabcmt_toolbar = (ImageView) findViewById(R.id.img_tabcmt_toolbar);
-        toolbar_tabcmt = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_tabcmt);
+        toolbar_tabcmt = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_view_cmt);
 
         //Set Back ToolBar
         setSupportActionBar(toolbar_tabcmt);
@@ -58,16 +56,13 @@ public class ViewCmt_tabProfile extends AppCompatActivity {
                 finish();
             }
         });
+
         final String photo_id = getIntent().getExtras().getString("photo_id");
         final String caption = getIntent().getExtras().getString("caption");
-        String image_path = getIntent().getExtras().getString("image_path");
+        String image_path = getIntent().getExtras().getString("Image_path");
         final String user_id = getIntent().getExtras().getString("user_id");
         cmt_tabProfiles = getIntent().getParcelableArrayListExtra("ArrayComment");
         ref_img = getIntent().getExtras().getString("ref_img");
-
-        toolbar_tabcmt.setTitle(caption);
-        Picasso.with(getApplicationContext()).load(image_path).into(img_tabcmt_toolbar);
-
 
         //Firebase
         databaseRef = FirebaseDatabase.getInstance().getReference();

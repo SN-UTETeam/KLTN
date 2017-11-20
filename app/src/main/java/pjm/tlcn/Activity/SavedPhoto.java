@@ -22,15 +22,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import pjm.tlcn.Adapter.PostGrid_Adapter;
-import pjm.tlcn.Model.Comment;
-import pjm.tlcn.Model.Photo;
+import pjm.tlcn.Model.Item_GridPhoto;
 import pjm.tlcn.R;
 
 public class SavedPhoto extends AppCompatActivity {
 Toolbar toolbar_saved_photo;
     PostGrid_Adapter postGrid_adapter;
     RecyclerView recyclerView;
-    ArrayList<Photo> arrayPhoto = new ArrayList<Photo>();
+    ArrayList<Item_GridPhoto> arrayPhoto = new ArrayList<Item_GridPhoto>();
     SwipeRefreshLayout mSwipeRefreshLayout;
     DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
     @Override
@@ -53,9 +52,9 @@ Toolbar toolbar_saved_photo;
         //Set  grid view
         recyclerView = (RecyclerView) findViewById(R.id.rc_saved_photo);
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),3,GridLayoutManager.VERTICAL, false));
-
         postGrid_adapter = new PostGrid_Adapter(getApplicationContext(),arrayPhoto);
         recyclerView.setAdapter(postGrid_adapter);
+
         //Loadadta
         Query query = databaseRef.child("saved").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         query.addValueEventListener(new ValueEventListener() {
@@ -72,29 +71,17 @@ Toolbar toolbar_saved_photo;
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                                    Photo photo = new Photo();
+                                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
                                     Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-
-                                    photo.setCaption(objectMap.get("caption").toString());
-                                    photo.setPhoto_id(objectMap.get("photo_id").toString());
-                                    photo.setUser_id(objectMap.get("user_id").toString());
-                                    photo.setDate_created(objectMap.get("date_created").toString());
-                                    photo.setImage_path(objectMap.get("image_path").toString());
-
-                                    ArrayList<Comment> comments = new ArrayList<Comment>();
-                                    for (DataSnapshot dSnapshot : singleSnapshot
-                                            .child("comments").getChildren()) {
-                                        Comment comment = new Comment();
-                                        comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                                        comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                                        comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-                                        comments.add(comment);
+                                    String photo_id = (objectMap.get("photo_id").toString());
+                                    for(DataSnapshot dSnapshot : singleSnapshot
+                                            .child("image_path").getChildren()) {
+                                        Item_GridPhoto item_gridPhoto = new Item_GridPhoto();
+                                        String path = dSnapshot.child("path").getValue().toString();
+                                        item_gridPhoto.setPhoto_id(photo_id);
+                                        item_gridPhoto.setPath(path);
+                                        arrayPhoto.add(item_gridPhoto);
                                     }
-
-                                    photo.setComments(comments);
-                                    arrayPhoto.add(photo);
-
                                 }
                                 Collections.reverse(arrayPhoto);
                                 postGrid_adapter.notifyDataSetChanged();
@@ -148,28 +135,17 @@ Toolbar toolbar_saved_photo;
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                                    Photo photo = new Photo();
+                                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+                                    Item_GridPhoto item_gridPhoto = new Item_GridPhoto();
                                     Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
 
-                                    photo.setCaption(objectMap.get("caption").toString());
-                                    photo.setPhoto_id(objectMap.get("photo_id").toString());
-                                    photo.setUser_id(objectMap.get("user_id").toString());
-                                    photo.setDate_created(objectMap.get("date_created").toString());
-                                    photo.setImage_path(objectMap.get("image_path").toString());
-
-                                    ArrayList<Comment> comments = new ArrayList<Comment>();
-                                    for (DataSnapshot dSnapshot : singleSnapshot
-                                            .child("comments").getChildren()) {
-                                        Comment comment = new Comment();
-                                        comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                                        comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                                        comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-                                        comments.add(comment);
+                                    item_gridPhoto.setPhoto_id(objectMap.get("photo_id").toString());
+                                    for(DataSnapshot dSnapshot : singleSnapshot
+                                            .child("image_path").getChildren()) {
+                                        String path = dSnapshot.child("path").getValue().toString();
+                                        item_gridPhoto.setPath(path);
+                                        arrayPhoto.add(item_gridPhoto);
                                     }
-
-                                    photo.setComments(comments);
-                                    arrayPhoto.add(photo);
 
                                 }
                                 Collections.reverse(arrayPhoto);

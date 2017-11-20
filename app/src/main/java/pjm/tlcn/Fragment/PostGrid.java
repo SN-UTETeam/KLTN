@@ -23,14 +23,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import pjm.tlcn.Adapter.PostGrid_Adapter;
-import pjm.tlcn.Model.Photo;
+import pjm.tlcn.Model.Item_GridPhoto;
 import pjm.tlcn.R;
 
 
 public class PostGrid extends Fragment {
 PostGrid_Adapter postGrid_adapter;
 RecyclerView recyclerView;
-ArrayList<Photo> arrayPhoto = new ArrayList<Photo>();
+ArrayList<Item_GridPhoto> arrayPhoto = new ArrayList<Item_GridPhoto>();
 SwipeRefreshLayout mSwipeRefreshLayout;
 DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
     @Override
@@ -42,9 +42,9 @@ DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
         //Set  grid view
         recyclerView = (RecyclerView) v.findViewById(R.id.rc_postgird);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(),3,GridLayoutManager.VERTICAL, false));
-
         postGrid_adapter = new PostGrid_Adapter(getContext(),arrayPhoto);
         recyclerView.setAdapter(postGrid_adapter);
+
         //Loadadta
         Query query = databaseRef.child("photos").orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
         query.addValueEventListener(new ValueEventListener() {
@@ -53,16 +53,18 @@ DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
                 if(dataSnapshot.getValue()!=null){
                     arrayPhoto.clear();
                     for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
-                        Photo photo = new Photo();
                         Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+                       String photo_id = (objectMap.get("photo_id").toString());
 
-                        photo.setCaption(objectMap.get("caption").toString());
-                        photo.setPhoto_id(objectMap.get("photo_id").toString());
-                        photo.setUser_id(objectMap.get("user_id").toString());
-                        photo.setDate_created(objectMap.get("date_created").toString());
-                        photo.setImage_path(objectMap.get("image_path").toString());
+                        for(DataSnapshot dSnapshot : singleSnapshot
+                                .child("image_path").getChildren()) {
+                            Item_GridPhoto item_gridPhoto = new Item_GridPhoto();
+                            String path = dSnapshot.child("path").getValue().toString();
+                            item_gridPhoto.setPhoto_id(photo_id);
+                            item_gridPhoto.setPath(path);
+                            arrayPhoto.add(item_gridPhoto);
+                        }
 
-                        arrayPhoto.add(photo);
                     }
                     Collections.reverse(arrayPhoto);
                     postGrid_adapter.notifyDataSetChanged();
@@ -91,7 +93,6 @@ DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
         return v;
     }
     public void LoadData(){
-        //Loaddata
         Query query = databaseRef.child("photos").orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -99,16 +100,18 @@ DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
                 if(dataSnapshot.getValue()!=null){
                     arrayPhoto.clear();
                     for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
-                        Photo photo = new Photo();
                         Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+                        String photo_id = (objectMap.get("photo_id").toString());
 
-                        photo.setCaption(objectMap.get("caption").toString());
-                        photo.setPhoto_id(objectMap.get("photo_id").toString());
-                        photo.setUser_id(objectMap.get("user_id").toString());
-                        photo.setDate_created(objectMap.get("date_created").toString());
-                        photo.setImage_path(objectMap.get("image_path").toString());
+                        for(DataSnapshot dSnapshot : singleSnapshot
+                                .child("image_path").getChildren()) {
+                            Item_GridPhoto item_gridPhoto = new Item_GridPhoto();
+                            String path = dSnapshot.child("path").getValue().toString();
+                            item_gridPhoto.setPhoto_id(photo_id);
+                            item_gridPhoto.setPath(path);
+                            arrayPhoto.add(item_gridPhoto);
+                        }
 
-                        arrayPhoto.add(photo);
                     }
                     Collections.reverse(arrayPhoto);
                     postGrid_adapter.notifyDataSetChanged();

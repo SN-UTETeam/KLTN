@@ -2,8 +2,11 @@ package pjm.tlcn.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
@@ -94,9 +97,36 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
             }
         });
 
+        //load Image
+        databaseRef.child("photos").child(item.get(position).getPhoto_id()).child("image_path").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<Uri> uriArrayList = new ArrayList<>();
+                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                    Uri uri = Uri.parse(singleSnapshot.child("path").getValue().toString());
+                    uriArrayList.add(uri);
+                }
+                Photo_Slider image_slider = new Photo_Slider(context,uriArrayList);
+                holder.viewpager_item.setAdapter(image_slider);
+                image_slider.notifyDataSetChanged();
+                holder.tab_layout_item.setupWithViewPager(holder.viewpager_item,true);
+                if(uriArrayList.size()==1){
+                    holder.tab_layout_item.setVisibility(View.GONE);
+                    holder.view.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         //get key photo
         img_id =item.get(position).getPhoto_id();
-        Picasso.with(context).load(item.get(position).getImage_path()).fit().centerCrop().into(holder.img_image_tabpost);
+//        Integer size =item.get(position).getImage_path().size();
+//        for(int i=0;i<size;i++)
+//        Picasso.with(context).load(item.get(position).getImage_path().get(i).getPath()).fit().centerCrop().into(holder.img_image_tabpost);
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         //Get Saved
         Query query1= reference.child("saved").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -361,7 +391,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                 Intent intent = new Intent(context, ViewCmt_tabProfile.class);
                 intent.putExtra("user_id",item.get(position).getUser_id());
                 intent.putExtra("caption",item.get(position).getCaption());
-                intent.putExtra("image_path",item.get(position).getImage_path());
+                //intent.putExtra("Image_path",item.get(position).getImage_path());
                 intent.putExtra("photo_id",item.get(position).getPhoto_id());
                 intent.putParcelableArrayListExtra("ArrayComment", (ArrayList<? extends Parcelable>) item.get(position).getComments());
                 context.startActivity(intent);
@@ -373,7 +403,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                 Intent intent = new Intent(context, ViewCmt_tabProfile.class);
                 intent.putExtra("user_id",item.get(position).getUser_id());
                 intent.putExtra("caption",item.get(position).getCaption());
-                intent.putExtra("image_path",item.get(position).getImage_path());
+               // intent.putExtra("Image_path",item.get(position).getImage_path());
                 intent.putExtra("photo_id",item.get(position).getPhoto_id());
                 intent.putParcelableArrayListExtra("ArrayComment", (ArrayList<? extends Parcelable>) item.get(position).getComments());
                 context.startActivity(intent);
@@ -449,8 +479,14 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
     public class RecyclerViewHolder extends RecyclerView.ViewHolder {
         TextView tv_username_tabpost,tv_likes_tabpost,tv_status_tabpost,tv_comments_tabpost,tv_time_tabpost,tv_username;
         ImageView img_avatar_tabpost,img_image_tabpost,img_cmt_tabpost,img_like_tabpost,img_save_tabpost;
+        ViewPager viewpager_item;
+        TabLayout tab_layout_item;
+        ImageView view;
         public RecyclerViewHolder(View itemView) {
             super(itemView);
+            view = (ImageView) itemView.findViewById(R.id.view);
+            viewpager_item = (ViewPager) itemView.findViewById(R.id.viewpager_item);
+            tab_layout_item = (TabLayout) itemView.findViewById(R.id.tab_layout_item);
             img_cmt_tabpost = (ImageView) itemView.findViewById(R.id.img_cmt_tabpost);
             img_like_tabpost = (ImageView) itemView.findViewById(R.id.img_like_tabpost);
             tv_username_tabpost = (TextView) itemView.findViewById(R.id.tv_username_tabpost);

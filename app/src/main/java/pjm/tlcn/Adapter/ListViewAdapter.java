@@ -101,9 +101,11 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
            //  viewHolder.textView.setText(items.get(position).getComments());
              viewHolder.quatity.setText(items.get(position).getLikes()+" lượt thích");
              //
+             Integer size =items.get(position).getImage_path().size();
+             for(int i=0;i<size;i++)
              Picasso
                      .with(activity)
-                     .load(items.get(position).getImage_path())
+                     .load(items.get(position).getImage_path().get(i).getPath())
                      .fit()
                      .into(viewHolder.imageView);
          }

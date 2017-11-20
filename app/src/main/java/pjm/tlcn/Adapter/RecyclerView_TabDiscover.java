@@ -104,7 +104,7 @@ public class RecyclerView_TabDiscover extends RecyclerView.Adapter<RecyclerView_
 
         //get key photo
         img_id = item.get(position).getPhoto_id();
-        Picasso.with(context).load(item.get(position).getImage_path()).fit().centerCrop().into(holder.img_image_tabpost);
+        //Picasso.with(context).load(item.get(position).getImage_path()).fit().centerCrop().into(holder.img_image_tabpost);
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         //Get Saved
         Query query1 = reference.child("saved").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -351,7 +351,7 @@ public class RecyclerView_TabDiscover extends RecyclerView.Adapter<RecyclerView_
                 Intent intent = new Intent(context, ViewCmt_tabProfile.class);
                 intent.putExtra("user_id", item.get(position).getUser_id());
                 intent.putExtra("caption", item.get(position).getCaption());
-                intent.putExtra("image_path", item.get(position).getImage_path());
+                //intent.putExtra("Image_path", item.get(position).getImage_path());
                 intent.putExtra("photo_id", item.get(position).getPhoto_id());
                 intent.putParcelableArrayListExtra("ArrayComment", (ArrayList<? extends Parcelable>) item.get(position).getComments());
                 context.startActivity(intent);
@@ -363,7 +363,7 @@ public class RecyclerView_TabDiscover extends RecyclerView.Adapter<RecyclerView_
                 Intent intent = new Intent(context, ViewCmt_tabProfile.class);
                 intent.putExtra("user_id", item.get(position).getUser_id());
                 intent.putExtra("caption", item.get(position).getCaption());
-                intent.putExtra("image_path", item.get(position).getImage_path());
+                //intent.putExtra("Image_path", item.get(position).getImage_path());
                 intent.putExtra("photo_id", item.get(position).getPhoto_id());
                 intent.putParcelableArrayListExtra("ArrayComment", (ArrayList<? extends Parcelable>) item.get(position).getComments());
                 context.startActivity(intent);

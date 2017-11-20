@@ -9,13 +9,13 @@ import java.util.List;
 public class Photo {
     private String caption;
     private String date_created;
-    private String image_path;
+    private List<Image_path> image_path;
     private String photo_id;
     private String user_id;
     private List<Like> likes;
     private List<Comment> comments;
 
-    public Photo(String caption, String date_created, String image_path, String photo_id, String user_id, List<Like> likes, List<Comment> comments) {
+    public Photo(String caption, String date_created, List<Image_path> image_path, String photo_id, String user_id, List<Like> likes, List<Comment> comments) {
         this.caption = caption;
         this.date_created = date_created;
         this.image_path = image_path;
@@ -44,11 +44,11 @@ public class Photo {
         this.date_created = date_created;
     }
 
-    public String getImage_path() {
+    public List<Image_path> getImage_path() {
         return image_path;
     }
 
-    public void setImage_path(String image_path) {
+    public void setImage_path(List<Image_path> image_path) {
         this.image_path = image_path;
     }
 

@@ -100,7 +100,7 @@ public class Saved extends AppCompatActivity {
                                     photo.setPhoto_id(objectMap.get("photo_id").toString());
                                     photo.setUser_id(objectMap.get("user_id").toString());
                                     photo.setDate_created(objectMap.get("date_created").toString());
-                                    photo.setImage_path(objectMap.get("image_path").toString());
+ //                                   photo.setImage_path(objectMap.get("Image_path").toString());
 
                                     ArrayList<Comment> comments = new ArrayList<Comment>();
                                     for (DataSnapshot dSnapshot : singleSnapshot

@@ -105,7 +105,7 @@ public class TabActivity_search extends AppCompatActivity {
                                             photo.setPhoto_id(objectMap.get("photo_id").toString());
                                             photo.setUser_id(objectMap.get("user_id").toString());
                                             photo.setDate_created(objectMap.get("date_created").toString());
-                                            photo.setImage_path(objectMap.get("image_path").toString());
+                                           // photo.setImage_path(objectMap.get("Image_path").toString());
                                            // photo.set
                                             // Photo temp = new Photo();
                                             // temp = snop.getValue(Photo.class);
@@ -203,7 +203,7 @@ public class TabActivity_search extends AppCompatActivity {
                                     photo.setPhoto_id(objectMap.get("photo_id").toString());
                                     photo.setUser_id(objectMap.get("user_id").toString());
                                     photo.setDate_created(objectMap.get("date_created").toString());
-                                    photo.setImage_path(objectMap.get("image_path").toString());
+                                    photo.setImage_path(objectMap.get("Image_path").toString());
                                     // Photo temp = new Photo();
                                     // temp = snop.getValue(Photo.class);
                                     gridviewArrayPhoto.add(photo);

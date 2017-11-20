@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:orientation="vertical"
+<LinearLayout android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:background="@color/colorWhite"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <LinearLayout
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
@@ -36,11 +36,13 @@
             android:layout_height="wrap_content" />
 
     </LinearLayout>
-    <ImageView
-        android:id="@+id/img_image_tabpost"
-        android:adjustViewBounds="true"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager_item"
         android:layout_width="match_parent"
-        android:layout_height="300dp" />
+        android:layout_height="300dp">
+
+    </android.support.v4.view.ViewPager>
+
     <LinearLayout
         android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"
@@ -64,11 +66,23 @@
             android:layout_width="20dp"
             android:background="@drawable/ufi_direct_share_bold"
             android:layout_height="20dp" />
+        <android.support.design.widget.TabLayout
+            android:layout_marginRight="65dp"
+            android:layout_gravity="center"
+            app:tabBackground="@drawable/tab_selector"
+            app:tabGravity="center"
+            android:layout_weight="1"
+            app:tabIndicatorHeight="0dp"
+            android:id="@+id/tab_layout_item"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"/>
         <ImageView
+            android:id="@+id/view"
+            android:visibility="gone"
             android:layout_weight="1"
             android:background="@color/colorWhite"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="20dp"/>
         <ImageView
             android:src="@drawable/ufi_save"
             android:id="@+id/img_save_tabpost"

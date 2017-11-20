@@ -3,6 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/postgrid_swipe"
+    android:layout_marginTop="5dp"
+
     tools:context="pjm.tlcn.Fragment.PostGrid">
 
 
@@ -11,7 +13,7 @@
                 android:id="@+id/rc_postgird"
                 android:stretchMode="columnWidth"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content" />
 
 
 </android.support.v4.widget.SwipeRefreshLayout>

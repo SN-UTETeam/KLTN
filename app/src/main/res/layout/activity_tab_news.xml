@@ -48,7 +48,7 @@
         android:gravity="center"
         android:background="@color/colorDark"
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="80dp">
         <ImageView
             android:id="@+id/img_camera_tabnew"
             android:background="@drawable/btn_back_to_camera"
@@ -68,20 +68,26 @@
         android:background="@color/colorHaftWhite"/>
 
    <ImageView
+
        android:id="@+id/tab_news_imageview"
        android:layout_width="match_parent"
        android:layout_height="match_parent"
        android:layout_weight="1"/>
+    <VideoView
+        android:visibility="gone"
+        android:id="@+id/tab_news_videoview"
+        android:layout_width="fill_parent"
+        android:layout_height="300dp"
+        />
     <View
         android:layout_width="match_parent"
         android:layout_height="3dp"
         android:background="@color/colorHaftWhite"/>
     <GridView
-        android:layout_marginLeft="10dp"
         android:background="@color/colorHaftWhite"
         android:layout_weight="1"
         android:id="@+id/tab_news_gridview"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:columnWidth="100dp"
         android:numColumns="auto_fit"

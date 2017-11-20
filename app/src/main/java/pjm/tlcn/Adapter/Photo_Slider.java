@@ -1,7 +1,6 @@
 package pjm.tlcn.Adapter;
 
 import android.content.Context;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
@@ -58,22 +57,10 @@ public class Photo_Slider extends PagerAdapter {
         else if(items.get(position).toString().contains("mp4")){
             imageView.setVisibility(View.GONE);
             videoView.setVisibility(View.VISIBLE);
-            //videoView.setMediaController(new MediaController(mContext));
-            videoView.setVideoPath(items.get(position).toString());
-            final String path_vid = items.get(position).toString();
-            videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    videoView.start();
-                }
-            });
-            videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                public void onCompletion(MediaPlayer mp) {
-                    mp.reset();
-                    videoView.setVideoPath(path_vid);
-                    videoView.start();
-                }
-            });
+            Uri uri = Uri.parse(items.get(position).toString());
+            videoView.setVideoURI(uri);
+            videoView.requestFocus();
+            videoView.start();
         }
 
 

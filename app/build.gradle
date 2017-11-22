@@ -58,6 +58,7 @@ dependencies {
     compile 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
     compile 'com.android.support:design:25.3.1'
     compile 'com.tuyenmonkey:mkloader:1.4.0'
+    compile 'cn.jzvd:jiaozivideoplayer:6.1.2'
     testCompile 'junit:junit:4.12'
 
 }

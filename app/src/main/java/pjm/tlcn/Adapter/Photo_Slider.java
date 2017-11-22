@@ -1,19 +1,24 @@
 package pjm.tlcn.Adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.VideoView;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import cn.jzvd.JZVideoPlayer;
+import cn.jzvd.JZVideoPlayerStandard;
 import pjm.tlcn.R;
 
 /**
@@ -45,7 +50,7 @@ public class Photo_Slider extends PagerAdapter {
         View itemView = mLayoutInflater.inflate(R.layout.item_photo, container, false);
 
         ImageView imageView = (ImageView) itemView.findViewById(R.id.item_photo);
-        final VideoView videoView = (VideoView) itemView.findViewById(R.id.item_video);
+        final JZVideoPlayerStandard videoView = (JZVideoPlayerStandard) itemView.findViewById(R.id.item_video);
 
         if(items.get(position).toString().contains("jpg")||items.get(position).toString().contains("jpeg"))
         {
@@ -57,10 +62,13 @@ public class Photo_Slider extends PagerAdapter {
         else if(items.get(position).toString().contains("mp4")){
             imageView.setVisibility(View.GONE);
             videoView.setVisibility(View.VISIBLE);
-            Uri uri = Uri.parse(items.get(position).toString());
-            videoView.setVideoURI(uri);
-            videoView.requestFocus();
-            videoView.start();
+            videoView.setUp(items.get(position).toString(),JZVideoPlayer.SCREEN_WINDOW_NORMAL,"");
+
+            try {
+                videoView.thumbImageView.setImageBitmap(retriveVideoFrameFromVideo(items.get(position).toString()));
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
         }
 
 
@@ -72,6 +80,39 @@ public class Photo_Slider extends PagerAdapter {
     @Override
     public void destroyItem(ViewGroup container, int i, Object obj) {
         container.removeView((LinearLayout) obj);
+    }
+
+    public static Bitmap retriveVideoFrameFromVideo(String videoPath)
+            throws Throwable
+    {
+        Bitmap bitmap = null;
+        MediaMetadataRetriever mediaMetadataRetriever = null;
+        try
+        {
+            mediaMetadataRetriever = new MediaMetadataRetriever();
+            if (Build.VERSION.SDK_INT >= 14)
+                mediaMetadataRetriever.setDataSource(videoPath, new HashMap<String, String>());
+            else
+                mediaMetadataRetriever.setDataSource(videoPath);
+            //   mediaMetadataRetriever.setDataSource(videoPath);
+            bitmap = mediaMetadataRetriever.getFrameAtTime();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            throw new Throwable(
+                    "Exception in retriveVideoFrameFromVideo(String videoPath)"
+                            + e.getMessage());
+
+        }
+        finally
+        {
+            if (mediaMetadataRetriever != null)
+            {
+                mediaMetadataRetriever.release();
+            }
+        }
+        return bitmap;
     }
 
 }

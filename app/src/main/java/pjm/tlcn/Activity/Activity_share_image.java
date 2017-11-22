@@ -80,32 +80,6 @@ public class Activity_share_image extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(mViewPager, true);
 
-
-//        TimerTask timerTask = new TimerTask() {
-//            @Override
-//            public void run() {
-//                mViewPager.post(new Runnable() {
-//
-//                    @Override
-//                    public void run() {
-//
-//                        if(mViewPager.getCurrentItem()==i){
-//                            mViewPager.setCurrentItem(i+1);
-//                            i++;
-//                            if(i>=imageUri.size())
-//                                i=0;
-//                            }
-//                        else mViewPager.setCurrentItem(0);
-//
-//                    }
-//                });
-//            }
-//        };
-//        timer = new Timer();
-//        timer.schedule(timerTask, 3000, 3000);
-
-
-
         send=(TextView)findViewById(R.id.shareid);
         bt_back =(ImageButton)findViewById(R.id.bt_image_back);
         bt_back.setOnClickListener(new View.OnClickListener() {

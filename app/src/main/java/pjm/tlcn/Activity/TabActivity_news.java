@@ -11,7 +11,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.media.MediaPlayer;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
@@ -26,24 +25,27 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.MimeTypeMap;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.VideoView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 
+import cn.jzvd.JZVideoPlayer;
+import cn.jzvd.JZVideoPlayerStandard;
 import pjm.tlcn.R;
 
 
 public class TabActivity_news extends AppCompatActivity {
 
     ImageView tab_news_imageview, img_camera_tabnew;
-    VideoView tab_news_videoview;
+    private JZVideoPlayerStandard tab_news_videoview;
+    private Integer checked[];
     private static Uri[] mUrls = null;
     private static String[] strUrls = null;
     private String[] mNames = null;
@@ -82,7 +84,7 @@ public class TabActivity_news extends AppCompatActivity {
         mainActivity.CheckPermission();
 
         tab_news_imageview = (ImageView) findViewById(R.id.tab_news_imageview);
-        tab_news_videoview = (VideoView) findViewById(R.id.tab_news_videoview);
+        tab_news_videoview = (JZVideoPlayerStandard) findViewById(R.id.tab_news_videoview);
         img_camera_tabnew = (ImageView) findViewById(R.id.img_camera_tabnew);
         gridview = (GridView) findViewById(R.id.tab_news_gridview);
         btnext =(Button) findViewById(R.id.button_selected_image);
@@ -148,7 +150,12 @@ public class TabActivity_news extends AppCompatActivity {
             mUrls[i]=uri;
             i++;
         }
-        gridview.setAdapter(new ImageAdapter(this));
+        checked=new Integer[mUrls.length];
+        Arrays.fill(checked,0);
+
+        ImageAdapter imageAdapter = new ImageAdapter(this,mUrls,checked);
+        gridview.setAdapter(imageAdapter);
+        imageAdapter.notifyDataSetChanged();
 
         img_camera_tabnew.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,9 +216,13 @@ public class TabActivity_news extends AppCompatActivity {
 
     public class ImageAdapter extends BaseAdapter {
         private Context mContext;
+        private Uri[] uris;
+        private Integer checked[];
 
-        public ImageAdapter(Context c) {
+        public ImageAdapter(Context c,Uri[] uris,Integer[] checked) {
+            this.uris = uris;
             mContext = c;
+            this.checked=checked;
         }
 
         public int getCount() {
@@ -219,7 +230,7 @@ public class TabActivity_news extends AppCompatActivity {
         }
 
         public Object getItem(int position) {
-            return mUrls[position];
+            return uris[position];
         }
 
         public long getItemId(int position) {
@@ -237,61 +248,109 @@ public class TabActivity_news extends AppCompatActivity {
                 imageView.setPadding(2,2,2,2);
                 final CheckBox checkBox  = (CheckBox) v.findViewById(R.id.chkImage);
                 //BitmapFactory.decodeFile(mUrls[position].getPath());
-                if(mUrls[position].getPath().contains(".jpg")||mUrls[position].getPath().contains(".jpeg")){
-                    Bitmap bmp = decodeURI(mUrls[position].getPath());
+                if(uris[position].getPath().contains(".jpg")||uris[position].getPath().contains(".jpeg")){
+                    Bitmap bmp = decodeURI(uris[position].getPath());
                     imageView.setImageBitmap(bmp);
+                    if(checked[position]==0)
+                        checkBox.setChecked(false);
+                    else
+                        checkBox.setChecked(true);
                 }
-                else if(mUrls[position].getPath().contains(".mp4")){
-                    Bitmap bm = ThumbnailUtils.createVideoThumbnail(mUrls[position].getPath(), MediaStore.Video.Thumbnails.MICRO_KIND);
+                else if(uris[position].getPath().contains(".mp4")){
+                    Bitmap bm = ThumbnailUtils.createVideoThumbnail(uris[position].getPath(), MediaStore.Video.Thumbnails.MICRO_KIND);
                     imageView.setImageBitmap(bm);
                 }
 
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        File f = new File(mUrls[position].getPath());
-                        if(!imageUri.contains(mUrls[position])) {
-                            if(mUrls[position].getPath().contains(".jpg")||mUrls[position].getPath().contains(".jpeg")) {
+                        File f = new File(uris[position].getPath());
+                        if(!imageUri.contains(uris[position])) {
+                            if(uris[position].getPath().contains(".jpg")||uris[position].getPath().contains(".jpeg")) {
                                 bitmap_photo = BitmapFactory.decodeFile(f.getPath());
                                 tab_news_imageview.setImageURI(mUrls[position]);
                                 tab_news_imageview.setVisibility(View.VISIBLE);
                                 tab_news_videoview.setVisibility(View.GONE);
+//                                checked[position]=1;
+//                                if(checked[position]==0)
+//                                    checkBox.setChecked(false);
+//                                else
+//                                    checkBox.setChecked(true);
                                 checkBox.setChecked(true);
-                                Log.d("Checkbox +" + checkBox.isChecked()," postion = "+position);
-                            }else if(mUrls[position].getPath().contains(".mp4")){
-                                tab_news_videoview.setVideoURI(Uri.fromFile(f));
+                                notifyDataSetChanged();
+                                //Log.d("Checkbox +" + checkBox.isChecked()," postion = "+position);
+                            }else if(uris[position].getPath().contains(".mp4")){
+                                checkBox.setChecked(true);
+//                                checked[position]=1;
+//                                if(checked[position]==0){
+//                                    checkBox.setChecked(false);
+//                                    Log.d("Set check false","Ok");
+//                                }
+//                                else {
+//                                    checkBox.setChecked(true);
+//                                    Log.d("Set check false","Ok");
+//                                }
+                                tab_news_videoview.setUp(f.getPath(), JZVideoPlayer.SCREEN_WINDOW_NORMAL,"");
+                                try {
+                                    Bitmap bm = ThumbnailUtils.createVideoThumbnail(f.getPath(), MediaStore.Video.Thumbnails.MICRO_KIND);
+                                    tab_news_videoview.thumbImageView.setImageBitmap(bm);
+                                } catch (Throwable throwable) {
+                                    throwable.printStackTrace();
+                                }
                                 tab_news_imageview.setVisibility(View.GONE);
                                 tab_news_videoview.setVisibility(View.VISIBLE);
-                                tab_news_videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                                    @Override
-                                    public void onPrepared(MediaPlayer mp) {
-                                        tab_news_videoview.start();
-                                    }
-                                });
-                                checkBox.setChecked(true);
-                                Log.d("Checkbox +" + checkBox.isChecked()," postion = "+position);
+                                notifyDataSetChanged();
+                                //Log.d("Checkbox +" + checkBox.isChecked()," postion = "+position);
                             }
-                            imageUri.add(mUrls[position]);
+                            //imageUri.add(uris[position]);
                             flag_selected = true;
                             btnext.setVisibility(View.VISIBLE);
                             btcancel.setVisibility(View.VISIBLE);
-                            checkBox.setChecked(true);
-                            Log.d("Checkbox +" + checkBox.isChecked()," postion = "+position);
+                            //checkBox.setChecked(true);
+//                            checked[position]=1;
+//                            if(checked[position]==0)
+//                                checkBox.setChecked(false);
+//                            else
+//                                checkBox.setChecked(true);
+                            notifyDataSetChanged();
+                            //Log.d("Checkbox +" + checkBox.isChecked()," postion = "+position);
                         }
                         else {
                             try {
-                                imageUri.remove(mUrls[position]);
+                                //imageUri.remove(uris[position]);
                                 checkBox.setChecked(false);
-                                Log.d("Checkbox +" + checkBox.isChecked()," postion = "+position);
+//                                checked[position]=0;
+//                                if(checked[position]==0)
+//                                    checkBox.setChecked(false);
+//                                else
+//                                    checkBox.setChecked(true);
+                                notifyDataSetChanged();
+                                //Log.d("Checkbox +" + checkBox.isChecked()," postion = "+position);
                             }
                             catch (Exception e){
                                 Log.d("Exception",e+"");
                             }
 
                         }
+
                     }
                 });
-
+                checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if(!checkBox.isChecked()){
+                            checkBox.setChecked(false);
+                            checked[position] = 0;
+                            imageUri.remove(uris[position]);
+                        }
+                        else {
+                            checkBox.setChecked(true);
+                            checked[position] = 1;
+                            imageUri.remove(uris[position]);
+                            imageUri.add(uris[position]);
+                        }
+                    }
+                });
             } catch (Exception e) {
 
             }
@@ -328,13 +387,5 @@ public class TabActivity_news extends AppCompatActivity {
         Bitmap output = BitmapFactory.decodeFile(filePath, options);
 
         return output;
-    }
-    public static String getMimeType(String url) {
-        String type = null;
-        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
-        if (extension != null) {
-            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-        }
-        return type;
     }
 }

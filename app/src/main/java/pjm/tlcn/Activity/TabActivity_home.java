@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -17,17 +19,19 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import pjm.tlcn.Adapter.GridViewAdapter;
 import pjm.tlcn.Adapter.ListViewAdapter;
 import pjm.tlcn.Model.Photo;
 import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
-
-import static pjm.tlcn.Activity.Login.user_id;
 
 
 public class TabActivity_home extends AppCompatActivity {
@@ -77,18 +81,18 @@ public class TabActivity_home extends AppCompatActivity {
 
         listView.setHasFixedSize(true);
         gridView.setHasFixedSize(true);
-        //setDATA();
+        setDATA();
         //set layout manager and adapter for "ListView"
-//        LinearLayoutManager horizontalManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-//        listView.setLayoutManager(horizontalManager);
-//        listViewAdapter = new ListViewAdapter(this, lvs);
-//        listView.setAdapter(listViewAdapter);
-//
+        LinearLayoutManager horizontalManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        listView.setLayoutManager(horizontalManager);
+       listViewAdapter = new ListViewAdapter(this, lvs);
+        listView.setAdapter(listViewAdapter);
+
 //        //set layout manager and adapter for "GridView"
-//        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
-//        gridView.setLayoutManager(layoutManager);
-//        gridViewAdapter = new GridViewAdapter(this, gr);
-//        gridView.setAdapter(gridViewAdapter);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+       gridView.setLayoutManager(layoutManager);
+        gridViewAdapter = new GridViewAdapter(this, gr);
+        gridView.setAdapter(gridViewAdapter);
     }
 
     void setDATA()
@@ -97,18 +101,28 @@ public class TabActivity_home extends AppCompatActivity {
 
       //  String tamp =[user_id];
         lvs =new ArrayList<>();
-        uDatabase.child("Images").child(user_id).addValueEventListener(new ValueEventListener() {
+
+        //Loadadta
+        Query query = uDatabase.child("photos").orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                lvs.clear();
                 if(dataSnapshot.getValue()!=null){
-                    for(DataSnapshot snop:dataSnapshot.getChildren()){
-                        id_image = snop.getKey();
-                        Photo img =new Photo();
-                        img = snop.getValue(Photo.class);
-                        lvs.add(img);
-                        listViewAdapter.notifyDataSetChanged();
+                    lvs.clear();
+                    for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+                        Photo photo = new Photo();
+                        Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+
+                        photo.setCaption(objectMap.get("caption").toString());
+                        photo.setPhoto_id(objectMap.get("photo_id").toString());
+                        photo.setUser_id(objectMap.get("user_id").toString());
+                        photo.setDate_created(objectMap.get("date_created").toString());
+                 //       photo.setImage_path(objectMap.get("image_path").toString());
+
+                        lvs.add(photo);
                     }
+                    Collections.reverse(lvs);
+                    listViewAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -117,7 +131,6 @@ public class TabActivity_home extends AppCompatActivity {
 
             }
         });
-
         uDatabase.child("Users").addValueEventListener(new ValueEventListener() {
 
             @Override

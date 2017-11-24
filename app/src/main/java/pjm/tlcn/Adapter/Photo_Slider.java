@@ -60,17 +60,9 @@ public class Photo_Slider extends PagerAdapter {
             videoView.setVisibility(View.VISIBLE);
             //videoView.setMediaController(new MediaController(mContext));
             videoView.setVideoPath(items.get(position).toString());
-            final String path_vid = items.get(position).toString();
             videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
-                    videoView.start();
-                }
-            });
-            videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                public void onCompletion(MediaPlayer mp) {
-                    mp.reset();
-                    videoView.setVideoPath(path_vid);
                     videoView.start();
                 }
             });

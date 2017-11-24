@@ -80,32 +80,6 @@ public class Activity_share_image extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(mViewPager, true);
 
-
-//        TimerTask timerTask = new TimerTask() {
-//            @Override
-//            public void run() {
-//                mViewPager.post(new Runnable() {
-//
-//                    @Override
-//                    public void run() {
-//
-//                        if(mViewPager.getCurrentItem()==i){
-//                            mViewPager.setCurrentItem(i+1);
-//                            i++;
-//                            if(i>=imageUri.size())
-//                                i=0;
-//                            }
-//                        else mViewPager.setCurrentItem(0);
-//
-//                    }
-//                });
-//            }
-//        };
-//        timer = new Timer();
-//        timer.schedule(timerTask, 3000, 3000);
-
-
-
         send=(TextView)findViewById(R.id.shareid);
         bt_back =(ImageButton)findViewById(R.id.bt_image_back);
         bt_back.setOnClickListener(new View.OnClickListener() {
@@ -123,75 +97,84 @@ public class Activity_share_image extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                //Created Dialog
-                dialog = new Dialog(Activity_share_image.this);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setCancelable(false);
-                dialog.setContentView(R.layout.custom_dialog);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                dialog.show();
-
-                //Optimzer
-                final List<Image_path> image_paths = new ArrayList<Image_path>();
+                Double size=0.0;
+                //Check size, size <100MB
                 for(int i=0;i<imageUri.size();i++) {
-                    Uri file = null;
-                    final int id = i;
-                    if(imageUri.get(i).toString().contains("jpg")||imageUri.get(i).toString().contains("jpeg"))
-                    file = Uri.fromFile(new File(compressImage(imageUri.get(i).toString())));
-                    else
-                    {
-                        file = Uri.fromFile(new File(imageUri.get(i).toString()));
-                    }
-
-                    //Upload to Storage
-                    final String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-                    UploadTask uploadTask = storageRef.child(FirebaseAuth.getInstance().getUid()).child("photos").child(file.getLastPathSegment()).putFile(file);
-                    uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            //double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                           // Toast.makeText(Activity_share_image.this,"Uploading photo "+id+1+" : "+progress ,Toast.LENGTH_SHORT).show();
-                        }
-
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            // Handle unsuccessful uploads
-                            dialog.dismiss();
-                            Toast.makeText(Activity_share_image.this, "Lỗi", Toast.LENGTH_SHORT).show();
-                        }
-                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                            uri_img_download = taskSnapshot.getMetadata().getDownloadUrl();
-                            Image_path imagepath = new Image_path();
-                            imagepath.setPath(uri_img_download+"");
-                            image_paths.add(imagepath);
-
-                            if(id>=imageUri.size()-1){
-                                String newPhotoKey = databaseRef.child("photos").push().getKey();
-                                //Set value
-                                Photo photo = new Photo();
-                                photo.setCaption(edit_status.getText().toString() + "");
-                                photo.setDate_created(timeStamp + "");
-                                photo.setImage_path(image_paths);
-                                photo.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                photo.setPhoto_id(newPhotoKey);
-                                //insert into database
-                                databaseRef.child("photos").child(newPhotoKey).setValue(photo);
-                                dialog.dismiss();
-                                Intent intent = new Intent();
-                                intent.putExtra("result", "ok");
-                                setResult(Activity.RESULT_OK, intent);
-                                finish();
-                                Toast.makeText(getApplication(), "Đăng tải thành công!!!", Toast.LENGTH_SHORT);
-                                finish();
-                            }
-                        }
-                    });
+                    File file = new File(imageUri.get(i).toString());
+                    double s = file.length() / (1024*1024);
+                    size+=s;
                 }
+                Log.d("size",size+"");
+
+                if(size<100) {
+                    //Created Dialog
+                    dialog = new Dialog(Activity_share_image.this);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setCancelable(false);
+                    dialog.setContentView(R.layout.custom_dialog);
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    dialog.show();
+                    //Optimzer
+                    final List<Image_path> image_paths = new ArrayList<Image_path>();
+                    for (int i = 0; i < imageUri.size(); i++) {
+                        Uri file = null;
+                        final int id = i;
+                        if (imageUri.get(i).toString().contains("jpg") || imageUri.get(i).toString().contains("jpeg"))
+                            file = Uri.fromFile(new File(compressImage(imageUri.get(i).toString())));
+                        else {
+                            file = Uri.fromFile(new File(imageUri.get(i).toString()));
+                        }
+
+                        //Upload to Storage
+                        final String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                        UploadTask uploadTask = storageRef.child(FirebaseAuth.getInstance().getUid()).child("photos").child(file.getLastPathSegment()).putFile(file);
+                        uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                //double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                // Toast.makeText(Activity_share_image.this,"Uploading photo "+id+1+" : "+progress ,Toast.LENGTH_SHORT).show();
+                            }
+
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                // Handle unsuccessful uploads
+                                dialog.dismiss();
+                                Toast.makeText(Activity_share_image.this, "Lỗi", Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                                uri_img_download = taskSnapshot.getMetadata().getDownloadUrl();
+                                Image_path imagepath = new Image_path();
+                                imagepath.setPath(uri_img_download + "");
+                                image_paths.add(imagepath);
+
+                                if (id >= imageUri.size() - 1) {
+                                    String newPhotoKey = databaseRef.child("photos").push().getKey();
+                                    //Set value
+                                    Photo photo = new Photo();
+                                    photo.setCaption(edit_status.getText().toString() + "");
+                                    photo.setDate_created(timeStamp + "");
+                                    photo.setImage_path(image_paths);
+                                    photo.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                    photo.setPhoto_id(newPhotoKey);
+                                    //insert into database
+                                    databaseRef.child("photos").child(newPhotoKey).setValue(photo);
+                                    dialog.dismiss();
+                                    Intent intent = new Intent();
+                                    intent.putExtra("result", "ok");
+                                    setResult(Activity.RESULT_OK, intent);
+                                    finish();
+                                    Toast.makeText(getApplication(), "Đăng tải thành công!!!", Toast.LENGTH_SHORT);
+                                    finish();
+                                }
+                            }
+                        });
+                    }
+                }
+                else Toast.makeText(Activity_share_image.this,"Dung lượng của bạn: "+size+"MB. Tối da 100MB",Toast.LENGTH_SHORT).show();
             }
 
         });

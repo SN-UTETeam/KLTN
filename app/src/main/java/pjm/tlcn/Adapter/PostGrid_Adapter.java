@@ -44,7 +44,7 @@ public class PostGrid_Adapter extends RecyclerView.Adapter<PostGrid_Adapter.Recy
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         context=parent.getContext();
 
-        View view = inflater.inflate(R.layout.item_photo, parent, false);
+        View view = inflater.inflate(R.layout.item_photo_grid, parent, false);
         return new RecyclerViewHolder(view);
     }
 
@@ -70,13 +70,17 @@ public class PostGrid_Adapter extends RecyclerView.Adapter<PostGrid_Adapter.Recy
         else if(items.get(position).getPath().contains("mp4")){
             holder.imageView.setVisibility(View.GONE);
             holder.videoView.setVisibility(View.VISIBLE);
-            holder.videoView.setVideoURI(Uri.parse(items.get(position).getPath()));
-            final String path_vid = items.get(position).getPath();
+            Uri uri = Uri.parse(items.get(position).getPath());
+            holder.videoView.setVideoURI(uri);
+            holder.videoView.seekTo(100);
+            holder.videoView.requestFocus();
             holder.videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
-                    SystemClock.sleep(200);
+                    SystemClock.sleep(4000);
+                    mp.setVolume(0f,0f);
                     holder.videoView.start();
+
                 }
             });
         }
@@ -110,9 +114,10 @@ public class PostGrid_Adapter extends RecyclerView.Adapter<PostGrid_Adapter.Recy
         VideoView videoView;
         public RecyclerViewHolder(View itemView) {
             super(itemView);
-                imageView =(ImageView) itemView.findViewById(R.id.item_photo);
-                videoView = (VideoView) itemView.findViewById(R.id.item_video);
+                imageView =(ImageView) itemView.findViewById(R.id.item_photo2);
+                videoView = (VideoView) itemView.findViewById(R.id.item_video2);
 
         }
     }
+
 }

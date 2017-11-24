@@ -7,13 +7,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <ImageView
-        android:id="@+id/item_photo"
+        android:id="@+id/item_photo2"
         android:scaleType="centerCrop"
         android:layout_width="match_parent"
         android:layout_height="300dp" />
-    <cn.jzvd.JZVideoPlayerStandard
+    <VideoView
         android:visibility="gone"
-        android:id="@+id/item_video"
+        android:id="@+id/item_video2"
         android:layout_width="match_parent"
         android:layout_height="300dp" />
 </LinearLayout>

@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 import pjm.tlcn.Activity.Activity_view_photo_search;
@@ -61,14 +63,14 @@ public class CustomAdapterSearch extends BaseAdapter {
                // intent.putExtra("sen", key_discover.toString() );
             }
         });
-//        Integer size =photo_shes.get(position).getImage_path().size();
-//        for(int i=0;i<size;i++)
-//        Picasso
-//                .with(ac)
-//                .load(photo_shes.get(position).getImage_path().get(i).getPath())
-//                .resize(200, 200) // resizes the image to these dimensions (in pixel)
-//                .centerCrop()
-//                .into(image_search);
+        Integer size =photo_shes.get(position).getImage_path().size();
+        for(int i=0;i<size;i++)
+        Picasso
+                .with(ac)
+                .load(photo_shes.get(position).getImage_path().get(i).getPath())
+                .resize(200, 200) // resizes the image to these dimensions (in pixel)
+                .centerCrop()
+                .into(image_search);
 
         return convertView;
     }

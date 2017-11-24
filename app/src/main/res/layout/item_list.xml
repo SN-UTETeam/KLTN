@@ -44,7 +44,7 @@
                 <!-- moi-->
                 <ImageView
                     android:layout_width="match_parent"
-                    android:id="@+id/imagemain"
+                    android:id="@+id/image_main"
                     android:adjustViewBounds="true"
                     android:background="@color/colorBlue"
                     android:layout_height="260dp" />

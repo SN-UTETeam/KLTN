@@ -41,7 +41,7 @@ public class Image_Slider extends PagerAdapter {
 
     @Override
     public boolean isViewFromObject(View v, Object obj) {
-            return v == ((LinearLayout) obj);
+        return v == ((LinearLayout) obj);
     }
 
     @Override

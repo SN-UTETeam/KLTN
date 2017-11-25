@@ -67,7 +67,7 @@ private DatabaseReference uDatabase;
         //Firebase
         uDatabase = FirebaseDatabase.getInstance().getReference().child("photos");
         Query query = uDatabase.orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        query.addValueEventListener(new ValueEventListener() {
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 

@@ -72,15 +72,21 @@ public class PostGrid_Adapter extends RecyclerView.Adapter<PostGrid_Adapter.Recy
             holder.videoView.setVisibility(View.VISIBLE);
             Uri uri = Uri.parse(items.get(position).getPath());
             holder.videoView.setVideoURI(uri);
-            holder.videoView.seekTo(100);
             holder.videoView.requestFocus();
             holder.videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
-                    SystemClock.sleep(4000);
+                    SystemClock.sleep(10000);
                     mp.setVolume(0f,0f);
                     holder.videoView.start();
 
+                }
+            });
+            holder.videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(MediaPlayer mp, int what, int extra) {
+                    Log.d("Video","Error");
+                    return true;
                 }
             });
         }

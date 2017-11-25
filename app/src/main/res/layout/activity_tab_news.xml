@@ -67,12 +67,12 @@
         android:layout_height="3dp"
         android:background="@color/colorHaftWhite"/>
 
-   <ImageView
+    <ImageView
 
-       android:id="@+id/tab_news_imageview"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:layout_weight="1"/>
+        android:id="@+id/tab_news_imageview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
     <cn.jzvd.JZVideoPlayerStandard
         android:layout_weight="1"
         android:visibility="gone"

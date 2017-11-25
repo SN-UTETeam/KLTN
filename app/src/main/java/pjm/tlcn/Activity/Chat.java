@@ -114,7 +114,7 @@ public class Chat extends AppCompatActivity {
         //
         messageAdapter = new MessageAdapter(this,arrayMessage);
         lv_chat.setAdapter(messageAdapter);
-       //
+        //
 
         //Get Intent
         String room_id = getIntent().getExtras().getString("room_id");
@@ -199,8 +199,8 @@ public class Chat extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               final String messageText = messageArea.getText().toString();
-               final Map<String, String> map = new HashMap<String, String>();
+                final String messageText = messageArea.getText().toString();
+                final Map<String, String> map = new HashMap<String, String>();
 
                 ///Created Dialog
                 dialog = new Dialog(Chat.this);
@@ -285,7 +285,7 @@ public class Chat extends AppCompatActivity {
                         });
                     }
                     else
-                        if(messageText.trim().length()>0){
+                    if(messageText.trim().length()>0){
 
                         String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
                         Message message = new Message();
@@ -304,9 +304,9 @@ public class Chat extends AppCompatActivity {
                         hiddenKeyboard();
                         img_chat_image.setVisibility(View.GONE);
 
-                        }else{
-                            dialog.dismiss();
-                            Toast.makeText(Chat.this, "Hãy nhập tin nhắn", Toast.LENGTH_SHORT).show();}
+                    }else{
+                        dialog.dismiss();
+                        Toast.makeText(Chat.this, "Hãy nhập tin nhắn", Toast.LENGTH_SHORT).show();}
                 }
 
             }
@@ -356,8 +356,8 @@ public class Chat extends AppCompatActivity {
                 catch (Exception e){
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_LONG).show();
-                    }
                 }
+            }
             else
                 Toast.makeText(getApplicationContext(), "You haven't Capture Photo",Toast.LENGTH_LONG).show();
     }

@@ -93,19 +93,19 @@ public class TabActivity_news extends AppCompatActivity {
         //xu ly su kien khi chon duoc anh
 
 
-            btnext.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(flag_selected) {
-                        for(int i =0;i<imageUri.size();i++)
+        btnext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(flag_selected) {
+                    for(int i =0;i<imageUri.size();i++)
                         Log.d("Uri",imageUri.get(i).toString()+"");
-                        Intent intent = new Intent(getApplicationContext(), Activity_share_image.class);
-                        startActivityForResult(intent, REQUEST_DONE);
-                    }
-
+                    Intent intent = new Intent(getApplicationContext(), Activity_share_image.class);
+                    startActivityForResult(intent, REQUEST_DONE);
                 }
-            });
-            btnext.setTextColor(Color.BLUE);
+
+            }
+        });
+        btnext.setTextColor(Color.BLUE);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CAMERA);

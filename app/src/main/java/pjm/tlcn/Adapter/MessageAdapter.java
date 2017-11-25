@@ -1,7 +1,6 @@
 package pjm.tlcn.Adapter;
 
 import android.app.Activity;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,28 +80,16 @@ public class MessageAdapter extends BaseAdapter{
 
         //Load
         Picasso.with(activity).load(items.get(position).getUser_avatar()).fit().centerInside().into(image_message_profile);
-
         if(items.get(position).getMessage().length()>0) {
             if(items.get(position).getImage_url().length()>10){
-                text_message_time.setText(items.get(position).getDatecreated().toString().substring(11,16));
+               // text_message_time.setText(items.get(position).getDatecreated().toString().substring(11,16));
                 text_message_body.setText(items.get(position).getMessage());
                 text_message_body.setVisibility(View.VISIBLE);
-                text_message_time.setVisibility(View.VISIBLE);
+                text_message_time.setVisibility(View.GONE);
+                text_message_time_image.setText(items.get(position).getDatecreated().toString().substring(11,16));
+                text_message_time_image.setVisibility(View.VISIBLE);
 
-                DisplayMetrics displaymetrics = new DisplayMetrics();
-                ((Activity) activity).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-
-                int devicewidth = displaymetrics.widthPixels * 2 / 3;
-
-                int deviceheight = displaymetrics.heightPixels * 2/ 3;
-
-                image_message_body.getLayoutParams().width = devicewidth;
-
-                //if you need same height as width you can set devicewidth in holder.image_view.getLayoutParams().height
-                image_message_body.getLayoutParams().height = devicewidth;
-                Picasso.with(activity).load(items.get(position).getImage_url()).resize(devicewidth,deviceheight).centerInside().into(image_message_body);
-
-
+                Picasso.with(activity).load(items.get(position).getImage_url()).into(image_message_body);
                 image_message_body.setVisibility(View.VISIBLE);
             }
             else {

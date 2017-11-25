@@ -66,7 +66,7 @@ import static pjm.tlcn.Activity.Login.user;
 
 public class Chat extends AppCompatActivity {
 
-    ImageView sendButton,img_chat_image,img_chat_chose,img_chat_camera;
+    ImageView sendButton,img_chat_image,img_chat_chose,img_chat_camera,img_x;
     EditText messageArea;
     DatabaseReference databaseRef;
     private StorageReference s1Database;
@@ -96,6 +96,7 @@ public class Chat extends AppCompatActivity {
         img_chat_image = (ImageView) findViewById(R.id.img_chat_image);
         img_chat_camera = (ImageView) findViewById(R.id.img_chat_camera);
         img_chat_chose = (ImageView) findViewById(R.id.img_chat_chose);
+        img_x = (ImageView) findViewById(R.id.img_x);
         messageArea = (EditText)findViewById(R.id.messageArea);
         toolbar_chat = (Toolbar) findViewById(R.id.toolbar_chat);
         tv_toolbar_chat = (TextView) findViewById(R.id.tv_toolbar_chat);
@@ -184,6 +185,15 @@ public class Chat extends AppCompatActivity {
             }
         });
 
+        img_x.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flag_img_select=false;
+                flag_img_capture=false;
+                img_chat_image.setVisibility(View.GONE);
+                img_x.setVisibility(View.GONE);
+            }
+        });
 
         //button send
         sendButton.setOnClickListener(new View.OnClickListener() {
@@ -198,7 +208,6 @@ public class Chat extends AppCompatActivity {
                 dialog.setCancelable(false);
                 dialog.setContentView(R.layout.custom_dialog);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                dialog.show();
 
                 if(messageText.trim().length()>0||flag_img_select||flag_img_capture){
                     if(flag_img_select){
@@ -320,6 +329,7 @@ public class Chat extends AppCompatActivity {
                     img_chat_image.setVisibility(View.VISIBLE);
                     flag_img_select=true;
                     flag_img_capture=false;
+                    img_x.setVisibility(View.VISIBLE);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_LONG).show();
@@ -341,6 +351,7 @@ public class Chat extends AppCompatActivity {
                     img_chat_image.setVisibility(View.VISIBLE);
                     flag_img_capture = true;
                     flag_img_select=false;
+                    img_x.setVisibility(View.VISIBLE);
                 }
                 catch (Exception e){
                     e.printStackTrace();

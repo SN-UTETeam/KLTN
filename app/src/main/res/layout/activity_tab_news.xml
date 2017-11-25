@@ -73,11 +73,12 @@
        android:layout_width="match_parent"
        android:layout_height="match_parent"
        android:layout_weight="1"/>
-    <VideoView
+    <cn.jzvd.JZVideoPlayerStandard
+        android:layout_weight="1"
         android:visibility="gone"
         android:id="@+id/tab_news_videoview"
-        android:layout_width="fill_parent"
-        android:layout_height="300dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         />
     <View
         android:layout_width="match_parent"

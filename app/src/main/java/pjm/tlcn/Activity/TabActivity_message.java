@@ -3,8 +3,11 @@ package pjm.tlcn.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
@@ -28,6 +31,7 @@ private ArrayList<pjm.tlcn.Model.Chat> arrayChat = new ArrayList<pjm.tlcn.Model.
 private ListViewUserMessage listViewUserMessage;
 private DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
 private ImageButton img_new_chat;
+private EditText edt_search_tabmessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +46,25 @@ private ImageButton img_new_chat;
             public void onClick(View v) {
                 Intent intent = new Intent(TabActivity_message.this,NewChat.class);
                 startActivity(intent);
+            }
+        });
+
+        //Search use filter
+        edt_search_tabmessage = (EditText) findViewById(R.id.edt_search_tabmessage);
+        edt_search_tabmessage.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                listViewUserMessage.getFilter().filter(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 

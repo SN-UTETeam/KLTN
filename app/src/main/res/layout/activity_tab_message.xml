@@ -54,7 +54,7 @@
                 android:layout_height="20dp" />
             <EditText
                 android:id="@+id/edt_search_tabmessage"
-                android:focusable="false"
+                android:focusable="true"
                 android:background="@android:color/transparent"
                 android:layout_marginLeft="10dp"
                 android:hint="  Tìm kiếm"

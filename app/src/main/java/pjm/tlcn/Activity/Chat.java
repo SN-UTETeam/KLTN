@@ -127,6 +127,11 @@ public class Chat extends AppCompatActivity {
         databaseRef = FirebaseDatabase.getInstance().getReference().child("RoomChat").child(room_id);
         s1Database = FirebaseStorage.getInstance().getReference().child("ImageChat").child("/" + firebaseUser.getUid() + "_" + user_id);
         arrayMessage.clear();
+        try {
+            hiddenKeyboard();
+        }
+        catch (Exception e){
+        }
         databaseRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -135,7 +140,8 @@ public class Chat extends AppCompatActivity {
                 //Log.d("found mess",message.getMessage());
                 arrayMessage.add(message);
                 messageAdapter.notifyDataSetChanged();
-                lv_chat.setSelection(arrayMessage.size()-1);
+                lv_chat.setSelection(messageAdapter.getCount()-1);
+
             }
 
             @Override
@@ -158,7 +164,6 @@ public class Chat extends AppCompatActivity {
 
             }
         });
-
         //Open Galery
         img_chat_chose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -661,4 +666,5 @@ public class Chat extends AppCompatActivity {
     public static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
+
 }

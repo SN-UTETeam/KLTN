@@ -10,13 +10,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 import pjm.tlcn.Adapter.ListView_ViewFollow;
-import pjm.tlcn.Model.Follow;
 import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
 
@@ -64,25 +62,18 @@ DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
                         arrayUser.clear();
                         for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()) {
 
-                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                            Query query = reference
-                                    .child("users")
-                                    .orderByChild("user_id")
-                                    .equalTo(singleSnapshot.getValue(Follow.class).getUser_id());
-
-                            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("users")
+                                    .child(singleSnapshot.child("user_id").getValue().toString());
+                            reference.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
-                                        User user = singleSnapshot.getValue(User.class);
+                                        User user = dataSnapshot.getValue(User.class);
                                         arrayUser.add(user);
                                         listView_viewFollow.notifyDataSetChanged();
-                                    }
-                                }
 
+                                }
                                 @Override
                                 public void onCancelled(DatabaseError databaseError) {
-
                                 }
                             });
                         }

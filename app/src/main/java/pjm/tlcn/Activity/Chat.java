@@ -247,6 +247,7 @@ public class Chat extends AppCompatActivity {
                                 messageArea.setText("");
                                 hiddenKeyboard();
                                 img_chat_image.setVisibility(View.GONE);
+                                img_x.setVisibility(View.GONE);
                                 dialog.dismiss();
                             }
                         });

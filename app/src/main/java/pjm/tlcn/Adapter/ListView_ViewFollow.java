@@ -1,11 +1,12 @@
 package pjm.tlcn.Adapter;
 
-import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -31,25 +32,37 @@ import pjm.tlcn.R;
  * Created by Pjm on 11/12/2017.
  */
 
-public class ListView_ViewFollow extends ArrayAdapter<User> {
-    Activity context;
+public class ListView_ViewFollow extends BaseAdapter {
+    Context context;
     int resource;
     List<User> items;
     private Boolean mFollowdByCurrentUser[];
     DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
 
-    public ListView_ViewFollow(Activity context, int resource, List<User> items) {
-        super(context, resource, items);
+    public ListView_ViewFollow(Context context, int resource, List<User> items) {
+        //super(context, resource, items);
         this.context=context;
         this.resource=resource;
         this.items=items;
     }
+    @Override
+    public int getCount() {
+        return items.size();
+    }
 
+    @Override
+    public Object getItem(int position) {
+        return items.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         mFollowdByCurrentUser = new Boolean[items.size()];
         Arrays.fill(mFollowdByCurrentUser,false);
-
         View view = convertView;
         final ViewHolder viewHolder;
         if (view == null) {
@@ -66,19 +79,24 @@ public class ListView_ViewFollow extends ArrayAdapter<User> {
         if(items.size()>0 && position>=0){
             viewHolder.tv_username_viewfollow.setText(items.get(position).getUsername());
             Picasso.with(context).load(items.get(position).getAvatarurl()).fit().centerInside().into(viewHolder.img_avatar_viewfollow);
-
             //Set following
             //Get UserFollow
-            Query query = databaseRef.child("followers").child(items.get(position).getUser_id());
+            Query query = databaseRef.child("following").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
             query.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
-                        if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(singleSnapshot.getValue(Follow.class).getUser_id())){
+                        try {
+                        if(items.get(position).getUser_id().equals(singleSnapshot.child("user_id").getValue().toString())){
                             mFollowdByCurrentUser[position]=true;
                             viewHolder.btn_follow_viewfollow.setBackgroundResource(R.drawable.button_following);
                             viewHolder.btn_follow_viewfollow.setText("Đang theo dõi");
                             viewHolder.btn_follow_viewfollow.setTextColor(Color.BLUE);
+                            Log.d(items.get(position).getUser_id(),(singleSnapshot.child("user_id").getValue().toString()));
+                        }
+                        }
+                        catch (Exception e){
+                            Log.d("Out","Size");
                         }
                     }
                 }
@@ -184,7 +202,7 @@ public class ListView_ViewFollow extends ArrayAdapter<User> {
                     else Toast.makeText(context,"Danh sách này không tồn tại! Vui lòng Refresh lại trang",Toast.LENGTH_SHORT).show();
                 }
             });
-    }
+        }
 
         return view;
     }

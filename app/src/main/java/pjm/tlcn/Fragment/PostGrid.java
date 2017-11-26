@@ -124,6 +124,7 @@ DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
             }
         });
     }
+
 //    @Override
 //    public void setUserVisibleHint(boolean isVisibleToUser) {
 //        super.setUserVisibleHint(isVisibleToUser);

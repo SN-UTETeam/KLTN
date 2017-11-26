@@ -85,7 +85,8 @@
                 android:layout_marginBottom="10dp"
                 android:layout_gravity="center"
                 android:id="@+id/img_chat_image"
-                android:maxHeight="200dp"
+                android:maxHeight="150dp"
+                android:minHeight="100dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <de.hdodenhof.circleimageview.CircleImageView

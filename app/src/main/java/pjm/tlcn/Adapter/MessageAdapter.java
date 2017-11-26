@@ -88,24 +88,35 @@ public class MessageAdapter extends BaseAdapter{
                 text_message_time.setVisibility(View.GONE);
                 text_message_time_image.setText(items.get(position).getDatecreated().toString().substring(11,16));
                 text_message_time_image.setVisibility(View.VISIBLE);
-
                 Picasso.with(activity).load(items.get(position).getImage_url()).into(image_message_body);
                 image_message_body.setVisibility(View.VISIBLE);
             }
             else {
                 text_message_time.setText(items.get(position).getDatecreated().toString().substring(11,16));
+                text_message_time.setVisibility(View.VISIBLE);
                 text_message_body.setText(items.get(position).getMessage());
+                text_message_body.setVisibility(View.VISIBLE);
                 image_message_body.setVisibility(View.GONE);
                 text_message_time_image.setVisibility(View.GONE);
             }
         }
-        else {
-            text_message_body.setVisibility(View.GONE);
-            Picasso.with(activity).load(items.get(position).getImage_url()).fit().centerInside().into(image_message_body);
-            image_message_body.setVisibility(View.VISIBLE);
+        else if(items.get(position).getImage_url().length()>10){
+            // text_message_time.setText(items.get(position).getDatecreated().toString().substring(11,16));
+            text_message_body.setText(items.get(position).getMessage());
+            text_message_body.setVisibility(View.VISIBLE);
+            text_message_time.setVisibility(View.GONE);
             text_message_time_image.setText(items.get(position).getDatecreated().toString().substring(11,16));
             text_message_time_image.setVisibility(View.VISIBLE);
-            text_message_time.setVisibility(View.GONE);
+            Picasso.with(activity).load(items.get(position).getImage_url()).into(image_message_body);
+            image_message_body.setVisibility(View.VISIBLE);
+        }
+        else {
+            text_message_time.setText(items.get(position).getDatecreated().toString().substring(11,16));
+            text_message_time.setVisibility(View.VISIBLE);
+            text_message_body.setText(items.get(position).getMessage());
+            text_message_body.setVisibility(View.VISIBLE);
+            image_message_body.setVisibility(View.GONE);
+            text_message_time_image.setVisibility(View.GONE);
         }
 
 

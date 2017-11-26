@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottomSheetLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    app:behavior_hideable="true"
+    android:orientation="vertical"
+    app:behavior_peekHeight="60dp">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <ImageView
+            android:id="@+id/img_search_sharepost"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/nav_search"
+            android:layout_gravity="center"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
+        <LinearLayout
+            android:layout_weight="3"
+            android:id="@+id/ln_sendto"
+            android:orientation="vertical"
+            android:layout_marginRight="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_weight="1"
+                android:layout_marginTop="3dp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:text="Gửi đến"
+                android:textSize="15dp"
+                android:textColor="@color/colorDark"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:visibility="gone"
+                android:layout_marginBottom="3dp"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:id="@+id/tv_sendto_sharepost"
+                android:text="Name"
+                android:textSize="12dp"
+                android:textColor="@color/colorDark"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+        <EditText
+            android:visibility="gone"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:id="@+id/edt_search_sharepost"
+            android:maxLines="1"
+            android:focusable="true"
+            android:background="@android:color/transparent"
+            android:layout_marginLeft="10dp"
+            android:hint="  Tìm kiếm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:visibility="gone"
+            android:id="@+id/img_clear_search"
+            android:background="@drawable/advanced_post_options_delete"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="center"
+            android:layout_width="20dp"
+            android:layout_height="20dp" />
+    </LinearLayout>
+    <View
+        android:background="@color/colorHaftWhite"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_sharepost"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+
+    </android.support.v7.widget.RecyclerView>
+    <View
+        android:background="@color/colorHaftWhite"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+    <Button
+        android:id="@+id/btn_closedialog_sharepost"
+        android:text="Hủy"
+        android:textSize="15dp"
+        android:textStyle="normal"
+        android:textAllCaps="false"
+        android:background="@color/colorWhite"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+</LinearLayout>

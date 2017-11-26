@@ -3,9 +3,10 @@ package pjm.tlcn.Adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -46,7 +47,6 @@ import static pjm.tlcn.Activity.Login.user;
 
 public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabPost.RecyclerViewHolder>{
     private ArrayList<Photo> item = new ArrayList<Photo>();
-    Bundle bundle;
     private Context context;
     public static String img_id="";
     private StringBuilder[] mUsers ;
@@ -410,6 +410,16 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
             }
         });
 
+        //Click Share
+        holder.img_share_tabpost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BottomSheetDialogFragment bottomSheetDialogFragment = new CustomBottomSheetDialogFragment();
+                bottomSheetDialogFragment.show(((FragmentActivity)context).getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
+
+            }
+        });
+
         holder.img_save_tabpost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -478,10 +488,11 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
 
     public class RecyclerViewHolder extends RecyclerView.ViewHolder {
         TextView tv_username_tabpost,tv_likes_tabpost,tv_status_tabpost,tv_comments_tabpost,tv_time_tabpost,tv_username;
-        ImageView img_avatar_tabpost,img_image_tabpost,img_cmt_tabpost,img_like_tabpost,img_save_tabpost;
+        ImageView img_avatar_tabpost,img_image_tabpost,img_cmt_tabpost,img_like_tabpost,img_save_tabpost,img_share_tabpost;
         ViewPager viewpager_item;
         TabLayout tab_layout_item;
         ImageView view;
+
         public RecyclerViewHolder(View itemView) {
             super(itemView);
             view = (ImageView) itemView.findViewById(R.id.view);
@@ -498,6 +509,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
             tv_time_tabpost = (TextView) itemView.findViewById(R.id.tv_time_tabpost);
             tv_username = (TextView) itemView.findViewById(R.id.tv_username);
             img_save_tabpost = (ImageView) itemView.findViewById(R.id.img_save_tabpost);
+            img_share_tabpost = (ImageView) itemView.findViewById(R.id.img_share_tabpost);
 
         }
     }

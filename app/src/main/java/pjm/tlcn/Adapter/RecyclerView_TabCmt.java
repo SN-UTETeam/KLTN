@@ -34,8 +34,6 @@ public class RecyclerView_TabCmt extends RecyclerView.Adapter<RecyclerView_TabCm
     private Context context;
     private DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
 
-
-
     public RecyclerView_TabCmt(ArrayList<Comment> item) {
         this.item = item;
     }

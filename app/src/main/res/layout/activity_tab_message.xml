@@ -49,9 +49,9 @@
             <ImageView
                 android:layout_marginLeft="10dp"
                 android:layout_gravity="center"
-                android:background="@drawable/search_location_small"
-                android:layout_width="20dp"
-                android:layout_height="20dp" />
+                android:background="@drawable/nav_search"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
             <EditText
                 android:id="@+id/edt_search_tabmessage"
                 android:focusable="true"

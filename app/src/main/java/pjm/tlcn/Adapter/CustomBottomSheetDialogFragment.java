@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -39,7 +40,7 @@ public class CustomBottomSheetDialogFragment extends BottomSheetDialogFragment {
     private ImageView img_search_sharepost,img_clear_search;
     private EditText edt_search_sharepost;
     private RecyclerView rv_sharepost;
-    private Button btn_closedialog_sharepost;
+    private static Button btn_closedialog_sharepost,btn_send_sharepost;
     private RecyclerView_SharePost recyclerView_sharePost;
     private ArrayList<User> arrayUser = new ArrayList<User>();
     private LinearLayout ln_sendto;
@@ -59,6 +60,7 @@ public class CustomBottomSheetDialogFragment extends BottomSheetDialogFragment {
         edt_search_sharepost = (EditText) v.findViewById(R.id.edt_search_sharepost);
         rv_sharepost = (RecyclerView) v.findViewById(R.id.rv_sharepost);
         btn_closedialog_sharepost = (Button) v.findViewById(R.id.btn_closedialog_sharepost);
+        btn_send_sharepost = (Button) v.findViewById(R.id.btn_send_sharepost);
 
         //Set Adapter
         LinearLayoutManager layoutManager
@@ -103,6 +105,14 @@ public class CustomBottomSheetDialogFragment extends BottomSheetDialogFragment {
         btn_closedialog_sharepost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dismiss();
+            }
+        });
+
+        btn_send_sharepost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(),"Gửi thành công",Toast.LENGTH_SHORT).show();
                 dismiss();
             }
         });
@@ -167,9 +177,16 @@ public class CustomBottomSheetDialogFragment extends BottomSheetDialogFragment {
     }
 
     public void setTextSendto(String text){
-        tv_sendto_sharepost.setVisibility(View.VISIBLE);
-        tv_sendto_sharepost.setText(text);
-        if(tv_sendto_sharepost.length()<=1)
+        if(text.length()>1) {
+            tv_sendto_sharepost.setVisibility(View.VISIBLE);
+            tv_sendto_sharepost.setText(text);
+            btn_closedialog_sharepost.setVisibility(View.GONE);
+            btn_send_sharepost.setVisibility(View.VISIBLE);
+        }
+        else {
             tv_sendto_sharepost.setVisibility(View.GONE);
+            btn_closedialog_sharepost.setVisibility(View.VISIBLE);
+            btn_send_sharepost.setVisibility(View.GONE);
+        }
     }
 }

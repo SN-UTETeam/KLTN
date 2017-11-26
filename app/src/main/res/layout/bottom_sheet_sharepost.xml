@@ -90,10 +90,23 @@
     <Button
         android:id="@+id/btn_closedialog_sharepost"
         android:text="Hủy"
+        android:layout_margin="5dp"
         android:textSize="15dp"
         android:textStyle="normal"
         android:textAllCaps="false"
         android:background="@color/colorWhite"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+    <Button
+        android:visibility="gone"
+        android:layout_margin="5dp"
+        android:id="@+id/btn_send_sharepost"
+        android:text="Gửi"
+        android:textSize="15dp"
+        android:textColor="@color/colorWhite"
+        android:textStyle="normal"
+        android:textAllCaps="false"
+        android:background="@drawable/button_follow"
         android:layout_width="match_parent"
         android:layout_height="50dp" />
 </LinearLayout>

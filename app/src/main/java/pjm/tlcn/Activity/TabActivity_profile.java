@@ -24,7 +24,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import pjm.tlcn.Fragment.NoPermission;
 import pjm.tlcn.Fragment.PostGrid;
 import pjm.tlcn.Fragment.PostList;
 import pjm.tlcn.Model.User;
@@ -244,7 +243,7 @@ public class TabActivity_profile extends FragmentActivity{
         public Fragment getItem(int i) {
             switch (i){
                 case 0: {Log.d("return tab post",i+"");
-                            return new NoPermission();
+                            return new PostGrid();
 
                         }
                 case 1: {Log.d("return tab like",i+"");

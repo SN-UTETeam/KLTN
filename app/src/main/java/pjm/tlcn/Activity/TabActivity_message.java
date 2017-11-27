@@ -81,19 +81,15 @@ private EditText edt_search_tabmessage;
                 for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()) {
                     pjm.tlcn.Model.Chat chat = singleSnapshot.getValue(pjm.tlcn.Model.Chat.class);
                     arrayChat.add(chat);
-                    //Log.d("Found Chat ",chat.getUser_id());
+                    listViewUserMessage.notifyDataSetChanged();
                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("users").child(chat.getUser_id());
 
                     reference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            //for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
                                 User user = dataSnapshot.getValue(User.class);
-                                //Log.d("Found user",user.getUser_id());
                                 arrayUser.add(user);
-
-                            //}
-                            listViewUserMessage.notifyDataSetChanged();
+                                listViewUserMessage.notifyDataSetChanged();
                         }
 
                         @Override

@@ -27,7 +27,7 @@ public class RecyclerView_SharePost extends RecyclerView.Adapter<RecyclerView_Sh
     private ArrayList<User> arrayList;
     private Context context;
     private String text="";
-    private ArrayList<User> sendmesage = new ArrayList<User>();
+    public static ArrayList<User> sendmesage = new ArrayList<User>();
 
     public RecyclerView_SharePost(Context context, ArrayList<User> items){
         this.context=context;
@@ -61,7 +61,9 @@ public class RecyclerView_SharePost extends RecyclerView.Adapter<RecyclerView_Sh
                 else
                     text = text + ", "+items.get(position).getUsername();
                 c.setTextSendto(text);
+                sendmesage.remove(items.get(position));
                 sendmesage.add(items.get(position));
+
             }
         });
 

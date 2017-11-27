@@ -240,6 +240,7 @@ public class Chat extends AppCompatActivity {
                                 uri_img_download = taskSnapshot.getMetadata().getDownloadUrl();
                                 String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
                                 Message message = new Message();
+                                message.setHyper_link("NoLink");
                                 message.setMessage(messageText+"");
                                 message.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 message.setImage_url(uri_img_download+"");
@@ -274,6 +275,7 @@ public class Chat extends AppCompatActivity {
                                 uri_img_download = taskSnapshot.getMetadata().getDownloadUrl();
                                 String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
                                 Message message = new Message();
+                                message.setHyper_link("NoLink");
                                 message.setMessage(messageText+"");
                                 message.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 message.setImage_url(uri_img_download+"");
@@ -296,6 +298,7 @@ public class Chat extends AppCompatActivity {
                         String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
                         Message message = new Message();
                         message.setMessage(messageText+"");
+                        message.setHyper_link("NoLink");
                         message.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
                         message.setUser_avatar(user.getAvatarurl());
                         message.setImage_url("NoImage");

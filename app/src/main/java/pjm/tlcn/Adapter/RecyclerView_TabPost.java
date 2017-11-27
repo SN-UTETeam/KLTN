@@ -64,25 +64,27 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
     private Boolean[] mSavedPostByCurrentUser;
     private String[] mLikesString;
     public static String photo_id_share_message;
+    private final int VIEW_TYPE_ITEM = 0;
+    private final int VIEW_TYPE_LOADING = 1;
 
     @Override
     public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         context=parent.getContext();
 
-        mLikedByCurrentUser = new Boolean[item.size()];
+        mLikedByCurrentUser = new Boolean[100];
         Arrays.fill(mLikedByCurrentUser, Boolean.FALSE);
 
-        mSavedByCurrentUser = new Boolean[item.size()];
+        mSavedByCurrentUser = new Boolean[100];
         Arrays.fill(mSavedByCurrentUser, Boolean.FALSE);
 
-        mSavedPostByCurrentUser = new Boolean[item.size()];
+        mSavedPostByCurrentUser = new Boolean[100];
         Arrays.fill(mSavedByCurrentUser, Boolean.FALSE);
 
-        mLikesString = new String[item.size()];
+        mLikesString = new String[100];
         Arrays.fill(mLikesString,"");
 
-        mUsers = new StringBuilder[item.size()];
+        mUsers = new StringBuilder[100];
         for(int i=0;i<mUsers.length;i++)
             mUsers[i] = new StringBuilder();
 

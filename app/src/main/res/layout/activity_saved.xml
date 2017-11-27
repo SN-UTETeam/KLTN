@@ -14,7 +14,16 @@
         android:layout_width="match_parent"
         android:layout_height="50dp">
     </android.support.v7.widget.Toolbar>
-
+    <TextView
+        android:id="@+id/example_photo_saved"
+        android:textColor="@color/colorBlue"
+        android:textSize="17dp"
+        android:layout_margin="20dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="Hãy click vào biểu tượng ba chấm ở phía trên góc phải bài viết để lưu trữ hoặc xóa lưu trữ bài viết!!!"
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
     <android.support.v4.widget.SwipeRefreshLayout
         android:layout_marginTop="10dp"
         android:id="@+id/saved_swipe_container"

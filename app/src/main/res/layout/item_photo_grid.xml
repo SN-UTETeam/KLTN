@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     android:layout_margin="2dp"
     android:layout_gravity="center"
     android:gravity="center"
@@ -7,13 +7,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <ImageView
+        android:layout_centerInParent="true"
         android:id="@+id/item_photo2"
         android:scaleType="centerCrop"
         android:layout_width="match_parent"
         android:layout_height="300dp" />
-    <VideoView
-        android:visibility="gone"
+    <ImageView
         android:id="@+id/item_video2"
-        android:layout_width="match_parent"
-        android:layout_height="300dp" />
-</LinearLayout>
+        android:layout_margin="3dp"
+        android:layout_alignRight="@id/item_photo2"
+        android:background="@drawable/grid_camera_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp" />
+</RelativeLayout>

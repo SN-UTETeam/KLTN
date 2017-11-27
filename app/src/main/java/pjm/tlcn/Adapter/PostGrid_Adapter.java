@@ -3,22 +3,21 @@ package pjm.tlcn.Adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.SystemClock;
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.VideoView;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import pjm.tlcn.Activity.ViewOnePost;
 import pjm.tlcn.Model.Item_GridPhoto;
@@ -58,8 +57,8 @@ public class PostGrid_Adapter extends RecyclerView.Adapter<PostGrid_Adapter.Recy
             holder.imageView.getLayoutParams().width = devicewidth;
 
             holder.imageView.getLayoutParams().height = devicewidth;
-            holder.videoView.getLayoutParams().height=devicewidth;
-            holder.videoView.getLayoutParams().width=devicewidth;
+        //    holder.videoView.getLayoutParams().height=devicewidth;
+        //    holder.videoView.getLayoutParams().width=devicewidth;
 
         if(items.get(position).getPath().contains("jpg")||items.get(position).getPath().contains("jpeg"))
         {
@@ -68,38 +67,16 @@ public class PostGrid_Adapter extends RecyclerView.Adapter<PostGrid_Adapter.Recy
             Picasso.with(context).load(items.get(position).getPath()).fit().centerCrop().into(holder.imageView);
         }
         else if(items.get(position).getPath().contains("mp4")){
-            holder.imageView.setVisibility(View.GONE);
+            holder.imageView.setVisibility(View.VISIBLE);
             holder.videoView.setVisibility(View.VISIBLE);
-            Uri uri = Uri.parse(items.get(position).getPath());
-            holder.videoView.setVideoURI(uri);
-            holder.videoView.requestFocus();
-            holder.videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    SystemClock.sleep(10000);
-                    mp.setVolume(0f,0f);
-                    holder.videoView.start();
-
-                }
-            });
-            holder.videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-                @Override
-                public boolean onError(MediaPlayer mp, int what, int extra) {
-                    Log.d("Video","Error");
-                    return true;
-                }
-            });
-        }
-        holder.videoView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Log.d("Touch","Video");
-                Intent intent = new Intent(context, ViewOnePost.class);
-                intent.putExtra("photo_id",items.get(position).getPhoto_id());
-                context.startActivity(intent);
-                return false;
+            try {
+                holder.imageView.setImageBitmap(retriveVideoFrameFromVideo(items.get(position).getPath()));
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
-        });
+
+        }
+
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,14 +93,45 @@ public class PostGrid_Adapter extends RecyclerView.Adapter<PostGrid_Adapter.Recy
         return this.items.size();
     }
     public class RecyclerViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
-        VideoView videoView;
+        ImageView imageView,videoView;
+    //
         public RecyclerViewHolder(View itemView) {
             super(itemView);
                 imageView =(ImageView) itemView.findViewById(R.id.item_photo2);
-                videoView = (VideoView) itemView.findViewById(R.id.item_video2);
+                videoView = (ImageView) itemView.findViewById(R.id.item_video2);
 
         }
     }
+    public static Bitmap retriveVideoFrameFromVideo(String videoPath)
+            throws Throwable
+    {
+        Bitmap bitmap = null;
+        MediaMetadataRetriever mediaMetadataRetriever = null;
+        try
+        {
+            mediaMetadataRetriever = new MediaMetadataRetriever();
+            if (Build.VERSION.SDK_INT >= 14)
+                mediaMetadataRetriever.setDataSource(videoPath, new HashMap<String, String>());
+            else
+                mediaMetadataRetriever.setDataSource(videoPath);
+            //   mediaMetadataRetriever.setDataSource(videoPath);
+            bitmap = mediaMetadataRetriever.getFrameAtTime();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            throw new Throwable(
+                    "Exception in retriveVideoFrameFromVideo(String videoPath)"
+                            + e.getMessage());
 
+        }
+        finally
+        {
+            if (mediaMetadataRetriever != null)
+            {
+                mediaMetadataRetriever.release();
+            }
+        }
+        return bitmap;
+    }
 }

@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +31,7 @@ import pjm.tlcn.R;
 public class Saved extends AppCompatActivity {
     Toolbar toolbar_saved;
     private RecyclerView rv_tabsaved;
+    private static TextView example_photo_saved;
     SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView_TabPost recyclerView_tabSaved;
     private ArrayList<Photo> photoArrayList = new ArrayList<Photo>();
@@ -38,6 +40,7 @@ public class Saved extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_saved);
+        example_photo_saved = (TextView) findViewById(R.id.example_photo_saved);
 
         //Set back Toolbar
         toolbar_saved = (Toolbar) findViewById(R.id.toolbar_saved);
@@ -67,6 +70,7 @@ public class Saved extends AppCompatActivity {
                 mSwipeRefreshLayout.setRefreshing(false);
                 photoArrayList.clear();
                 loadData();
+                example_photo_saved.setVisibility(View.GONE);
                 recyclerView_tabSaved.notifyDataSetChanged();
             }
         });
@@ -75,18 +79,18 @@ public class Saved extends AppCompatActivity {
     public void loadData(){
         //Firebase
 
-        Query query = databaseRef.child("saved").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        Query query = databaseRef.child("photo_saved").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue()!=null){
                     photoArrayList.clear();
+                    removeExample();
                     for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
 
                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                         Query query = reference.child("photos")
                                 .orderByChild("photo_id").equalTo(singleSnapshot.child("photo_id").getValue().toString());
-                        Log.d("key saved",singleSnapshot.child("photo_id").getValue().toString());
 
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -136,5 +140,9 @@ public class Saved extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void removeExample(){
+        example_photo_saved.setVisibility(View.GONE);
     }
 }

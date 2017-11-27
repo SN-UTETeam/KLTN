@@ -20,4 +20,9 @@
     <style name="AppTabLayout" parent="TextAppearance.Design.Tab">
         <item name="textAllCaps">false</item>
     </style>
+    <!-- Change Overflow Menu ListView Text Size and Text Size -->
+    <style name="PopupMenuTextView" parent="@style/android:Theme.Holo.Light">
+        <item name="android:textColor">#00FF00</item>
+        <item name="android:textSize">5sp</item>
+    </style>
 </resources>

@@ -10,13 +10,15 @@ public class Message {
     private String message;
     private String datecreated;
     private String image_url;
+    private String hyper_link;
 
-    public Message(String user_id, String user_avatar, String message, String datecreated, String image_url) {
+    public Message(String user_id, String user_avatar, String message, String datecreated, String image_url,String hyper_link) {
         this.user_id = user_id;
         this.user_avatar = user_avatar;
         this.message = message;
         this.datecreated = datecreated;
         this.image_url = image_url;
+        this.hyper_link = hyper_link;
     }
 
     public Message() {
@@ -60,5 +62,13 @@ public class Message {
 
     public void setImage_url(String image_url) {
         this.image_url = image_url;
+    }
+
+    public String getHyper_link() {
+        return hyper_link;
+    }
+
+    public void setHyper_link(String hyper_link) {
+        this.hyper_link = hyper_link;
     }
 }

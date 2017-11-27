@@ -1,14 +1,18 @@
 package pjm.tlcn.Adapter;
 
+import android.app.Dialog;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,11 +28,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import pjm.tlcn.Model.Follow;
+import pjm.tlcn.Model.Message;
 import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
+
+import static pjm.tlcn.Activity.Login.user;
+import static pjm.tlcn.Adapter.RecyclerView_SharePost.sendmesage;
+import static pjm.tlcn.Adapter.RecyclerView_TabPost.photo_id_share_message;
 
 /**
  * Created by Pjm on 11/26/2017.
@@ -44,6 +55,7 @@ public class CustomBottomSheetDialogFragment extends BottomSheetDialogFragment {
     private RecyclerView_SharePost recyclerView_sharePost;
     private ArrayList<User> arrayUser = new ArrayList<User>();
     private LinearLayout ln_sendto;
+    private Dialog dialog;
 
     public CustomBottomSheetDialogFragment() {
     }
@@ -112,8 +124,91 @@ public class CustomBottomSheetDialogFragment extends BottomSheetDialogFragment {
         btn_send_sharepost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("Clicked","btn_send_sharepost");
+                ///Created Dialog
+                dialog = new Dialog(getContext());
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setCancelable(false);
+                dialog.setContentView(R.layout.custom_dialog);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+                for(int i=0;i<sendmesage.size();i++) {
+                    //Find room_id
+                    dialog.show();
+                    final User user_send = sendmesage.get(i);
+                    databaseRef.child("Chat")
+                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .child(sendmesage.get(i).getUser_id()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String room_id = dataSnapshot.child("room_id").getValue(String.class);
+
+                            if(room_id != null) {
+                                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("RoomChat").child(room_id);
+                                String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                                Message message = new Message();
+                                message.setDatecreated(timeStamp);
+                                message.setImage_url("NoImage");
+                                message.setHyper_link(photo_id_share_message);
+                                message.setUser_avatar(user.getAvatarurl());
+                                message.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                databaseReference.push().setValue(message);
+                                dialog.dismiss();
+                                Toast.makeText(getContext(),"Gửi thành công",Toast.LENGTH_SHORT).show();
+                                dismiss();
+                            }
+                            else {
+                                //Create room chat
+                                String newChatkey = databaseRef.push().getKey();
+                                pjm.tlcn.Model.Chat chat = new pjm.tlcn.Model.Chat();
+
+                                chat.setRoom_id(newChatkey);
+                                chat.setUser_id(user_send.getUser_id());
+                                databaseRef.child("Chat")
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child(user_send.getUser_id())
+                                        .setValue(chat);
+                                chat.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                databaseRef.child("Chat")
+                                        .child(user_send.getUser_id())
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .setValue(chat);
+
+                                //Send Message
+                                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("RoomChat").child(newChatkey);
+                                String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                                Message message = new Message();
+                                message.setDatecreated(timeStamp);
+                                message.setImage_url("NoImage");
+                                message.setHyper_link(photo_id_share_message);
+                                message.setUser_avatar(user.getAvatarurl());
+                                message.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                databaseReference.push().setValue(message);
+                                dialog.dismiss();
+                                Toast.makeText(getContext(),"Gửi thành công",Toast.LENGTH_SHORT).show();
+                                dismiss();
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    if(i>=sendmesage.size()){
+                        dialog.dismiss();
+                        Toast.makeText(getContext(),"Gửi thành công",Toast.LENGTH_SHORT).show();
+                        dismiss();
+                    }
+                    else
+                        dialog.show();
+
+                }
                 Toast.makeText(getContext(),"Gửi thành công",Toast.LENGTH_SHORT).show();
-                dismiss();
+                dialog.dismiss();
+
             }
         });
 

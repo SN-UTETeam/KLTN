@@ -32,6 +32,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/image_message_profile"
         android:layout_marginRight="200dp" />
+
     <TextView
         android:id="@+id/text_message_time"
         android:text="11:40"
@@ -43,9 +44,9 @@
         app:layout_constraintBottom_toBottomOf="@+id/text_message_body" />
     <ImageView
         android:padding="5dp"
+        android:scaleType="fitCenter"
         android:layout_marginRight="50dp"
         android:layout_marginLeft="50dp"
-        android:scaleType="fitCenter"
         android:id="@+id/image_message_body"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

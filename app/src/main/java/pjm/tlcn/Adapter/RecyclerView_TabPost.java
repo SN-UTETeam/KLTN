@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -57,6 +58,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
     private Boolean[] mLikedByCurrentUser;
     private Boolean[] mSavedByCurrentUser;
     private String[] mLikesString;
+    public static String photo_id_share_message;
 
     @Override
     public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -414,6 +416,8 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
         holder.img_share_tabpost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                photo_id_share_message=item.get(position).getPhoto_id();
+                Toast.makeText(context,"Bạn chỉ có thể gửi tin nhắn cho những người bạn đang theo dõi!",Toast.LENGTH_LONG).show();
                 BottomSheetDialogFragment bottomSheetDialogFragment = new CustomBottomSheetDialogFragment();
                 bottomSheetDialogFragment.show(((FragmentActivity)context).getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
 

@@ -43,9 +43,9 @@
         app:layout_constraintBottom_toBottomOf="@+id/text_message_body" />
     <ImageView
         android:padding="5dp"
+        android:scaleType="fitCenter"
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
-        android:scaleType="fitCenter"
         android:id="@+id/image_message_body"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

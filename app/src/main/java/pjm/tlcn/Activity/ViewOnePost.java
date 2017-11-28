@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import pjm.tlcn.Adapter.RecyclerView_TabPost;
+import pjm.tlcn.Adapter.RecyclerView_ViewOnePost;
 import pjm.tlcn.Model.Comment;
 import pjm.tlcn.Model.Photo;
 import pjm.tlcn.R;
@@ -28,7 +28,7 @@ public class ViewOnePost extends AppCompatActivity {
 
     private RecyclerView rv_viewonepost;
     SwipeRefreshLayout mSwipeRefreshLayout;
-    private RecyclerView_TabPost recyclerView_tabPost;
+    private RecyclerView_ViewOnePost recyclerView_viewOnePost;
     private ArrayList<Photo> photoArrayList = new ArrayList<Photo>();
     private DatabaseReference uDatabase;
     private String photo_id;
@@ -59,11 +59,11 @@ public class ViewOnePost extends AppCompatActivity {
         //Var
         rv_viewonepost = (RecyclerView) findViewById(R.id.rv_viewonepost);
         loadData();
-        recyclerView_tabPost = new RecyclerView_TabPost(photoArrayList);
+        recyclerView_viewOnePost = new RecyclerView_ViewOnePost(photoArrayList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rv_viewonepost.setLayoutManager(layoutManager);
-        rv_viewonepost.setAdapter(recyclerView_tabPost);
+        rv_viewonepost.setAdapter(recyclerView_viewOnePost);
 
 
         //Swipe
@@ -74,7 +74,7 @@ public class ViewOnePost extends AppCompatActivity {
                 mSwipeRefreshLayout.setRefreshing(false);
                 photoArrayList.clear();
                 loadData();
-                recyclerView_tabPost.notifyDataSetChanged();
+                recyclerView_viewOnePost.notifyDataSetChanged();
             }
         });
 
@@ -112,7 +112,7 @@ public class ViewOnePost extends AppCompatActivity {
                         photoArrayList.add(photo);
 
                     Collections.reverse(photoArrayList);
-                    recyclerView_tabPost.notifyDataSetChanged();
+                    recyclerView_viewOnePost.notifyDataSetChanged();
                 }
             }
 

@@ -82,7 +82,8 @@ public class PostList extends Fragment{
 
     public void loadData(){
         uDatabase = FirebaseDatabase.getInstance().getReference().child("photos");
-        final Query query = uDatabase.orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid()).limitToLast(2);
+        final Query query = uDatabase.orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .limitToLast(6);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -96,7 +97,7 @@ public class PostList extends Fragment{
                         if(objectMap.get("user_id").toString().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                         {
                             Log.d("Limit",i+"");
-                            if(i>=2) {
+                            if(i>=6) {
                                 Log.d("Remove",i+"");
                                 break;}
                             else i++;
@@ -144,7 +145,7 @@ public class PostList extends Fragment{
         //Firebase
         uDatabase = FirebaseDatabase.getInstance().getReference().child("photos");
         final Query query1 = uDatabase.orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .limitToLast(size+5);
+                .limitToLast(size+6);
 
         query1.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -159,7 +160,7 @@ public class PostList extends Fragment{
                             Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
 
                             if (objectMap.get("user_id").toString().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                                if (i >= 5) {
+                                if (i >= 6) {
                                     break;
                                 } else i++;
                                 if(objectMap.get("photo_id").toString().equals(photoArrayList.get(photoArrayList.size()-1).getPhoto_id()))
@@ -203,4 +204,17 @@ public class PostList extends Fragment{
         });
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            photoArrayList.clear();
+            loadData();
+            recyclerView_tabPost.notifyDataSetChanged();
+
+
+        }else{
+            // fragment is no longer visible
+        }
+    }
 }

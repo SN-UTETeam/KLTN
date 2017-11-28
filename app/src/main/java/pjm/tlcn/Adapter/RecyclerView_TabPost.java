@@ -1,6 +1,8 @@
 package pjm.tlcn.Adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Parcelable;
@@ -12,9 +14,11 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,24 +61,30 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
     }
     private Boolean[] mLikedByCurrentUser;
     private Boolean[] mSavedByCurrentUser;
+    private Boolean[] mSavedPostByCurrentUser;
     private String[] mLikesString;
     public static String photo_id_share_message;
+    private final int VIEW_TYPE_ITEM = 0;
+    private final int VIEW_TYPE_LOADING = 1;
 
     @Override
     public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         context=parent.getContext();
 
-        mLikedByCurrentUser = new Boolean[item.size()];
+        mLikedByCurrentUser = new Boolean[100];
         Arrays.fill(mLikedByCurrentUser, Boolean.FALSE);
 
-        mSavedByCurrentUser = new Boolean[item.size()];
+        mSavedByCurrentUser = new Boolean[100];
         Arrays.fill(mSavedByCurrentUser, Boolean.FALSE);
 
-        mLikesString = new String[item.size()];
+        mSavedPostByCurrentUser = new Boolean[100];
+        Arrays.fill(mSavedByCurrentUser, Boolean.FALSE);
+
+        mLikesString = new String[100];
         Arrays.fill(mLikesString,"");
 
-        mUsers = new StringBuilder[item.size()];
+        mUsers = new StringBuilder[100];
         for(int i=0;i<mUsers.length;i++)
             mUsers[i] = new StringBuilder();
 
@@ -253,7 +263,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
         }
         //TimeStamp
         SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String currenttime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        final String currenttime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
 
         try {
@@ -376,6 +386,147 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
             }
         });
 
+        //Show menu option
+        holder.img_option.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Creating the instance of PopupMenu
+                PopupMenu popup = new PopupMenu(context, holder.img_option);
+                //Inflating the Popup using xml file
+                popup.getMenuInflater()
+                        .inflate(R.menu.popup_menu, popup.getMenu());
+                //registering popup with OnMenuItemClickListener
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem menuitem) {
+
+                        switch (menuitem.getItemId()){
+                            case R.id.delete_post:{
+                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                builder.setTitle("Xóa bài viết này!");
+                                builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+
+                                        Toast.makeText(context, "Đã xóa bài viết!!",Toast.LENGTH_LONG).show();
+                                        databaseRef.child("photos").child(item.get(position).getPhoto_id()).removeValue();
+                                        item.remove(item.get(position));
+                                        notifyDataSetChanged();
+                                        dialog.dismiss();
+                                    }
+                                });
+                                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        //Toast.makeText(context, "CLick Cancel!!",Toast.LENGTH_LONG).show();
+                                        dialog.dismiss();
+                                    }
+                                });
+                                AlertDialog dialog = builder.create();
+                                dialog.show();
+                                return true;
+                            }
+                            case R.id.save_post: {
+                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                                //Get Saved
+                                Query query1= reference.child("photo_saved").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                query1.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        if(dataSnapshot.getValue()!=null){
+                                            for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                                                if(singleSnapshot.getValue()!=null) {
+                                                    if (singleSnapshot.child("photo_id").getValue().toString().equals(item.get(position).getPhoto_id())) {
+                                                        mSavedPostByCurrentUser[position] = true;
+                                                    }
+                                                }
+                                            }
+                                            if(!dataSnapshot.exists()){
+                                                mSavedPostByCurrentUser[position] = false;
+                                            }
+                                        }}
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                                //Get Saved
+                                Query query= reference.child("photo_saved").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        for(final DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                                            //Log.d("Found ",singleSnapshot.child("photo_id").getValue().toString());
+                                            //Log.d("item",item.get(position).getPhoto_id());
+                                            //Log.d("Saved",mSavedByCurrentUser[position].toString());
+                                            if(mSavedPostByCurrentUser[position] && singleSnapshot.child("photo_id").getValue().toString().equals(item.get(position).getPhoto_id())){
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                                builder.setTitle("Xóa lưu trữ bài viết này?");
+                                                builder.setMessage("Bài viết này đã được lưu trước đây");
+                                                builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+
+                                                        databaseRef.child("photo_saved")
+                                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                                .child(singleSnapshot.getKey())
+                                                                .removeValue();
+                                                        mSavedPostByCurrentUser[position]=false;
+                                                        notifyDataSetChanged();
+                                                        dialog.dismiss();
+                                                    }
+                                                });
+                                                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+                                                        //Toast.makeText(context, "CLick Cancel!!",Toast.LENGTH_LONG).show();
+                                                        dialog.dismiss();
+                                                    }
+                                                });
+                                                AlertDialog dialog = builder.create();
+                                                dialog.show();
+
+
+                                            }
+                                            else
+                                            if (!mSavedPostByCurrentUser[position]){
+                                                String newkey=databaseRef.push().getKey();
+                                                databaseRef.child("photo_saved")
+                                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                        .child(newkey)
+                                                        .child("photo_id")
+                                                        .setValue(item.get(position).getPhoto_id());
+                                                mSavedPostByCurrentUser[position]=true;
+                                                Toast.makeText(context, "Đã lưu bài viết!!",Toast.LENGTH_LONG).show();
+                                                break;
+                                            }
+                                        }
+                                        if(!dataSnapshot.exists()){
+
+                                            String newkey=databaseRef.push().getKey();
+                                            databaseRef.child("photo_saved")
+                                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                    .child(newkey)
+                                                    .child("photo_id")
+                                                    .setValue(item.get(position).getPhoto_id());
+                                            mSavedPostByCurrentUser[position]=true;
+                                            Toast.makeText(context, "Đã lưu bài viết!!",Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                                return true;
+                            }
+                        }
+
+                        return true;
+                    }
+                });
+
+                popup.show(); //showing popup menu
+            }
+        });
+
         //View Like
         holder.tv_likes_tabpost.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -492,7 +643,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
 
     public class RecyclerViewHolder extends RecyclerView.ViewHolder {
         TextView tv_username_tabpost,tv_likes_tabpost,tv_status_tabpost,tv_comments_tabpost,tv_time_tabpost,tv_username;
-        ImageView img_avatar_tabpost,img_image_tabpost,img_cmt_tabpost,img_like_tabpost,img_save_tabpost,img_share_tabpost;
+        ImageView img_avatar_tabpost,img_image_tabpost,img_cmt_tabpost,img_like_tabpost,img_save_tabpost,img_share_tabpost,img_option;
         ViewPager viewpager_item;
         TabLayout tab_layout_item;
         ImageView view;
@@ -514,6 +665,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
             tv_username = (TextView) itemView.findViewById(R.id.tv_username);
             img_save_tabpost = (ImageView) itemView.findViewById(R.id.img_save_tabpost);
             img_share_tabpost = (ImageView) itemView.findViewById(R.id.img_share_tabpost);
+            img_option = (ImageView) itemView.findViewById(R.id.img_option);
 
         }
     }

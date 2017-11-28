@@ -62,9 +62,8 @@ public class Photo_Slider extends PagerAdapter {
         else if(items.get(position).toString().contains("mp4")){
             imageView.setVisibility(View.GONE);
             videoView.setVisibility(View.VISIBLE);
-            videoView.setUp(items.get(position).toString(),JZVideoPlayer.SCREEN_WINDOW_NORMAL,"");
-
             try {
+                videoView.setUp(items.get(position).toString(),JZVideoPlayer.SCREEN_WINDOW_NORMAL,"");
                 videoView.thumbImageView.setImageBitmap(retriveVideoFrameFromVideo(items.get(position).toString()));
             } catch (Throwable throwable) {
                 throwable.printStackTrace();

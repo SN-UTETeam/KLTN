@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import pjm.tlcn.Adapter.EndlessRecyclerViewScrollListener;
 import pjm.tlcn.Adapter.RecyclerView_TabPost;
 import pjm.tlcn.Model.Comment;
 import pjm.tlcn.Model.Photo;
@@ -30,11 +32,13 @@ import pjm.tlcn.R;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class PostList extends Fragment{
-private RecyclerView rv_tabpost;
-SwipeRefreshLayout mSwipeRefreshLayout;
-private RecyclerView_TabPost recyclerView_tabPost;
-private ArrayList<Photo> photoArrayList = new ArrayList<Photo>();
-private DatabaseReference uDatabase;
+    private RecyclerView rv_tabpost;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private RecyclerView_TabPost recyclerView_tabPost;
+    private ArrayList<Photo> photoArrayList = new ArrayList<Photo>();
+    private DatabaseReference uDatabase;
+    private String oldkey;
+    private EndlessRecyclerViewScrollListener scrollListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,12 +46,12 @@ private DatabaseReference uDatabase;
         View v = inflater.inflate(R.layout.fragment_post, container, false);
 
         rv_tabpost = (RecyclerView) v.findViewById(R.id.rv_tabpost);
-        loadData();
         recyclerView_tabPost = new RecyclerView_TabPost(photoArrayList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rv_tabpost.setLayoutManager(layoutManager);
         rv_tabpost.setAdapter(recyclerView_tabPost);
+        loadData();
 
         //Swipe
         mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_container);
@@ -60,45 +64,73 @@ private DatabaseReference uDatabase;
                 recyclerView_tabPost.notifyDataSetChanged();
             }
         });
+
+        //Loadmore
+        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                loadmoreData(recyclerView_tabPost.getItemCount());
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        rv_tabpost.addOnScrollListener(scrollListener);
+
         return v;
     }
 
     public void loadData(){
-        //Firebase
         uDatabase = FirebaseDatabase.getInstance().getReference().child("photos");
-        Query query = uDatabase.orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        final Query query = uDatabase.orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid()).limitToLast(2);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 if(dataSnapshot.getValue()!=null){
-                    photoArrayList.clear();
+                    ArrayList<Photo> list = new ArrayList<Photo>();
+                    int i=0;
                     for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
-                        Photo photo = new Photo();
                         Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
 
-                        photo.setCaption(objectMap.get("caption").toString());
-                        photo.setPhoto_id(objectMap.get("photo_id").toString());
-                        photo.setUser_id(objectMap.get("user_id").toString());
-                        photo.setDate_created(objectMap.get("date_created").toString());
- //                       photo.setImage_path(objectMap.get("Image_path").toString());
+                        if(objectMap.get("user_id").toString().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                        {
+                            Log.d("Limit",i+"");
+                            if(i>=2) {
+                                Log.d("Remove",i+"");
+                                break;}
+                            else i++;
+                            Photo photo = new Photo();
 
-                        ArrayList<Comment> comments = new ArrayList<Comment>();
-                        for (DataSnapshot dSnapshot : singleSnapshot
-                                .child("comments").getChildren()){
-                            Comment comment = new Comment();
-                            comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                            comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                            comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-                            comments.add(comment);
+
+                            photo.setCaption(objectMap.get("caption").toString());
+                            photo.setPhoto_id(objectMap.get("photo_id").toString());
+                            photo.setUser_id(objectMap.get("user_id").toString());
+                            photo.setDate_created(objectMap.get("date_created").toString());
+
+                            ArrayList<Comment> comments = new ArrayList<Comment>();
+                            for (DataSnapshot dSnapshot : singleSnapshot
+                                    .child("comments").getChildren()){
+                                Comment comment = new Comment();
+                                comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+                                comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+                                comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                                comments.add(comment);
+                            }
+
+                            photo.setComments(comments);
+                            list.add(photo);
                         }
 
-                        photo.setComments(comments);
-                        photoArrayList.add(photo);
                     }
-                    Collections.reverse(photoArrayList);
+
+                    Collections.reverse(list);
+                    photoArrayList.addAll(list);
                     recyclerView_tabPost.notifyDataSetChanged();
+                    query.removeEventListener(this);
+
                 }
+
             }
 
             @Override
@@ -107,16 +139,68 @@ private DatabaseReference uDatabase;
             }
         });
     }
-//    @Override
-//    public void setUserVisibleHint(boolean isVisibleToUser) {
-//        super.setUserVisibleHint(isVisibleToUser);
-//        if (isVisibleToUser) {
-//            TabActivity_profile profile = (TabActivity_profile) getActivity();
-//            profile.SetTablayout(1);
-//
-//
-//        }else{
-//            // fragment is no longer visible
-//        }
-//    }
+
+    public void loadmoreData(int size){
+        //Firebase
+        uDatabase = FirebaseDatabase.getInstance().getReference().child("photos");
+        final Query query1 = uDatabase.orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .limitToLast(size+5);
+
+        query1.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if(dataSnapshot.getValue()!=null){
+                    Log.d("Loadmore","Item");
+                    ArrayList<Photo> list = new ArrayList<Photo>();
+                    int i=0;
+                    for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+                       // if(!singleSnapshot.getKey().equals(oldkey)) {
+                            Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+
+                            if (objectMap.get("user_id").toString().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                if (i >= 5) {
+                                    break;
+                                } else i++;
+                                if(objectMap.get("photo_id").toString().equals(photoArrayList.get(photoArrayList.size()-1).getPhoto_id()))
+                                    break;
+                                Photo photo = new Photo();
+
+
+                                photo.setCaption(objectMap.get("caption").toString());
+                                photo.setPhoto_id(objectMap.get("photo_id").toString());
+                                photo.setUser_id(objectMap.get("user_id").toString());
+                                photo.setDate_created(objectMap.get("date_created").toString());
+
+                                ArrayList<Comment> comments = new ArrayList<Comment>();
+                                for (DataSnapshot dSnapshot : singleSnapshot
+                                        .child("comments").getChildren()) {
+                                    Comment comment = new Comment();
+                                    comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+                                    comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+                                    comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                                    comments.add(comment);
+                                }
+
+                                photo.setComments(comments);
+                                list.add(photo);
+                            }
+                        //}
+                    }
+
+                    Collections.reverse(list);
+                    photoArrayList.addAll(list);
+                    recyclerView_tabPost.notifyDataSetChanged();
+                    query1.removeEventListener(this);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 }

@@ -79,7 +79,7 @@ DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
     }
     public void loadData(){
         final Query query = databaseRef.child("photos").orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser()
-                .getUid()).limitToLast(3);
+                .getUid()).limitToLast(6);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -90,7 +90,7 @@ DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
                         Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
                         if(objectMap.get("user_id").toString().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             Log.d("Limit", i + "");
-                            if (i >= 3) {
+                            if (i >= 6) {
                                 Log.d("Remove", i + "");
                                 break;
                             } else i++;
@@ -124,7 +124,7 @@ DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
 
     public void loadmoreData(int size){
         final Query query1 = databaseRef.child("photos").orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .limitToLast(size+3);
+                .limitToLast(size+6);
         query1.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -136,7 +136,7 @@ DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
                         Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
                         if(objectMap.get("user_id").toString().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             Log.d("Limit", i + "");
-                            if (i >= 3) {
+                            if (i >= 6) {
                                 Log.d("Remove", i + "");
                                 break;
                             } else i++;

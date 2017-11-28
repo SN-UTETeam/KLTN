@@ -50,13 +50,13 @@ import static pjm.tlcn.Activity.Login.user;
  * Created by Pjm on 11/8/2017.
  */
 
-public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabPost.RecyclerViewHolder>{
+public class RecyclerView_ViewOnePost extends RecyclerView.Adapter<RecyclerView_ViewOnePost.RecyclerViewHolder>{
     private ArrayList<Photo> item = new ArrayList<Photo>();
     private Context context;
     public static String img_id="";
     private StringBuilder[] mUsers ;
     private DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
-    public RecyclerView_TabPost(ArrayList<Photo> item) {
+    public RecyclerView_ViewOnePost(ArrayList<Photo> item) {
         this.item = item;
     }
     private Boolean[] mLikedByCurrentUser;
@@ -70,19 +70,19 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         context=parent.getContext();
 
-        mLikedByCurrentUser = new Boolean[100];
+        mLikedByCurrentUser = new Boolean[item.size()];
         Arrays.fill(mLikedByCurrentUser, Boolean.FALSE);
 
-        mSavedByCurrentUser = new Boolean[100];
+        mSavedByCurrentUser = new Boolean[item.size()];
         Arrays.fill(mSavedByCurrentUser, Boolean.FALSE);
 
-        mSavedPostByCurrentUser = new Boolean[100];
+        mSavedPostByCurrentUser = new Boolean[item.size()];
         Arrays.fill(mSavedByCurrentUser, Boolean.FALSE);
 
-        mLikesString = new String[100];
+        mLikesString = new String[item.size()];
         Arrays.fill(mLikesString,"");
 
-        mUsers = new StringBuilder[100];
+        mUsers = new StringBuilder[item.size()];
         for(int i=0;i<mUsers.length;i++)
             mUsers[i] = new StringBuilder();
 
@@ -185,7 +185,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
-//                                                Log.d("RecyclerView_Tabpost", "onDataChange: found like: " +
+//                                                Log.d("RecyclerView_ViewOnePost", "onDataChange: found like: " +
 //                                                        singleSnapshot.getValue(User.class).getUsername());
 
                                 mUsers[position].append(singleSnapshot.getValue(User.class).getUsername());
@@ -376,94 +376,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                             holder.img_like_tabpost.setImageResource(R.drawable.direct_heart);
                             //holder.tv_likes_tabpost.setText(getLikeString(position)+"");
                         }
-                        //GetLike
-                        DatabaseReference referenceget = FirebaseDatabase.getInstance().getReference();
-                        final Query queryclicklike = referenceget
-                                .child("photos")
-                                .child(item.get(position).getPhoto_id())
-                                .child("likes");
-                        queryclicklike.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
-                                    mUsers[position] = new StringBuilder("");
-                                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                                    final Query queryclick = reference
-                                            .child("users")
-                                            .orderByChild("user_id")
-                                            .equalTo(singleSnapshot.getValue(Like.class).getUser_id());
-                                    queryclick.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
-//                                                Log.d("RecyclerView_Tabpost", "onDataChange: found like: " +
-//                                                        singleSnapshot.getValue(User.class).getUsername());
 
-                                                mUsers[position].append(singleSnapshot.getValue(User.class).getUsername());
-                                                mUsers[position].append(",");
-                                            }
-                                            String[] splitUsers = mUsers[position].toString().split(",");
-//                                            if(mUsers[position].toString().contains(user.getUsername() + ",")){
-//                                                mLikedByCurrentUser[position] = true;
-//                                                holder.img_like_tabpost.setImageResource(R.drawable.direct_heart);
-//                                            }else{
-//                                                mLikedByCurrentUser[position] = false;
-//                                            }
-
-                                            int length = splitUsers.length;
-                                            //Log.d("length split:"+position+": ",length+"");
-                                            if(length == 1){
-                                                mLikesString[position] = "Người thích: " +"<b>" + splitUsers[0] + "</b>";
-                                            }
-                                            else if(length == 2){
-                                                mLikesString[position] = "Người thích: " + "<b>" + splitUsers[0] + "</b>"
-                                                        + " và " + "<b>" + splitUsers[1] + "</b>";
-                                            }
-                                            else if(length == 3){
-                                                mLikesString[position] = "Người thích: " + "<b>" + splitUsers[0] + "</b>"
-                                                        + ", " + "<b>" + splitUsers[1] + "</b>"
-                                                        + " và " + "<b>" + splitUsers[2] + "</b>";
-
-                                            }
-                                            else if(length == 4){
-                                                mLikesString[position] = "Người thích: " + "<b>" + splitUsers[0] + "</b>"
-                                                        + ", " + "<b>" + splitUsers[1] + "</b>"
-                                                        + ", " + "<b>" + splitUsers[2] + "</b>"
-                                                        + " và " + "<b>" + splitUsers[3] + "</b>";
-                                            }
-                                            else if(length > 4){
-                                                mLikesString[position] = "Người thích: " + "<b>" + splitUsers[0] + "</b>"
-                                                        + ", " + "<b>" + splitUsers[1] + "</b>"
-                                                        + ", " + "<b>" + splitUsers[2] + "</b>"
-                                                        + " và " + "<b>" + (splitUsers.length-3) + "</b>" + " người khác";
-                                            }
-                                            //Log.d("likes string: " +position+": ",mLikesString[position]);
-                                            holder.tv_likes_tabpost.setVisibility(View.VISIBLE);
-                                            holder.tv_likes_tabpost.setText(Html.fromHtml(mLikesString[position]+""));
-                                            queryclick.removeEventListener(this);
-                                            queryclicklike.removeEventListener(this);
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-
-                                        }
-                                    });
-                                }
-                                if(!dataSnapshot.exists()){
-                                    mLikesString[position] = "";
-                                    mLikedByCurrentUser[position] = false;
-                                    holder.tv_likes_tabpost.setVisibility(View.GONE);
-                                    holder.tv_likes_tabpost.setText("");
-                                    queryclicklike.removeEventListener(this);
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
                     }
 
                     @Override
@@ -514,7 +427,6 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                             case R.id.save_post: {
                                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                                 //Get Saved
-                                mSavedPostByCurrentUser[position] = false;
                                 Query query1= reference.child("photo_saved").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 query1.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -543,10 +455,10 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         for(final DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                                            Log.d("Found ",singleSnapshot.child("photo_id").getValue().toString());
-                                            Log.d("item",item.get(position).getPhoto_id());
-                                            Log.d("Saved",mSavedPostByCurrentUser[position].toString());
-                                            if(mSavedPostByCurrentUser[position] && singleSnapshot.child("photo_id").getValue(String.class).equals(item.get(position).getPhoto_id())){
+                                            //Log.d("Found ",singleSnapshot.child("photo_id").getValue().toString());
+                                            //Log.d("item",item.get(position).getPhoto_id());
+                                            //Log.d("Saved",mSavedByCurrentUser[position].toString());
+                                            if(mSavedPostByCurrentUser[position] && singleSnapshot.child("photo_id").getValue().toString().equals(item.get(position).getPhoto_id())){
                                                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                                                 builder.setTitle("Xóa lưu trữ bài viết này?");
                                                 builder.setMessage("Bài viết này đã được lưu trước đây");
@@ -557,7 +469,6 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                                                                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                                                 .child(singleSnapshot.getKey())
                                                                 .removeValue();
-                                                        Toast.makeText(context, "Đã xóa lưu bài viết!!",Toast.LENGTH_SHORT).show();
                                                         mSavedPostByCurrentUser[position]=false;
                                                         notifyDataSetChanged();
                                                         dialog.dismiss();
@@ -583,7 +494,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                                                         .child("photo_id")
                                                         .setValue(item.get(position).getPhoto_id());
                                                 mSavedPostByCurrentUser[position]=true;
-                                                Toast.makeText(context, "Đã lưu bài viết!!",Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(context, "Đã lưu bài viết!!",Toast.LENGTH_LONG).show();
                                                 break;
                                             }
                                         }
@@ -596,7 +507,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
                                                     .child("photo_id")
                                                     .setValue(item.get(position).getPhoto_id());
                                             mSavedPostByCurrentUser[position]=true;
-                                            Toast.makeText(context, "Đã lưu bài viết!!",Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(context, "Đã lưu bài viết!!",Toast.LENGTH_LONG).show();
                                         }
                                     }
 

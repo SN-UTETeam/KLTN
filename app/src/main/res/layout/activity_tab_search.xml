@@ -38,12 +38,12 @@
                 <GridView
                     android:layout_width="match_parent"
                     android:id="@+id/grid_search"
-                    android:columnWidth="100dp"
                     android:background="@color/colorWhite"
                     android:horizontalSpacing="1dp"
                     android:verticalSpacing="1dp"
+                    android:stretchMode="columnWidth"
                     android:gravity="center"
-                    android:numColumns="auto_fit"
+                    android:numColumns="3"
                     android:layout_height="wrap_content">
                 </GridView>
         </LinearLayout>

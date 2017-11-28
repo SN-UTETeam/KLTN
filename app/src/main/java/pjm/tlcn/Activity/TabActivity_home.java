@@ -29,6 +29,7 @@ import java.util.Map;
 
 import pjm.tlcn.Adapter.GridViewAdapter;
 import pjm.tlcn.Adapter.ListViewAdapter;
+import pjm.tlcn.Model.Comment;
 import pjm.tlcn.Model.Photo;
 import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
@@ -117,6 +118,17 @@ public class TabActivity_home extends AppCompatActivity {
                         photo.setPhoto_id(objectMap.get("photo_id").toString());
                         photo.setUser_id(objectMap.get("user_id").toString());
                         photo.setDate_created(objectMap.get("date_created").toString());
+                        ArrayList<Comment> comments = new ArrayList<Comment>();
+                        for (DataSnapshot dSnapshot : singleSnapshot
+                                .child("comments").getChildren()){
+                            Comment comment = new Comment();
+                            comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+                            comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+                            comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                            comments.add(comment);
+                        }
+
+                        photo.setComments(comments);
                  //       photo.setImage_path(objectMap.get("image_path").toString());
 
                         lvs.add(photo);

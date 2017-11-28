@@ -3,7 +3,10 @@ package pjm.tlcn.Adapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Parcelable;
+import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -14,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -33,8 +37,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import pjm.tlcn.Activity.Activity_comment;
 import pjm.tlcn.Activity.TabActivity_viewall;
+import pjm.tlcn.Activity.ViewCmt_tabProfile;
 import pjm.tlcn.Activity.ViewLike;
 import pjm.tlcn.Model.Like;
 import pjm.tlcn.Model.Photo;
@@ -60,6 +64,8 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
     private Boolean[] mLikedByCurrentUser;
     private Boolean[] mSavedByCurrentUser;
     private String[] mLikesString;
+
+    public static String photo_id_share_message;
     //
 
 
@@ -145,7 +151,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
 
 
         //click comment show activiity comment
-        viewHolder.comment.setOnClickListener(new View.OnClickListener() {
+      /*  viewHolder.comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //intet activity in adapter
@@ -154,7 +160,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
                // key_img =items.get(position).getId();
             }
         });
-
+*/
 
 
         //GetLike
@@ -295,6 +301,13 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
 
 
         }
+        if(items.get(position).getCaption().length()>0) viewHolder.textView.setText(items.get(position).getCaption());
+        if(items.get(position).getComments().size() > 0){
+            viewHolder.tv_comments_tabpost_main.setVisibility(View.VISIBLE);
+            viewHolder.tv_comments_tabpost_main.setText("Xem " + items.get(position).getComments().size() + " bình luận");
+        }else{
+            viewHolder.tv_comments_tabpost_main.setVisibility(View.GONE);
+        }
 
 
         //Like
@@ -391,6 +404,46 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
                 activity.startActivity(intent);
             }
         });
+        //View Comment
+        viewHolder.comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(activity, ViewCmt_tabProfile.class);
+                intent.putExtra("user_id",items.get(position).getUser_id());
+                intent.putExtra("caption",items.get(position).getCaption());
+                //intent.putExtra("Image_path",item.get(position).getImage_path());
+                Toast.makeText(activity, "hahahaha", Toast.LENGTH_SHORT).show();
+                intent.putExtra("photo_id",items.get(position).getPhoto_id());
+                intent.putParcelableArrayListExtra("ArrayComment", (ArrayList<? extends Parcelable>) items.get(position).getComments());
+                activity.startActivity(intent);
+            }
+        });
+
+        viewHolder.tv_comments_tabpost_main.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(activity, ViewCmt_tabProfile.class);
+                intent.putExtra("user_id",items.get(position).getUser_id());
+                intent.putExtra("caption",items.get(position).getCaption());
+                // intent.putExtra("Image_path",item.get(position).getImage_path());
+                intent.putExtra("photo_id",items.get(position).getPhoto_id());
+                intent.putParcelableArrayListExtra("ArrayComment", (ArrayList<? extends Parcelable>) items.get(position).getComments());
+                activity.startActivity(intent);
+            }
+        });
+
+        //Click Share
+        viewHolder.img_share_main.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                photo_id_share_message=items.get(position).getPhoto_id();
+                Toast.makeText(activity,"Bạn chỉ có thể gửi tin nhắn cho những người bạn đang theo dõi!",Toast.LENGTH_LONG).show();
+                BottomSheetDialogFragment bottomSheetDialogFragment = new CustomBottomSheetDialogFragment();
+                bottomSheetDialogFragment.show(((FragmentActivity)activity).getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
+
+            }
+        });
+
 
 
 
@@ -423,7 +476,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
      * View holder to display each RecylerView item
      */
     protected class ViewHolder extends RecyclerView.ViewHolder {
-        private ImageView view_main,imname,comment;
+        private ImageView view_main,imname,comment,img_share_main;
         private ImageButton image_like;
         private TextView textView,quatity_likes,username,realtime,user_name_img,tv_comments_tabpost_main;
         private ViewPager viewpager_item_main;
@@ -435,7 +488,8 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHo
 
         public ViewHolder(View view) {
             super(view);
-            tv_comments_tabpost_main = (TextView) itemView.findViewById(R.id.tv_comments_tabpost);
+            img_share_main =(ImageView)view.findViewById(R.id.img_share_main);
+            tv_comments_tabpost_main = (TextView) view.findViewById(R.id.tv_comments_tabpost_main);
            view_main = (ImageView) view.findViewById(R.id.view_main);
             viewpager_item_main = (ViewPager)view.findViewById(R.id.viewpager_item_main);
             tab_layout_item_main = (TabLayout) itemView.findViewById(R.id.tab_layout_item_main);

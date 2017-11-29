@@ -3,6 +3,8 @@ package pjm.tlcn.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
@@ -31,6 +33,7 @@ public class TabActivity_search extends AppCompatActivity {
     DatabaseReference uDatabase = FirebaseDatabase.getInstance().getReference();
     private ArrayList<Item_GridPhoto> gridviewArrayPhoto = new ArrayList<Item_GridPhoto>();
     private CustomAdapterSearch customAdapterSearch;
+    RecyclerView recyclerView;
     GridView gridViewSearch;
     ArrayList A = new ArrayList();
     ArrayList B = new ArrayList();
@@ -96,11 +99,6 @@ public class TabActivity_search extends AppCompatActivity {
                                            // photo.setPhoto_id(objectMap.get("photo_id").toString());
                                             photo.setUser_id(objectMap.get("user_id").toString());
                                            photo.setDate_created(objectMap.get("date_created").toString());
-                                           // photo.setImage_path(objectMap.get("Image_path").toString());
-                                           // photo.set
-                                            // Photo temp = new Photo();
-                                            // temp = snop.getValue(Photo.class);
-                                         //   for(i =0;i<key.si)
                                             String photo_id = (objectMap.get("photo_id").toString());
                                             for (int i = 0; i < size; i++) {
                                                 final String key = C.get(i).toString();
@@ -127,7 +125,7 @@ public class TabActivity_search extends AppCompatActivity {
 
                                         }
                                        Collections.reverse(gridviewArrayPhoto);
-                                        customAdapterSearch.notifyDataSetChanged();
+                                        postGrid_adapter.notifyDataSetChanged();
                                     } else {
 
                                     }
@@ -152,12 +150,13 @@ public class TabActivity_search extends AppCompatActivity {
             }
         });
 
-
-
-        gridViewSearch = (GridView) findViewById(R.id.grid_search);
-      //  postGrid_adapter = new PostGrid_Adapter(this,gridviewArrayPhoto);
-        customAdapterSearch = new CustomAdapterSearch(this, gridviewArrayPhoto);
-        gridViewSearch.setAdapter(customAdapterSearch);
+        recyclerView = (RecyclerView) findViewById(R.id.grid_search);
+        GridLayoutManager layoutManager = new GridLayoutManager(this,3,GridLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+      //  gridViewSearch = (GridView) findViewById(R.id.grid_search);
+        postGrid_adapter = new PostGrid_Adapter(this,gridviewArrayPhoto);
+       // customAdapterSearch = new CustomAdapterSearch(this, gridviewArrayPhoto);
+        recyclerView.setAdapter(postGrid_adapter);
     }
 
 }

@@ -15,6 +15,12 @@
             android:id="@+id/item_video_search"
             android:layout_width="match_parent"
             android:layout_height="120dp" />
+       <!-- <cn.jzvd.JZVideoPlayerStandard
+            android:visibility="gone"
+            android:id="@+id/item_video_search"
+            android:layout_width="match_parent"
+            android:layout_height="120dp" />-->
+
 
 
 </LinearLayout>

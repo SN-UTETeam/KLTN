@@ -19,7 +19,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -29,7 +28,9 @@ import java.util.Map;
 
 import pjm.tlcn.Adapter.GridViewAdapter;
 import pjm.tlcn.Adapter.ListViewAdapter;
+import pjm.tlcn.Adapter.RecyclerView_TabPost;
 import pjm.tlcn.Model.Comment;
+import pjm.tlcn.Model.Follow;
 import pjm.tlcn.Model.Photo;
 import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
@@ -42,15 +43,18 @@ public class TabActivity_home extends AppCompatActivity {
     private ArrayList<Photo> lvs;
     private RecyclerView listView;
     private RecyclerView gridView;
+    private RecyclerView_TabPost recyclerView_tabPost;
     private ListViewAdapter listViewAdapter;
     private GridViewAdapter gridViewAdapter;
     private FirebaseAuth mAuth;
     public static String id_image="";
+    String keyfollow ="";
     ////
     ListView lv;
     GridView gv;
     TextView tvfont,tvall;
     Button follow;
+    ArrayList A = new ArrayList();
     DatabaseReference uDatabase= FirebaseDatabase.getInstance().getReference();
 
 
@@ -86,8 +90,8 @@ public class TabActivity_home extends AppCompatActivity {
         //set layout manager and adapter for "ListView"
         LinearLayoutManager horizontalManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         listView.setLayoutManager(horizontalManager);
-       listViewAdapter = new ListViewAdapter(this, lvs);
-        listView.setAdapter(listViewAdapter);
+       recyclerView_tabPost = new RecyclerView_TabPost(lvs);
+        listView.setAdapter(recyclerView_tabPost);
 
 //        //set layout manager and adapter for "GridView"
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
@@ -103,7 +107,81 @@ public class TabActivity_home extends AppCompatActivity {
       //  String tamp =[user_id];
         lvs =new ArrayList<>();
 
-        //Loadadta
+
+        uDatabase.child("following").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                A.clear();
+                for (DataSnapshot snop : dataSnapshot.getChildren()) {
+                    //Log.d("Found B",snop.getValue(Follow.class).getUser_id());
+                 A.add(snop.getValue(Follow.class).getUser_id()) ;
+                }
+                final   int size = A.size();
+               // Query query = uDatabase.child("photos").orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                uDatabase.child("photos").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.getValue()!=null){
+                            lvs.clear();
+                            for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+                                Photo photo = new Photo();
+                                Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+
+                                photo.setCaption(objectMap.get("caption").toString());
+                                photo.setPhoto_id(objectMap.get("photo_id").toString());
+                                photo.setUser_id(objectMap.get("user_id").toString());
+                                photo.setDate_created(objectMap.get("date_created").toString());
+                                ArrayList<Comment> comments = new ArrayList<Comment>();
+                                for (DataSnapshot dSnapshot : singleSnapshot
+                                        .child("comments").getChildren()){
+                                    Comment comment = new Comment();
+                                    comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+                                    comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+                                    comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                                    comments.add(comment);
+                                }
+                                Log.d("keyuser",photo.getUser_id());
+                                photo.setComments(comments);
+                                for (int i = 0; i < size; i++) {
+                                    final String key = A.get(i).toString();
+                                    Log.d("khong biet",key);
+                                    if ((key.equals(photo.getUser_id())||(photo.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())))) {
+                                        lvs.add(photo);
+                                    }
+                                }
+
+
+                                //       photo.setImage_path(objectMap.get("image_path").toString());
+
+
+                            }
+                            Collections.reverse(lvs);
+                            recyclerView_tabPost.notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+
+
+
+
+
+       /* //Loadadta
         Query query = uDatabase.child("photos").orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -134,7 +212,7 @@ public class TabActivity_home extends AppCompatActivity {
                         lvs.add(photo);
                     }
                     Collections.reverse(lvs);
-                    listViewAdapter.notifyDataSetChanged();
+                    recyclerView_tabPost.notifyDataSetChanged();
                 }
             }
 
@@ -142,7 +220,7 @@ public class TabActivity_home extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        });*/
         uDatabase.child("Users").addValueEventListener(new ValueEventListener() {
 
             @Override

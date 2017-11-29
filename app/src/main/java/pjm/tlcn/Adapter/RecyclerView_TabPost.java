@@ -658,7 +658,7 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
             @Override
             public void onClick(View v) {
                 photo_id_share_message=item.get(position).getPhoto_id();
-                Toast.makeText(context,"Bạn chỉ có thể gửi tin nhắn cho những người bạn đang theo dõi!",Toast.LENGTH_LONG).show();
+                //Toast.makeText(context,"Bạn chỉ có thể gửi tin nhắn cho những người bạn đang theo dõi!",Toast.LENGTH_SHORT).show();
                 BottomSheetDialogFragment bottomSheetDialogFragment = new CustomBottomSheetDialogFragment();
                 bottomSheetDialogFragment.show(((FragmentActivity)context).getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
 

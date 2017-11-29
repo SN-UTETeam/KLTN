@@ -134,8 +134,10 @@ public class CustomBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
                 for(int i=0;i<sendmesage.size();i++) {
                     //Find room_id
+                    Log.d("Found",sendmesage.get(i).getUser_id());
                     dialog.show();
                     final User user_send = sendmesage.get(i);
+                    final int check = i;
                     databaseRef.child("Chat")
                             .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                             .child(sendmesage.get(i).getUser_id()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -153,9 +155,12 @@ public class CustomBottomSheetDialogFragment extends BottomSheetDialogFragment {
                                 message.setUser_avatar(user.getAvatarurl());
                                 message.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 databaseReference.push().setValue(message);
-                                dialog.dismiss();
-                                Toast.makeText(getContext(),"Gửi thành công",Toast.LENGTH_SHORT).show();
-                                dismiss();
+                                if(check>=sendmesage.size()){
+                                    sendmesage.clear();
+                                    dialog.dismiss();
+                                    Toast.makeText(getContext(),"Gửi thành công",Toast.LENGTH_SHORT).show();
+                                    dismiss();
+                                }
                             }
                             else {
                                 //Create room chat
@@ -184,9 +189,12 @@ public class CustomBottomSheetDialogFragment extends BottomSheetDialogFragment {
                                 message.setUser_avatar(user.getAvatarurl());
                                 message.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 databaseReference.push().setValue(message);
-                                dialog.dismiss();
-                                Toast.makeText(getContext(),"Gửi thành công",Toast.LENGTH_SHORT).show();
-                                dismiss();
+                                if(check>=sendmesage.size()){
+                                    sendmesage.clear();
+                                    dialog.dismiss();
+                                    Toast.makeText(getContext(),"Gửi thành công",Toast.LENGTH_SHORT).show();
+                                    dismiss();
+                                }
                             }
 
                         }
@@ -198,6 +206,8 @@ public class CustomBottomSheetDialogFragment extends BottomSheetDialogFragment {
                     });
 
                     if(i>=sendmesage.size()){
+                        Log.d(i+"",sendmesage.size()+"");
+                        sendmesage.clear();
                         dialog.dismiss();
                         Toast.makeText(getContext(),"Gửi thành công",Toast.LENGTH_SHORT).show();
                         dismiss();
@@ -206,8 +216,8 @@ public class CustomBottomSheetDialogFragment extends BottomSheetDialogFragment {
                         dialog.show();
 
                 }
-                Toast.makeText(getContext(),"Gửi thành công",Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
+                dismiss();
 
             }
         });
@@ -238,6 +248,7 @@ public class CustomBottomSheetDialogFragment extends BottomSheetDialogFragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         arrayUser.clear();
+                        sendmesage.clear();
                         for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()) {
 
                             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();

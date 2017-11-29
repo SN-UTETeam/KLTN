@@ -87,24 +87,8 @@ public class TabActivity_home extends AppCompatActivity {
         listView.setHasFixedSize(true);
         gridView.setHasFixedSize(true);
         setDATA();
-        //set layout manager and adapter for "ListView"
-        LinearLayoutManager horizontalManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        listView.setLayoutManager(horizontalManager);
-       recyclerView_tabPost = new RecyclerView_TabPost(lvs);
-        listView.setAdapter(recyclerView_tabPost);
-
-//        //set layout manager and adapter for "GridView"
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
-       gridView.setLayoutManager(layoutManager);
-        gridViewAdapter = new GridViewAdapter(this, gr);
-        gridView.setAdapter(gridViewAdapter);
-    }
-
-    void setDATA()
-    {
 
 
-      //  String tamp =[user_id];
         lvs =new ArrayList<>();
 
 
@@ -114,11 +98,11 @@ public class TabActivity_home extends AppCompatActivity {
                 A.clear();
                 for (DataSnapshot snop : dataSnapshot.getChildren()) {
                     //Log.d("Found B",snop.getValue(Follow.class).getUser_id());
-                 A.add(snop.getValue(Follow.class).getUser_id()) ;
+                    A.add(snop.getValue(Follow.class).getUser_id()) ;
                 }
                 final   int size = A.size();
-               // Query query = uDatabase.child("photos").orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                uDatabase.child("photos").addListenerForSingleValueEvent(new ValueEventListener() {
+                // Query query = uDatabase.child("photos").orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                uDatabase.child("photos").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if(dataSnapshot.getValue()!=null){
@@ -180,6 +164,29 @@ public class TabActivity_home extends AppCompatActivity {
 
 
 
+
+
+
+
+
+
+
+
+        //set layout manager and adapter for "ListView"
+        LinearLayoutManager horizontalManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        listView.setLayoutManager(horizontalManager);
+       recyclerView_tabPost = new RecyclerView_TabPost(lvs);
+        listView.setAdapter(recyclerView_tabPost);
+
+//        //set layout manager and adapter for "GridView"
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+       gridView.setLayoutManager(layoutManager);
+        gridViewAdapter = new GridViewAdapter(this, gr);
+        gridView.setAdapter(gridViewAdapter);
+    }
+
+    void setDATA()
+    {
 
        /* //Loadadta
         Query query = uDatabase.child("photos").orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());

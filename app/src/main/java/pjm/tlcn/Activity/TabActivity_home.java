@@ -38,8 +38,8 @@ import pjm.tlcn.R;
 
 public class TabActivity_home extends AppCompatActivity {
 
-   // private ArrayList<RecyclerViewItem> corporations;
-    private ArrayList<User> gr=new ArrayList<User>();
+    // private ArrayList<RecyclerViewItem> corporations;
+    private ArrayList<User> gr = new ArrayList<User>();
     private ArrayList<Photo> lvs;
     private RecyclerView listView;
     private RecyclerView gridView;
@@ -47,38 +47,35 @@ public class TabActivity_home extends AppCompatActivity {
     private ListViewAdapter listViewAdapter;
     private GridViewAdapter gridViewAdapter;
     private FirebaseAuth mAuth;
-    public static String id_image="";
-    String keyfollow ="";
+    public static String id_image = "";
+    String keyfollow = "";
     ////
     ListView lv;
     GridView gv;
-    TextView tvfont,tvall;
+    TextView tvfont, tvall;
     Button follow;
     ArrayList A = new ArrayList();
-    DatabaseReference uDatabase= FirebaseDatabase.getInstance().getReference();
+    DatabaseReference uDatabase = FirebaseDatabase.getInstance().getReference();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_home);
-        tvfont = (TextView)findViewById(R.id.font);
+        tvfont = (TextView) findViewById(R.id.font);
         // khai báo và add kiểu font bạn cần
         Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/SNAP____.TTF");
         //add kiểu font vào textview font
         tvfont.setTypeface(typeface);
         ////
-         tvall = (TextView) findViewById(R.id.idviewall);
-         tvall.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-                 Intent intent = new Intent(getApplicationContext(), TabActivity_viewall.class);
-                 startActivity(intent);
-             }
-         });
-
-
-
+        tvall = (TextView) findViewById(R.id.idviewall);
+        tvall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), TabActivity_viewall.class);
+                startActivity(intent);
+            }
+        });
 
 
         listView = (RecyclerView) findViewById(R.id.list);
@@ -89,7 +86,7 @@ public class TabActivity_home extends AppCompatActivity {
         setDATA();
 
 
-        lvs =new ArrayList<>();
+        lvs = new ArrayList<>();
 
 
         uDatabase.child("following").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
@@ -98,16 +95,17 @@ public class TabActivity_home extends AppCompatActivity {
                 A.clear();
                 for (DataSnapshot snop : dataSnapshot.getChildren()) {
                     //Log.d("Found B",snop.getValue(Follow.class).getUser_id());
-                    A.add(snop.getValue(Follow.class).getUser_id()) ;
+                    A.add(snop.getValue(Follow.class).getUser_id());
                 }
-                final   int size = A.size();
+                A.add(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                final int size = A.size();
                 // Query query = uDatabase.child("photos").orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 uDatabase.child("photos").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.getValue()!=null){
+                        if (dataSnapshot.getValue() != null) {
                             lvs.clear();
-                            for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+                            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                                 Photo photo = new Photo();
                                 Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
 
@@ -117,29 +115,28 @@ public class TabActivity_home extends AppCompatActivity {
                                 photo.setDate_created(objectMap.get("date_created").toString());
                                 ArrayList<Comment> comments = new ArrayList<Comment>();
                                 for (DataSnapshot dSnapshot : singleSnapshot
-                                        .child("comments").getChildren()){
+                                        .child("comments").getChildren()) {
                                     Comment comment = new Comment();
                                     comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
                                     comment.setComment(dSnapshot.getValue(Comment.class).getComment());
                                     comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
                                     comments.add(comment);
                                 }
-                                Log.d("keyuser",photo.getUser_id());
                                 photo.setComments(comments);
                                 for (int i = 0; i < size; i++) {
                                     final String key = A.get(i).toString();
-                                    Log.d("khong biet",key);
-                                    if ((key.equals(photo.getUser_id())||(photo.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())))) {
+                                    if ((key.equals(photo.getUser_id()) )) {
                                         lvs.add(photo);
                                     }
                                 }
 
-
-                                //       photo.setImage_path(objectMap.get("image_path").toString());
-
-
                             }
                             Collections.reverse(lvs);
+                            int a = lvs.size();
+                            for(int i=0;i<a;i++){
+                                String test = lvs.get(i).toString();
+                                Log.d("itemphoto",test);
+                            }
                             recyclerView_tabPost.notifyDataSetChanged();
                         }
                     }
@@ -158,76 +155,21 @@ public class TabActivity_home extends AppCompatActivity {
             }
         });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         //set layout manager and adapter for "ListView"
         LinearLayoutManager horizontalManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         listView.setLayoutManager(horizontalManager);
-       recyclerView_tabPost = new RecyclerView_TabPost(lvs);
+        recyclerView_tabPost = new RecyclerView_TabPost(lvs);
         listView.setAdapter(recyclerView_tabPost);
 
 //        //set layout manager and adapter for "GridView"
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
-       gridView.setLayoutManager(layoutManager);
+        gridView.setLayoutManager(layoutManager);
         gridViewAdapter = new GridViewAdapter(this, gr);
         gridView.setAdapter(gridViewAdapter);
     }
 
-    void setDATA()
-    {
+    void setDATA() {
 
-       /* //Loadadta
-        Query query = uDatabase.child("photos").orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue()!=null){
-                    lvs.clear();
-                    for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
-                        Photo photo = new Photo();
-                        Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-
-                        photo.setCaption(objectMap.get("caption").toString());
-                        photo.setPhoto_id(objectMap.get("photo_id").toString());
-                        photo.setUser_id(objectMap.get("user_id").toString());
-                        photo.setDate_created(objectMap.get("date_created").toString());
-                        ArrayList<Comment> comments = new ArrayList<Comment>();
-                        for (DataSnapshot dSnapshot : singleSnapshot
-                                .child("comments").getChildren()){
-                            Comment comment = new Comment();
-                            comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                            comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                            comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-                            comments.add(comment);
-                        }
-
-                        photo.setComments(comments);
-                 //       photo.setImage_path(objectMap.get("image_path").toString());
-
-                        lvs.add(photo);
-                    }
-                    Collections.reverse(lvs);
-                    recyclerView_tabPost.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
         uDatabase.child("Users").addValueEventListener(new ValueEventListener() {
 
             @Override
@@ -240,19 +182,15 @@ public class TabActivity_home extends AppCompatActivity {
                         String use = snop.getKey();
                         User temp = new User();
                         temp = snop.getValue(User.class);
-                        Log.d("AAA", temp.getUsername());
                         gr.add(temp);
                         gridViewAdapter.notifyDataSetChanged();
-
                     }
                 } else {
                     Log.d("AAA", "NUL");
                 }
-
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
     }

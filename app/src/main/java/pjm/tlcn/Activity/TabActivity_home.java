@@ -151,7 +151,7 @@ public class TabActivity_home extends AppCompatActivity {
                 }
                 A.add(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 //  final int size = A.size();
-                final Query query1 = uDatabase.child("photos").orderByKey().endAt(keyPhoto).limitToLast(size + 6);
+                final Query query1 = uDatabase.child("photos").orderByKey().endAt(keyPhoto).limitToLast(size+6);
                 query1.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -162,6 +162,7 @@ public class TabActivity_home extends AppCompatActivity {
                             for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                                 Photo photo = new Photo();
                                 Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+                                keyPhoto = objectMap.get("photo_id").toString();
 
                                 //  final String key = A.get(i).toString();
                                 if (A.contains(objectMap.get("user_id").toString())) {
@@ -173,9 +174,9 @@ public class TabActivity_home extends AppCompatActivity {
                                     if (objectMap.get("photo_id").toString().equals(lvs.get(lvs.size() - 1).getPhoto_id()))
                                         break;
                                     Log.d("Found", objectMap.get("photo_id").toString());
-                                    if (i == 0) {
-                                        keyPhoto = objectMap.get("photo_id").toString();
-                                    }
+
+
+
                                     photo.setCaption(objectMap.get("caption").toString());
                                     photo.setPhoto_id(objectMap.get("photo_id").toString());
                                     photo.setUser_id(objectMap.get("user_id").toString());
@@ -248,6 +249,7 @@ public class TabActivity_home extends AppCompatActivity {
                             for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                                 Photo photo = new Photo();
                                 Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+                                keyPhoto = objectMap.get("photo_id").toString();
                                 //  final String key = A.get(i).toString();
                                 if (A.contains(objectMap.get("user_id").toString())) {
                                     if (i >= 6) {
@@ -256,10 +258,10 @@ public class TabActivity_home extends AppCompatActivity {
                                     }
                                     i++;
                                     Log.d("Found", objectMap.get("photo_id").toString());
-                                    if (i == 1) {
-                                        keyPhoto = objectMap.get("photo_id").toString();
+
+
                                         Log.d("Log key phto",keyPhoto);
-                                    }
+
                                     photo.setCaption(objectMap.get("caption").toString());
                                     photo.setPhoto_id(objectMap.get("photo_id").toString());
                                     photo.setUser_id(objectMap.get("user_id").toString());

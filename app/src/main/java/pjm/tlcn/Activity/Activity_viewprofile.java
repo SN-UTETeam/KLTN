@@ -35,7 +35,7 @@ import pjm.tlcn.R;
 public class Activity_viewprofile extends AppCompatActivity {
 
     public DatabaseReference uDatabase;
-    private TextView tv_ViewUserName;
+    private TextView tv_ViewUserName,tv_baiviet,tv_following,tv_follower;
     private Button bt_follow_user;
     private Button Img_nhantin;
     private ImageView img_view_avatar_user;
@@ -43,6 +43,11 @@ public class Activity_viewprofile extends AppCompatActivity {
     private ViewPager viewPager;
     private Toolbar toolbar_viewprofile;
     private Boolean mFollowdByCurrentUser = false;
+    private int mFollowersCount = 0;
+    private int mFollowingCount = 0;
+    private int mPostsCount = 0;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +71,9 @@ public class Activity_viewprofile extends AppCompatActivity {
         img_view_avatar_user = (ImageView) findViewById(R.id.id_view_image_user);
         bt_follow_user = (Button) findViewById(R.id.btn_follow_user);
         Img_nhantin = (Button) findViewById(R.id.imge_nhantin);
+        tv_baiviet =(TextView)findViewById(R.id.tv_view_item) ;
+        tv_follower =(TextView)findViewById(R.id.tv_view_follower);
+        tv_following =(TextView)findViewById(R.id.tv_view_following);
        /* image_back =(ImageButton) findViewById(R.id.bt_img_back);
         image_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +81,10 @@ public class Activity_viewprofile extends AppCompatActivity {
                 finish();
             }
         });*/
+        //Set UserProfile
+        getPostsCount();
+        getFollowersCount();
+        getFollowingCount();
 
 
         viewPager = (ViewPager) findViewById(R.id.materialup_viewpager_view);
@@ -81,7 +93,6 @@ public class Activity_viewprofile extends AppCompatActivity {
         viewPager.setAdapter(new Activity_viewprofile.TabsAdapter(getSupportFragmentManager()));
         tabLayout.setupWithViewPager(viewPager);
         //End Create Tabhost
-
         //get key tu ben adapter
         Intent intent = getIntent();
         final String key = intent.getStringExtra("send");
@@ -233,7 +244,109 @@ public class Activity_viewprofile extends AppCompatActivity {
             }
         });
 
+        //View Followers
+        tv_follower.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Activity_viewprofile.this,ViewFollow.class);
+                intent.putExtra("view","followers");
+                intent.putExtra("user_id",key);
+                startActivity(intent);
+            }
+        });
 
+        //View Saved
+        tv_following.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Activity_viewprofile.this,ViewFollow.class);
+                intent.putExtra("view","following");
+                intent.putExtra("user_id",key);
+                startActivity(intent);
+            }
+        });
+
+
+    }
+    //getFollowersCount
+    private void getFollowersCount(){
+
+        //get key tu ben adapter
+        Intent intent = getIntent();
+        final String key = intent.getStringExtra("send");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference.child("followers")
+                .child(key);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mFollowersCount = 0;
+                for(DataSnapshot singleSnapshot :  dataSnapshot.getChildren()){
+                    //Log.d(TAG, "onDataChange: found follower:" + singleSnapshot.getValue());
+                    mFollowersCount++;
+                }
+                tv_follower.setText(String.valueOf(mFollowersCount));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+    //View Followers
+
+    //getFollowingCount
+    private void getFollowingCount(){
+        mFollowingCount = 0;
+        //get key tu ben adapter
+        Intent intent = getIntent();
+        final String key = intent.getStringExtra("send");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference.child("following")
+                .child(key);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mFollowingCount = 0;
+                for(DataSnapshot singleSnapshot :  dataSnapshot.getChildren()){
+                    //Log.d(TAG, "onDataChange: found following user:" + singleSnapshot.getValue());
+                    mFollowingCount++;
+                }
+                tv_following.setText(String.valueOf(mFollowingCount));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getPostsCount(){
+        mPostsCount = 0;
+        //get key tu ben adapter
+        Intent intent = getIntent();
+        final String key = intent.getStringExtra("send");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference.child("photos")
+                .orderByChild("user_id").equalTo(key);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mPostsCount = 0;
+                for(DataSnapshot singleSnapshot :  dataSnapshot.getChildren()){
+                    //Log.d(TAG, "onDataChange: found post:" + singleSnapshot.getValue());
+                    mPostsCount++;
+                }
+                tv_baiviet.setText(String.valueOf(mPostsCount));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private static class TabsAdapter extends FragmentPagerAdapter {

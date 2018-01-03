@@ -202,19 +202,40 @@ public class Login extends AppCompatActivity {
                             Log.d(TAG, "signInWithCredential:success");
                             firebaseUser=mAuth.getCurrentUser();
                             user_id=firebaseUser.getUid();
-                            user = new User(firebaseUser.getUid()+"",
-                                                    firebaseUser.getDisplayName()+"",
-                                                    firebaseUser.getEmail()+"",
-                                                    firebaseUser.getUid()+"",
-                                                    firebaseUser.getPhoneNumber()+"",
-                                                    "No Describer",
-                                                    firebaseUser.getPhotoUrl().toString()+"");
-                            mDatabase.child("users").child(firebaseUser.getUid()).setValue(user);
-                            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                            dialog.dismiss();
-                            startActivity(intent);
-                            finish();
-                            //updateUI(user);
+                            //Check existing user
+                            mDatabase.child("users").child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.getValue() !=null){
+                                        User getU = dataSnapshot.getValue(User.class);
+                                        user = getU;
+                                        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                                        dialog.dismiss();
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                    else {
+                                        user = new User(firebaseUser.getUid()+"",
+                                                firebaseUser.getDisplayName()+"",
+                                                firebaseUser.getEmail()+"",
+                                                firebaseUser.getUid()+"",
+                                                firebaseUser.getPhoneNumber()+"",
+                                                "No Describer",
+                                                firebaseUser.getPhotoUrl().toString()+"");
+                                        mDatabase.child("users").child(firebaseUser.getUid()).setValue(user);
+                                        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                                        dialog.dismiss();
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
                         } else {
                             // If sign in fails, display a message to the user.
                             //Log.w(TAG, "signInWithCredential:failure", task.getException());

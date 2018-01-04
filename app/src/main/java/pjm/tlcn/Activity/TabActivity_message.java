@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -82,6 +83,7 @@ private EditText edt_search_tabmessage;
                     pjm.tlcn.Model.Chat chat = singleSnapshot.getValue(pjm.tlcn.Model.Chat.class);
                     arrayChat.add(chat);
                     listViewUserMessage.notifyDataSetChanged();
+
                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("users").child(chat.getUser_id());
 
                     reference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -89,7 +91,7 @@ private EditText edt_search_tabmessage;
                         public void onDataChange(DataSnapshot dataSnapshot) {
                                 User user = dataSnapshot.getValue(User.class);
                                 arrayUser.add(user);
-                                listViewUserMessage.notifyDataSetChanged();
+                            listViewUserMessage.notifyDataSetChanged();
                         }
 
                         @Override
@@ -98,7 +100,7 @@ private EditText edt_search_tabmessage;
                         }
                     });
                 }
-
+                listViewUserMessage.notifyDataSetChanged();
             }
 
             @Override
@@ -110,15 +112,22 @@ private EditText edt_search_tabmessage;
         listview_user_message.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        String room_id="";
                 Intent intent = new Intent(TabActivity_message.this,Chat.class);
+
                 intent.putExtra("username",arrayUser.get(position).getUsername());
                 intent.putExtra("user_avatar",arrayUser.get(position).getAvatarurl());
-                intent.putExtra("room_id",arrayChat.get(position).getRoom_id());
-                intent.putExtra("user_id",arrayChat.get(position).getUser_id());
-//                Log.d("username",arrayUser.get(position).getUsername());
-//                Log.d("user_avatar",arrayUser.get(position).getAvatarurl());
-//                Log.d("room_id",arrayChat.get(position).getRoom_id());
-//                Log.d("user_id",arrayChat.get(position).getUser_id());
+                intent.putExtra("user_id",arrayUser.get(position).getUser_id());
+                for(int i=0;i<arrayChat.size();i++){
+                    if(arrayUser.get(position).getUser_id().equals(arrayChat.get(i).getUser_id())){
+                        room_id=arrayChat.get(i).getRoom_id();
+                        break;
+                    }
+                }
+
+                intent.putExtra("room_id",room_id);
+
+
                 startActivity(intent);
             }
         });

@@ -489,27 +489,34 @@ public class RecyclerView_TabPost extends RecyclerView.Adapter<RecyclerView_TabP
 
                         switch (menuitem.getItemId()){
                             case R.id.delete_post:{
-                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                builder.setTitle("Xóa bài viết này!");
-                                builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
+                                if(item.get(position).getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                    builder.setTitle("Xóa bài viết này!");
+                                    builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
 
-                                        Toast.makeText(context, "Đã xóa bài viết!!",Toast.LENGTH_LONG).show();
-                                        databaseRef.child("photos").child(item.get(position).getPhoto_id()).removeValue();
-                                        item.remove(item.get(position));
-                                        notifyDataSetChanged();
-                                        dialog.dismiss();
+                                            Toast.makeText(context, "Đã xóa bài viết!!", Toast.LENGTH_LONG).show();
+                                            databaseRef.child("photos").child(item.get(position).getPhoto_id()).removeValue();
+                                            item.remove(item.get(position));
+                                            notifyDataSetChanged();
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            //Toast.makeText(context, "CLick Cancel!!",Toast.LENGTH_LONG).show();
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    AlertDialog dialog = builder.create();
+                                    dialog.show();
+                                    return true;
+                                }
+                                else {
+                                        Toast.makeText(context, "You don't have permission!", Toast.LENGTH_SHORT).show();
+                                        return true;
                                     }
-                                });
-                                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        //Toast.makeText(context, "CLick Cancel!!",Toast.LENGTH_LONG).show();
-                                        dialog.dismiss();
-                                    }
-                                });
-                                AlertDialog dialog = builder.create();
-                                dialog.show();
-                                return true;
+
                             }
                             case R.id.save_post: {
                                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference();

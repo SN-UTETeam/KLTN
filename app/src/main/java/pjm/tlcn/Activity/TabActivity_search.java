@@ -73,9 +73,7 @@ public class TabActivity_search extends AppCompatActivity {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 loadmoreData(postGrid_adapter.getItemCount());
-
-
-              postGrid_adapter.notifyDataSetChanged();
+                 //postGrid_adapter.notifyDataSetChanged();
             }
         };
         recyclerView.addOnScrollListener(scrollListener);
@@ -110,9 +108,7 @@ public class TabActivity_search extends AppCompatActivity {
                         C.addAll(A);
                         //    C.addAll(B);
                         C.remove(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                        for (int i=0;i<C.size();i++){
-                            Log.d("mang C",C.get(i).toString());
-                        }
+
                       //  final int size = C.size();
                         //  DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                         final Query query = uDatabase.child("photos").orderByKey().endAt(keyPhoto).limitToLast(site+6);
@@ -142,7 +138,7 @@ public class TabActivity_search extends AppCompatActivity {
                                                 break;
                                             }
                                             i++;
-                                            Log.d("erro", objectMap.get("photo_id").toString());
+                                            //Log.d("erro", objectMap.get("photo_id").toString());
 
                                             for (DataSnapshot dSnapshot : snop
                                                     .child("image_path").getChildren()) {
@@ -151,15 +147,14 @@ public class TabActivity_search extends AppCompatActivity {
                                                 item_gridPhoto.setPhoto_id(photo_id);
                                                 item_gridPhoto.setPath(path);
                                                 gridviewArrayPhoto.add(item_gridPhoto);
-                                                Log.d("idphoto", path);
+                                                postGrid_adapter.notifyDataSetChanged();
+                                                //Log.d("idphoto", path);
                                             }
                                         }
 
                                     }
                                     Collections.reverse(gridviewArrayPhoto);
                                     postGrid_adapter.notifyDataSetChanged();
-                                } else {
-
                                 }
 
                             }
@@ -251,15 +246,13 @@ public class TabActivity_search extends AppCompatActivity {
                                                 item_gridPhoto.setPhoto_id(photo_id);
                                                 item_gridPhoto.setPath(path);
                                                 gridviewArrayPhoto.add(item_gridPhoto);
-                                                Log.d("idphoto", path);
+                                               // Log.d("idphoto", path);
                                             }
                                         }
 
                                     }
                                     Collections.reverse(gridviewArrayPhoto);
                                     postGrid_adapter.notifyDataSetChanged();
-                                } else {
-
                                 }
 
                             }

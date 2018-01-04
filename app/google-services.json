@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "603608822223-lucmj53ktd8hnfij39erohmkv8qicm84.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pjm.tlcn",
+            "certificate_hash": "8d194c3dc67e68b1b79c36b0f1059024bc3d6db3"
+          }
+        },
+        {
           "client_id": "603608822223-1n99ktlju8fj8midqi0qck79ph6rjimq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

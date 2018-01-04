@@ -350,7 +350,7 @@ public class Activity_viewprofile extends AppCompatActivity {
     }
 
     private static class TabsAdapter extends FragmentPagerAdapter {
-        private static final int TAB_COUNT = 3;
+        private static final int TAB_COUNT = 1;
 
         TabsAdapter(FragmentManager fm) {
             super(fm);
@@ -365,11 +365,13 @@ public class Activity_viewprofile extends AppCompatActivity {
         public Fragment getItem(int i) {
             if (i == 0) {
                 return new View_ProfilePost();
-            } else if (i == 1) {
-                return new NoPermission();
-            } else if (i == 2) {
-                return new NoPermission();
-            } else {
+            }
+//            } else if (i == 1) {
+//                return new NoPermission();
+//            } else if (i == 2) {
+//                return new NoPermission();
+//            }
+            else {
                 return new View_ProfilePost();
             }
         }
@@ -379,12 +381,12 @@ public class Activity_viewprofile extends AppCompatActivity {
             switch (position) {
                 case 0:
                     return "Bài viết";
-                case 1:
-                    return "Đã thích";
-                case 2:
-                    return "Đang theo dõi";
+//                case 1:
+//                    return "Đã thích";
+//                case 2:
+//                    return "Đã lưu";
                 default:
-                    return null;
+                    return "Bài viết";
             }
         }
     }

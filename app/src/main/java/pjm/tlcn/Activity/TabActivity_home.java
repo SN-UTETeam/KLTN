@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -50,6 +51,7 @@ public class TabActivity_home extends AppCompatActivity {
     private GridViewAdapter gridViewAdapter;
     private FirebaseAuth mAuth;
     public static String id_image = "";
+    private SwipeRefreshLayout swipe_home;
     String keyPhoto = "";
     ////
     ListView lv;
@@ -72,15 +74,6 @@ public class TabActivity_home extends AppCompatActivity {
         //add kiểu font vào textview font
         tvfont.setTypeface(typeface);
         ////
-        tvall = (TextView) findViewById(R.id.idviewall);
-        tvall.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), TabActivity_viewall.class);
-                startActivity(intent);
-            }
-        });
-
 
         recyclerView = (RecyclerView) findViewById(R.id.list);
         //   gridView = (RecyclerView) findViewById(R.id.grid);
@@ -90,48 +83,29 @@ public class TabActivity_home extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView_tabPost = new RecyclerView_TabPost(lvs);
         recyclerView.setAdapter(recyclerView_tabPost);
-        //  gridView.setHasFixedSize(true);
-        // setDATA();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-        lvs.clear();
-
-
-        //recyclerView_tabPost.notifyDataSetChanged();
-
-        //set layout manager and adapter for "ListView"
-
+        loadData();
 
         scrollListener = new EndlessRecyclerViewScrollListener(horizontalManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 loadmoreData(recyclerView_tabPost.getItemCount());
-
-                //recyclerView_tabPost.notifyDataSetChanged();
-                Handler handler = new Handler();
-
-                final Runnable r = new Runnable() {
-                    public void run() {
-                        recyclerView_tabPost.notifyItemInserted(lvs.size() - 1);
-                    }
-                };
-
-                handler.post(r);
             }
         };
         recyclerView.addOnScrollListener(scrollListener);
+
+        //Swipe to reload
+        swipe_home = (SwipeRefreshLayout) findViewById(R.id.swipe_home);
+        swipe_home.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipe_home.setRefreshing(false);
+                lvs.clear();
+                loadData();
+                recyclerView_tabPost.notifyDataSetChanged();
+            }
+        });
+
     }
 
 
@@ -141,6 +115,7 @@ public class TabActivity_home extends AppCompatActivity {
     }*/
 
     public void loadmoreData(final int size) {
+        Log.d("Loadmore","");
         uDatabase.child("following").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -223,10 +198,10 @@ public class TabActivity_home extends AppCompatActivity {
 
 
     }
-    protected void onStart() {
+    public void loadData(){
         super.onStart();
 
-           lvs.clear();
+        lvs.clear();
         uDatabase.child("following").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -260,7 +235,7 @@ public class TabActivity_home extends AppCompatActivity {
                                     Log.d("Found", objectMap.get("photo_id").toString());
 
 
-                                        Log.d("Log key phto",keyPhoto);
+                                    Log.d("Log key phto",keyPhoto);
 
                                     photo.setCaption(objectMap.get("caption").toString());
                                     photo.setPhoto_id(objectMap.get("photo_id").toString());
@@ -306,17 +281,7 @@ public class TabActivity_home extends AppCompatActivity {
 
             }
         });
-
         recyclerView_tabPost.notifyDataSetChanged();
-
-
-
-
     }
-
-
-
-
-
 
 }

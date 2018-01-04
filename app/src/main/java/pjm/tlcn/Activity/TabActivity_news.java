@@ -31,6 +31,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ public class TabActivity_news extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST_CAMERA:
                 Log.d("TabActivity_news", "onRequestPermissionsResult: called");
-                if (grantResults.length > 0
+                if(grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 }
@@ -92,7 +93,7 @@ public class TabActivity_news extends AppCompatActivity {
 
         //xu ly su kien khi chon duoc anh
 
-
+        btnext.setTextColor(Color.BLUE);
         btnext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,10 +103,20 @@ public class TabActivity_news extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), Activity_share_image.class);
                     startActivityForResult(intent, REQUEST_DONE);
                 }
+                else {
+                    Toast.makeText(TabActivity_news.this, "You must choose a picture!", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
-        btnext.setTextColor(Color.BLUE);
+        btcancel.setTextColor(Color.BLUE);
+        btcancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity mainActivity = (MainActivity) getParent();
+                mainActivity.setCurrentTab(0);
+            }
+        });
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CAMERA);

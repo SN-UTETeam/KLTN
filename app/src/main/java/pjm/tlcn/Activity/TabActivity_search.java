@@ -2,6 +2,7 @@ package pjm.tlcn.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -39,9 +40,10 @@ public class TabActivity_search extends AppCompatActivity {
     GridView gridViewSearch;
     ArrayList A = new ArrayList();
     ArrayList B = new ArrayList();
-    ArrayList<String> C = new ArrayList<>();
+    private ArrayList<String> C = new ArrayList<>();
     private String keyPhoto = "";
     private EndlessRecyclerViewScrollListener scrollListener;
+    private SwipeRefreshLayout swipe_search;
 
     ///
     PostGrid_Adapter postGrid_adapter;
@@ -59,8 +61,6 @@ public class TabActivity_search extends AppCompatActivity {
             }
         });
 
-
-
         recyclerView = (RecyclerView) findViewById(R.id.grid_search);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
@@ -68,7 +68,7 @@ public class TabActivity_search extends AppCompatActivity {
         postGrid_adapter = new PostGrid_Adapter(this, gridviewArrayPhoto);
         // customAdapterSearch = new CustomAdapterSearch(this, gridviewArrayPhoto);
         recyclerView.setAdapter(postGrid_adapter);
-
+        loadData();
         scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
@@ -77,49 +77,28 @@ public class TabActivity_search extends AppCompatActivity {
             }
         };
         recyclerView.addOnScrollListener(scrollListener);
+
+        //Swipe
+        swipe_search = (SwipeRefreshLayout) findViewById(R.id.swipe_search);
+        swipe_search.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipe_search.setRefreshing(false);
+                gridviewArrayPhoto.clear();
+                loadData();
+                postGrid_adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     public void loadmoreData(final int site) {
-       // gridviewArrayPhoto.clear();
-        uDatabase.child("following").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                B.clear();
-                for (DataSnapshot snop : dataSnapshot.getChildren()) {
-                    //Log.d("Found B",snop.getValue(Follow.class).getUser_id());
-                    B.add(snop.getValue(Follow.class).getUser_id());
-                }
-
-                uDatabase.child("users").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                      //  A.clear();
-                        for (DataSnapshot snop : dataSnapshot.getChildren()) {
-                            // Log.d("Found A",snop.getKey());
-                            A.add(snop.getKey());
-
-                        }
-                        for (int i = 0; i < B.size(); i++) {
-                            if (A.contains(B.get(i)))
-                                A.remove(B.get(i));
-                        }
-                        //
-                        C.clear();
-                        C.addAll(A);
-                        //    C.addAll(B);
-                        C.remove(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-                      //  final int size = C.size();
-                        //  DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                        final Query query = uDatabase.child("photos").orderByKey().endAt(keyPhoto).limitToLast(site+6);
+        final Query query = uDatabase.child("photos").orderByKey().endAt(keyPhoto).limitToLast(site+6);
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
 
                                 if (dataSnapshot.getValue() != null) {
                                     gridviewArrayPhoto.clear();
-
-
                                     int i = 0;
                                     for (DataSnapshot snop : dataSnapshot.getChildren()) {
                                         Photo photo = new Photo();
@@ -164,23 +143,11 @@ public class TabActivity_search extends AppCompatActivity {
                             }
                         });
 
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
     }
 
-    protected void onStart() {
-        super.onStart();
-     //   gridviewArrayPhoto.clear();
+    public void loadData(){
         uDatabase.child("following").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -209,7 +176,7 @@ public class TabActivity_search extends AppCompatActivity {
                         //    C.addAll(B);
                         C.remove(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                      //  final int size = C.size();
+                        //  final int size = C.size();
                         //  DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                         final Query query = uDatabase.child("photos").limitToLast(6);
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -217,7 +184,7 @@ public class TabActivity_search extends AppCompatActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
 
                                 if (dataSnapshot.getValue() != null) {
-                                     gridviewArrayPhoto.clear();
+                                    gridviewArrayPhoto.clear();
                                     int i = 0;
                                     for (DataSnapshot snop : dataSnapshot.getChildren()) {
                                         Photo photo = new Photo();
@@ -246,7 +213,7 @@ public class TabActivity_search extends AppCompatActivity {
                                                 item_gridPhoto.setPhoto_id(photo_id);
                                                 item_gridPhoto.setPath(path);
                                                 gridviewArrayPhoto.add(item_gridPhoto);
-                                               // Log.d("idphoto", path);
+                                                // Log.d("idphoto", path);
                                             }
                                         }
 

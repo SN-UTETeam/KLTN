@@ -99,7 +99,7 @@ public class TabActivity_news extends AppCompatActivity {
             public void onClick(View v) {
                 if(flag_selected) {
                     for(int i =0;i<imageUri.size();i++)
-                        Log.d("Uri",imageUri.get(i).toString()+"");
+                        Log.d("Uri",imageUri.get(i).getPath()+"");
                     Intent intent = new Intent(getApplicationContext(), Activity_share_image.class);
                     startActivityForResult(intent, REQUEST_DONE);
                 }

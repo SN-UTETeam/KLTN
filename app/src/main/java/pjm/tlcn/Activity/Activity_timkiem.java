@@ -81,21 +81,21 @@ public class Activity_timkiem extends AppCompatActivity {
 
                 if (dataSnapshot.getValue() != null) {
 
-                     Log.d("usser",FirebaseAuth.getInstance().getCurrentUser().getUid());
+                      //Log.d("usser",FirebaseAuth.getInstance().getCurrentUser().getUid());
                       userArrayListFollow.clear();
                       for (DataSnapshot snop : dataSnapshot.getChildren()) {
 
 
                               UserFollow temp = new UserFollow();
                               temp = snop.getValue(UserFollow.class);
-                              //Log.d("AAA", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                              if(!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(temp.getUser_id()))
                               userArrayListFollow.add(temp);
                               // Toast.makeText(Activity_timkiem.this, snop.getKey(), Toast.LENGTH_SHORT).show();
                               customAdapterListFollow.notifyDataSetChanged();
 
                   }
                 } else {
-                    Log.d("list", "NUL");
+                    //Log.d("list", "NUL");
                 }
 
             }

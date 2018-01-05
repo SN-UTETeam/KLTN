@@ -2,6 +2,7 @@ package pjm.tlcn.Activity;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -55,6 +56,7 @@ public class Login extends AppCompatActivity {
     public static User user;
     public static String user_id;
     public Dialog dialog;
+    private TextView tvfont;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +64,12 @@ public class Login extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
         setContentView(R.layout.activity_login);
+
+        tvfont = (TextView) findViewById(R.id.tvfont);
+        // khai báo và add kiểu font bạn cần
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/SNAP____.TTF");
+        //add kiểu font vào textview font
+        tvfont.setTypeface(typeface);
 
         //Create variable
         btn_login = (Button) findViewById(R.id.btn_login);

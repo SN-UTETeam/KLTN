@@ -23,7 +23,7 @@
         android:layout_weight="1"
         android:id="@+id/font"
         android:layout_width="wrap_content"
-        android:text="Instagram"
+        android:text="myTimeline"
         android:textColor="@color/colorWhite"
         android:textAllCaps="false"
         android:textStyle="bold"

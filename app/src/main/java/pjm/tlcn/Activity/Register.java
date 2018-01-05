@@ -1,6 +1,7 @@
 package pjm.tlcn.Activity;
 
 import android.app.ProgressDialog;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -32,10 +33,18 @@ public class Register extends AppCompatActivity {
     public EditText edt_EmailRegister,edt_PassWordRegister;
     private ProgressBar progress_bar_register;
     private ProgressDialog progressDialog;
+    private TextView tvfont;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        tvfont = (TextView) findViewById(R.id.tvfont);
+        // khai báo và add kiểu font bạn cần
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/SNAP____.TTF");
+        //add kiểu font vào textview font
+        tvfont.setTypeface(typeface);
 
         //Create Variable
         progress_bar_register = (ProgressBar) findViewById(R.id.progress_bar_register);

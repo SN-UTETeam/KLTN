@@ -83,7 +83,7 @@ public class PostList extends Fragment{
     public void loadData(){
         uDatabase = FirebaseDatabase.getInstance().getReference().child("photos");
         final Query query = uDatabase.orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .limitToLast(6);
+                .limitToLast(10);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -97,7 +97,7 @@ public class PostList extends Fragment{
                         if(objectMap.get("user_id").toString().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                         {
                             Log.d("Limit",i+"");
-                            if(i>=6) {
+                            if(i>=10) {
                                 Log.d("Remove",i+"");
                                 break;}
                             else i++;
@@ -145,7 +145,7 @@ public class PostList extends Fragment{
         //Firebase
         uDatabase = FirebaseDatabase.getInstance().getReference().child("photos");
         final Query query1 = uDatabase.orderByChild("user_id").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .limitToLast(size+6);
+                .limitToLast(size+10);
 
         query1.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -160,7 +160,7 @@ public class PostList extends Fragment{
                             Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
 
                             if (objectMap.get("user_id").toString().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                                if (i >= 6) {
+                                if (i >= 10) {
                                     break;
                                 } else i++;
                                 if(objectMap.get("photo_id").toString().equals(photoArrayList.get(photoArrayList.size()-1).getPhoto_id()))

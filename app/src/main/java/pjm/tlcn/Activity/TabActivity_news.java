@@ -33,6 +33,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +49,7 @@ public class TabActivity_news extends AppCompatActivity {
     private JZVideoPlayerStandard tab_news_videoview;
     private Integer checked[];
     private static Uri[] mUrls = null;
+    private static Uri imageUri1;
     private static String[] strUrls = null;
     private String[] mNames = null;
     private GridView gridview = null;
@@ -97,7 +99,7 @@ public class TabActivity_news extends AppCompatActivity {
         btnext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(flag_selected) {
+                if(flag_selected && imageUri.size()>0) {
                     for(int i =0;i<imageUri.size();i++)
                         Log.d("Uri",imageUri.get(i).getPath()+"");
                     Intent intent = new Intent(getApplicationContext(), Activity_share_image.class);
@@ -113,6 +115,8 @@ public class TabActivity_news extends AppCompatActivity {
         btcancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                imageUri.clear();
+                flag_selected=false;
                 MainActivity mainActivity = (MainActivity) getParent();
                 mainActivity.setCurrentTab(0);
             }
@@ -171,15 +175,13 @@ public class TabActivity_news extends AppCompatActivity {
         img_camera_tabnew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 values = new ContentValues();
                 values.put(MediaStore.Images.Media.TITLE, "New Picture");
                 values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
-                Uri ui = getContentResolver().insert(
+                imageUri1= getContentResolver().insert(
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-                imageUri.add(ui);
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri1);
                 startActivityForResult(intent, REQUEST_CAMERA);
             }
         });
@@ -193,14 +195,19 @@ public class TabActivity_news extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK) {
             try {
-                Uri imgUri = null;
                 bitmap_photo = MediaStore.Images.Media.getBitmap(
-                        getContentResolver(), imgUri);
+                        getContentResolver(), imageUri1);
                 tab_news_imageview.setImageBitmap(bitmap_photo);
-                imageurl = getRealPathFromURI(imgUri);
+
                 flag_selected=true;
                 btcancel.setVisibility(View.VISIBLE);
                 btnext.setVisibility(View.VISIBLE);
+                Uri uri = getImageUri(getApplicationContext(),bitmap_photo);
+
+                imageUri.add(Uri.parse(getRealPathFromURI(uri)));
+                Log.d("iamge1",getRealPathFromURI(uri)+"");
+                Log.d("Size",imageUri.size()+"");
+                Log.d("Flag ==",flag_selected+"");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -212,16 +219,29 @@ public class TabActivity_news extends AppCompatActivity {
             }
         }
     }
-    public String getRealPathFromURI(Uri contentUri) {
-        int column_index;
 
-        String[] proj = { MediaStore.Images.Media.DATA };
-        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
-        column_index = cursor
-                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+    public Uri getImageUri(Context inContext,Bitmap inImage){
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG,100,bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(),inImage,"Title",null);
+        return Uri.parse(path);
+    }
+
+    public String getRealPathFromURI(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri,null,null,null,null);
         cursor.moveToFirst();
-        cursor.close();
-        return cursor.getString(column_index);
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        return cursor.getString(idx);
+
+//        int column_index;
+//
+//        String[] proj = { MediaStore.Images.Media.DATA };
+//        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
+//        column_index = cursor
+//                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+//        cursor.moveToFirst();
+//        cursor.close();
+//        return cursor.getString(column_index);
     }
 
 

@@ -289,6 +289,7 @@ public class Chat extends AppCompatActivity {
                                 dialog.dismiss();
                                 hiddenKeyboard();
                                 img_chat_image.setVisibility(View.GONE);
+                                img_x.setVisibility(View.GONE);
                             }
                         });
                     }
@@ -312,6 +313,7 @@ public class Chat extends AppCompatActivity {
                         messageArea.setText("");
                         hiddenKeyboard();
                         img_chat_image.setVisibility(View.GONE);
+                        img_x.setVisibility(View.GONE);
 
                     }else{
                         dialog.dismiss();
@@ -354,7 +356,6 @@ public class Chat extends AppCompatActivity {
                             getContentResolver(), imageUri);
                     img_chat_image.setImageBitmap(bitmap_img_capture);
                     imageurl = getRealPathFromURI(imageUri);
-
                     //bitmap_img_capture = (Bitmap) data.getExtras().get("data");
                     //img_chat_image.setImageBitmap(bitmap_img_capture);
                     img_chat_image.setVisibility(View.VISIBLE);

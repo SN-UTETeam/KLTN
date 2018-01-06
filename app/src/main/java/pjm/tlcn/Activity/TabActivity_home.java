@@ -126,7 +126,7 @@ public class TabActivity_home extends AppCompatActivity {
                 }
                 A.add(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 //  final int size = A.size();
-                final Query query1 = uDatabase.child("photos").orderByKey().endAt(keyPhoto).limitToLast(size+6);
+                final Query query1 = uDatabase.child("photos").orderByKey().limitToLast(size+10);
                 query1.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -141,7 +141,7 @@ public class TabActivity_home extends AppCompatActivity {
 
                                 //  final String key = A.get(i).toString();
                                 if (A.contains(objectMap.get("user_id").toString())) {
-                                    if (i >= 6) {
+                                    if (i >= 10) {
 
                                         break;
                                     }
@@ -172,7 +172,6 @@ public class TabActivity_home extends AppCompatActivity {
                             }
                             Collections.reverse(list);
                             lvs.addAll(list);
-                            query1.removeEventListener(this);
                             Log.d("List size" + list.size(), "Lvs size" + lvs.size());
 
 
@@ -213,7 +212,7 @@ public class TabActivity_home extends AppCompatActivity {
                 A.add(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
 
-                final Query query = uDatabase.child("photos").limitToLast(6);
+                final Query query = uDatabase.child("photos").limitToLast(10);
                 query.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -227,7 +226,7 @@ public class TabActivity_home extends AppCompatActivity {
                                 keyPhoto = objectMap.get("photo_id").toString();
                                 //  final String key = A.get(i).toString();
                                 if (A.contains(objectMap.get("user_id").toString())) {
-                                    if (i >= 6) {
+                                    if (i >= 10) {
                                         query.removeEventListener(this);
                                         break;
                                     }

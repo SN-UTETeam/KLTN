@@ -72,7 +72,7 @@ public class TabActivity_search extends AppCompatActivity {
         scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                loadmoreData(postGrid_adapter.getItemCount());
+                loadmoreData(gridviewArrayPhoto.size());
                  //postGrid_adapter.notifyDataSetChanged();
             }
         };
@@ -84,7 +84,6 @@ public class TabActivity_search extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 swipe_search.setRefreshing(false);
-                gridviewArrayPhoto.clear();
                 loadData();
                 postGrid_adapter.notifyDataSetChanged();
             }
@@ -92,30 +91,35 @@ public class TabActivity_search extends AppCompatActivity {
     }
 
     public void loadmoreData(final int site) {
-        final Query query = uDatabase.child("photos").orderByKey().endAt(keyPhoto).limitToLast(site+6);
+        final Query query = uDatabase.child("photos").orderByKey().endAt(keyPhoto).limitToLast(site+10);
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
 
                                 if (dataSnapshot.getValue() != null) {
-                                    gridviewArrayPhoto.clear();
                                     int i = 0;
+                                    int key=0;
+                                    ArrayList<Item_GridPhoto> item = new ArrayList<Item_GridPhoto>();
                                     for (DataSnapshot snop : dataSnapshot.getChildren()) {
                                         Photo photo = new Photo();
                                         Map<String, Object> objectMap = (HashMap<String, Object>) snop.getValue();
 
-                                        keyPhoto = objectMap.get("photo_id").toString();
-                                        photo.setCaption(objectMap.get("caption").toString());
+                                        if(key==0) {
+                                            key=1;
+                                            keyPhoto = objectMap.get("photo_id").toString();
+                                        }
+                                        //photo.setCaption(objectMap.get("caption").toString());
                                         // photo.setPhoto_id(objectMap.get("photo_id").toString());
-                                        photo.setUser_id(objectMap.get("user_id").toString());
+                                        //photo.setUser_id(objectMap.get("user_id").toString());
                                         //  photo.setDate_created(objectMap.get("date_created").toString());
                                         String photo_id = (objectMap.get("photo_id").toString());
                                         if (C.contains(objectMap.get("user_id").toString())) {
 
-                                            if (i >= 6) {
-                                                query.removeEventListener(this);
+                                            if (i >= 10) {
                                                 break;
                                             }
+                                            if(photo_id.equals(gridviewArrayPhoto.get(gridviewArrayPhoto.size()-1).getPhoto_id()))
+                                                break;
                                             i++;
                                             //Log.d("erro", objectMap.get("photo_id").toString());
 
@@ -123,16 +127,18 @@ public class TabActivity_search extends AppCompatActivity {
                                                     .child("image_path").getChildren()) {
                                                 Item_GridPhoto item_gridPhoto = new Item_GridPhoto();
                                                 String path = dSnapshot.child("path").getValue().toString();
+                                               // Log.d("Found loadmore "+i,photo_id);
+                                                //Log.d("Size grid",gridviewArrayPhoto.size()+"");
                                                 item_gridPhoto.setPhoto_id(photo_id);
                                                 item_gridPhoto.setPath(path);
-                                                gridviewArrayPhoto.add(item_gridPhoto);
-                                                postGrid_adapter.notifyDataSetChanged();
+                                                item.add(item_gridPhoto);
                                                 //Log.d("idphoto", path);
                                             }
                                         }
 
                                     }
-                                    Collections.reverse(gridviewArrayPhoto);
+                                    Collections.reverse(item);
+                                    gridviewArrayPhoto.addAll(item);
                                     postGrid_adapter.notifyDataSetChanged();
                                 }
 
@@ -148,6 +154,7 @@ public class TabActivity_search extends AppCompatActivity {
     }
 
     public void loadData(){
+        gridviewArrayPhoto.clear();
         uDatabase.child("following").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -178,25 +185,26 @@ public class TabActivity_search extends AppCompatActivity {
 
                         //  final int size = C.size();
                         //  DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                        final Query query = uDatabase.child("photos").limitToLast(6);
+                        final Query query = uDatabase.child("photos").orderByKey().limitToLast(10);
+                        keyPhoto="";
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
 
                                 if (dataSnapshot.getValue() != null) {
-                                    gridviewArrayPhoto.clear();
                                     int i = 0;
+                                    int key=0;
+                                    ArrayList<Item_GridPhoto> item = new ArrayList<Item_GridPhoto>();
                                     for (DataSnapshot snop : dataSnapshot.getChildren()) {
                                         Photo photo = new Photo();
                                         Map<String, Object> objectMap = (HashMap<String, Object>) snop.getValue();
-
-
-                                        keyPhoto = objectMap.get("photo_id").toString();
-
+                                        if(key==0) {
+                                            key=1;
+                                            keyPhoto = objectMap.get("photo_id").toString();
+                                        }
                                         if (C.contains(objectMap.get("user_id").toString())) {
 
-                                            if (i >= 6) {
-                                                query.removeEventListener(this);
+                                            if (i >= 10) {
                                                 break;
                                             }
                                             i++;
@@ -210,15 +218,17 @@ public class TabActivity_search extends AppCompatActivity {
                                                     .child("image_path").getChildren()) {
                                                 Item_GridPhoto item_gridPhoto = new Item_GridPhoto();
                                                 String path = dSnapshot.child("path").getValue().toString();
+                                                //Log.d("Found load "+i,photo_id);
                                                 item_gridPhoto.setPhoto_id(photo_id);
                                                 item_gridPhoto.setPath(path);
-                                                gridviewArrayPhoto.add(item_gridPhoto);
+                                                item.add(item_gridPhoto);
                                                 // Log.d("idphoto", path);
                                             }
                                         }
 
                                     }
-                                    Collections.reverse(gridviewArrayPhoto);
+                                    Collections.reverse(item);
+                                    gridviewArrayPhoto.addAll(item);
                                     postGrid_adapter.notifyDataSetChanged();
                                 }
 

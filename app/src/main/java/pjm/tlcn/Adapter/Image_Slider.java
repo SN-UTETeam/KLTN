@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +58,8 @@ public class Image_Slider extends PagerAdapter {
             imageView.setVisibility(View.VISIBLE);
             videoView.setVisibility(View.GONE);
             imageView.setImageURI(items.get(position));
+            Log.d("Hummmm: ",items.get(position)+"");
+
         }
         else if(items.get(position).toString().contains("mp4")){
             imageView.setVisibility(View.GONE);

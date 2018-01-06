@@ -102,6 +102,8 @@ public class TabActivity_home extends AppCompatActivity {
                 swipe_home.setRefreshing(false);
                 lvs.clear();
                 loadData();
+                recyclerView_tabPost = new RecyclerView_TabPost(lvs);
+                recyclerView.setAdapter(recyclerView_tabPost);
                 recyclerView_tabPost.notifyDataSetChanged();
             }
         });
@@ -198,8 +200,6 @@ public class TabActivity_home extends AppCompatActivity {
 
     }
     public void loadData(){
-        super.onStart();
-
         lvs.clear();
         uDatabase.child("following").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override

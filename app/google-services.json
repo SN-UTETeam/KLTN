@@ -1,43 +1,35 @@
 {
   "project_info": {
-    "project_number": "603608822223",
-    "firebase_url": "https://instagram-pjm.firebaseio.com",
-    "project_id": "instagram-pjm",
-    "storage_bucket": "instagram-pjm.appspot.com"
+    "project_number": "355560877473",
+    "firebase_url": "https://instagram-kltn.firebaseio.com",
+    "project_id": "instagram-kltn",
+    "storage_bucket": "instagram-kltn.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:603608822223:android:3bd8e978cc99390d",
+        "mobilesdk_app_id": "1:355560877473:android:3bd8e978cc99390d",
         "android_client_info": {
           "package_name": "pjm.tlcn"
         }
       },
       "oauth_client": [
         {
-          "client_id": "603608822223-lucmj53ktd8hnfij39erohmkv8qicm84.apps.googleusercontent.com",
+          "client_id": "355560877473-ar87557kq1p2scmj0l6v16v8ccmqbiq5.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "pjm.tlcn",
-            "certificate_hash": "8d194c3dc67e68b1b79c36b0f1059024bc3d6db3"
+            "certificate_hash": "61c5476f87cb0463e19840f187857a3c1dede0e0"
           }
         },
         {
-          "client_id": "603608822223-1n99ktlju8fj8midqi0qck79ph6rjimq.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "pjm.tlcn",
-            "certificate_hash": "947a3c0d7269be8b7f173543f542b26420dca1f0"
-          }
-        },
-        {
-          "client_id": "603608822223-ucg0fcum41q3a2s0o0p6q8ihb6ad5vbh.apps.googleusercontent.com",
+          "client_id": "355560877473-7b9thpn1oi1oj07kv23jsii0cligtsei.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDarGW0QlP1yHF-9oQJ7ch0D2Cn_giOPYY"
+          "current_key": "AIzaSyAcxpHLpLLD-lJPOJRrACoRNXBgwvl1zRA"
         }
       ],
       "services": {
@@ -48,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "603608822223-ucg0fcum41q3a2s0o0p6q8ihb6ad5vbh.apps.googleusercontent.com",
+              "client_id": "355560877473-7b9thpn1oi1oj07kv23jsii0cligtsei.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

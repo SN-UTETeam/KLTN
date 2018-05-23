@@ -10,17 +10,22 @@ import android.support.v4.content.ContextCompat;
 import android.widget.TabHost;
 
 import pjm.tlcn.R;
+import pjm.tlcn.Service.ListenFollow;
 
-@SuppressWarnings("deprecation")
+    @SuppressWarnings("deprecation")
 public class MainActivity extends TabActivity {
     private TabHost Tabhost_main;
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
     public static final int MY_PERMISSIONS_REQUEST_CAMERA = 124;
-
+    Intent service;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Register Service
+        service = new Intent(this, ListenFollow.class);
+        startService(service);
 
        //permission
         if (ContextCompat.checkSelfPermission(MainActivity.this,

@@ -18,7 +18,7 @@ public class UserFollow {
     }
 
     public UserFollow() {
-        ////
+
     }
 
     public String getUser_id() {

@@ -18,6 +18,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Random;
 
+import pjm.tlcn.Activity.Activity_viewprofile;
+import pjm.tlcn.Activity.MainActivity;
 import pjm.tlcn.Activity.ViewFollow;
 import pjm.tlcn.Model.Notification;
 import pjm.tlcn.R;
@@ -80,7 +82,7 @@ public class ListenFollow extends Service {
     private void showNotification(String key, Notification notification) {
         Intent intent;
 
-        intent = new Intent(getBaseContext(), ViewFollow.class);
+        intent = new Intent(getBaseContext(), MainActivity.class);
         int randomInt = new Random().nextInt(9999 - 1) + 1;
 
         PendingIntent pendingIntent = PendingIntent.getActivity(getBaseContext(), randomInt, intent, 0);

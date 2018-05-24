@@ -39,7 +39,7 @@ import pjm.tlcn.R;
 public class Activity_viewprofile extends AppCompatActivity {
 
     public DatabaseReference uDatabase;
-    private TextView tv_ViewUserName,tv_baiviet,tv_following,tv_follower;
+    private TextView tv_ViewUserName, tv_baiviet, tv_following, tv_follower;
     private Button bt_follow_user;
     private Button Img_nhantin;
     private ImageView img_view_avatar_user;
@@ -70,14 +70,14 @@ public class Activity_viewprofile extends AppCompatActivity {
                 finish();
             }
         });
-       // toolbar_viewprofile.setTitle();
+        // toolbar_viewprofile.setTitle();
         tv_ViewUserName = (TextView) findViewById(R.id.tv_username_viewprofile);
         img_view_avatar_user = (ImageView) findViewById(R.id.id_view_image_user);
         bt_follow_user = (Button) findViewById(R.id.btn_follow_user);
         Img_nhantin = (Button) findViewById(R.id.imge_nhantin);
-        tv_baiviet =(TextView)findViewById(R.id.tv_view_item) ;
-        tv_follower =(TextView)findViewById(R.id.tv_view_follower);
-        tv_following =(TextView)findViewById(R.id.tv_view_following);
+        tv_baiviet = (TextView) findViewById(R.id.tv_view_item);
+        tv_follower = (TextView) findViewById(R.id.tv_view_follower);
+        tv_following = (TextView) findViewById(R.id.tv_view_following);
        /* image_back =(ImageButton) findViewById(R.id.bt_img_back);
         image_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,7 +107,7 @@ public class Activity_viewprofile extends AppCompatActivity {
                 User user = dataSnapshot.getValue(User.class);
                 Picasso.with(getApplicationContext()).load(user.getAvatarurl()).fit().centerInside().into(img_view_avatar_user);
                 tv_ViewUserName.setText(user.getUsername());
-               // toolbar_viewprofile.setTitle(user.getUsername());
+                // toolbar_viewprofile.setTitle(user.getUsername());
             }
 
             @Override
@@ -121,10 +121,10 @@ public class Activity_viewprofile extends AppCompatActivity {
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
-                    if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(singleSnapshot.getValue(Follow.class).getUser_id())){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                    if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(singleSnapshot.getValue(Follow.class).getUser_id())) {
                         Img_nhantin.setVisibility(View.VISIBLE);
-                        mFollowdByCurrentUser=true;
+                        mFollowdByCurrentUser = true;
                         bt_follow_user.setText("Đang theo dõi");
                         bt_follow_user.setTextColor(Color.BLACK);
                         bt_follow_user.setBackgroundResource(R.drawable.button_edit_profile);
@@ -144,22 +144,22 @@ public class Activity_viewprofile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 /*Notification */
-                /*String NotificationKey = FirebaseDatabase.getInstance().getReference("users"
-                        + "/" + userFollow.getUser_id()
+                final String notificationKey = FirebaseDatabase.getInstance().getReference("users"
+                        + "/" + key
                         + "/notifications").push().getKey();
 
-                Notification n = new Notification();
+                final Notification n = new Notification();
 
                 n.setNewFollow(true);
-                n.setKey(NotificationKey);
-
+                n.setKey(notificationKey);
+                n.setTitle("Thông báo từ hệ thống");
                 if (userFollow != null)
-                    n.setContent(userFollow.getUsername() + " đã theo dõi.");
+                    n.setContent(userFollow.getUsername() + " đã theo dõi bạn.");
                 else
-                    n.setContent(FirebaseAuth.getInstance().getCurrentUser().getEmail() + " đã theo dõi.");
+                    n.setContent(FirebaseAuth.getInstance().getCurrentUser().getEmail() + " đã theo dõi bạn.");
                 n.setStatus(Notification.NOTIFY);
                 n.setSendTime((new Date()).getTime());
-                n.setUserId(FirebaseAuth.getInstance().getCurrentUser().getUid());*/
+                n.setUserId(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
                 /*Follower and Following*/
                 Query query = uDatabase.child("following").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -167,13 +167,11 @@ public class Activity_viewprofile extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-
-                          final  String keyID = singleSnapshot.getKey();
+                            final String keyID = singleSnapshot.getKey();
 //                            Log.d("Boolen",mFollowdByCurrentUser.toString());
 //                            Log.d("Found user",singleSnapshot.getValue(Follow.class)
 //                                    .getUser_id() + " == " + FirebaseAuth.getInstance().getCurrentUser().getUid());
-                            Toast.makeText(Activity_viewprofile.this,  " == " + FirebaseAuth.getInstance().getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(Activity_viewprofile.this, " == " + FirebaseAuth.getInstance().getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
                             if (mFollowdByCurrentUser &&
                                     singleSnapshot.getValue(Follow.class)
                                             .getUser_id().equals(String.valueOf(key))) {
@@ -182,14 +180,22 @@ public class Activity_viewprofile extends AppCompatActivity {
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(keyID)
                                         .removeValue();
-                                Log.d("Clear",keyID);
 
-                              //  Toast.makeText(Activity_viewprofile.this, FirebaseAuth.getInstance().getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
+                                Log.d("Clear", keyID);
+
+                                //  Toast.makeText(Activity_viewprofile.this, FirebaseAuth.getInstance().getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
                                 uDatabase.child("followers")
                                         .child(key)
                                         .child(keyID)
                                         .removeValue();
-                                mFollowdByCurrentUser=false;
+
+                                /*uDatabase.child("users")
+                                        .child(key)
+                                        .child("notifications")
+                                        .child(notificationKey)
+                                        .removeValue();*/
+
+                                mFollowdByCurrentUser = false;
                                 bt_follow_user.setText("Theo dõi");
                                 bt_follow_user.setBackgroundResource(R.drawable.custom_button_viewprofile);
                                 bt_follow_user.setTextColor(Color.WHITE);
@@ -221,7 +227,11 @@ public class Activity_viewprofile extends AppCompatActivity {
                                 bt_follow_user.setBackgroundResource(R.drawable.button_edit_profile);
 
                                 mFollowdByCurrentUser = true;
+
+                                //update data notifications
+                                uDatabase.child("users").child(key).child("notifications").child(notificationKey).setValue(n);
                             }
+
                         }
 
                         if (!dataSnapshot.exists()) {
@@ -239,6 +249,8 @@ public class Activity_viewprofile extends AppCompatActivity {
                                     .child(key)
                                     .child(newkey)
                                     .setValue(following);
+                            //update data notifications
+                            uDatabase.child("users").child(key).child("notifications").child(notificationKey).setValue(n);
 
 
                             Img_nhantin.setVisibility(View.VISIBLE);
@@ -267,9 +279,9 @@ public class Activity_viewprofile extends AppCompatActivity {
         tv_follower.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Activity_viewprofile.this,ViewFollow.class);
-                intent.putExtra("view","followers");
-                intent.putExtra("user_id",key);
+                Intent intent = new Intent(Activity_viewprofile.this, ViewFollow.class);
+                intent.putExtra("view", "followers");
+                intent.putExtra("user_id", key);
                 startActivity(intent);
             }
         });
@@ -278,17 +290,18 @@ public class Activity_viewprofile extends AppCompatActivity {
         tv_following.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Activity_viewprofile.this,ViewFollow.class);
-                intent.putExtra("view","following");
-                intent.putExtra("user_id",key);
+                Intent intent = new Intent(Activity_viewprofile.this, ViewFollow.class);
+                intent.putExtra("view", "following");
+                intent.putExtra("user_id", key);
                 startActivity(intent);
             }
         });
 
 
     }
+
     //getFollowersCount
-    private void getFollowersCount(){
+    private void getFollowersCount() {
 
         //get key tu ben adapter
         Intent intent = getIntent();
@@ -300,7 +313,7 @@ public class Activity_viewprofile extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mFollowersCount = 0;
-                for(DataSnapshot singleSnapshot :  dataSnapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     //Log.d(TAG, "onDataChange: found follower:" + singleSnapshot.getValue());
                     mFollowersCount++;
                 }
@@ -316,7 +329,7 @@ public class Activity_viewprofile extends AppCompatActivity {
     //View Followers
 
     //getFollowingCount
-    private void getFollowingCount(){
+    private void getFollowingCount() {
         mFollowingCount = 0;
         //get key tu ben adapter
         Intent intent = getIntent();
@@ -328,7 +341,7 @@ public class Activity_viewprofile extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mFollowingCount = 0;
-                for(DataSnapshot singleSnapshot :  dataSnapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     //Log.d(TAG, "onDataChange: found following user:" + singleSnapshot.getValue());
                     mFollowingCount++;
                 }
@@ -342,7 +355,7 @@ public class Activity_viewprofile extends AppCompatActivity {
         });
     }
 
-    private void getPostsCount(){
+    private void getPostsCount() {
         mPostsCount = 0;
         //get key tu ben adapter
         Intent intent = getIntent();
@@ -354,7 +367,7 @@ public class Activity_viewprofile extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mPostsCount = 0;
-                for(DataSnapshot singleSnapshot :  dataSnapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     //Log.d(TAG, "onDataChange: found post:" + singleSnapshot.getValue());
                     mPostsCount++;
                 }

@@ -51,6 +51,7 @@ public class Activity_viewprofile extends AppCompatActivity {
     private int mFollowingCount = 0;
     private int mPostsCount = 0;
     private UserFollow userFollow = null;
+    private User user = null;
     private Follow follow = null;
 
     @Override
@@ -189,11 +190,13 @@ public class Activity_viewprofile extends AppCompatActivity {
                                         .child(keyID)
                                         .removeValue();
 
+                                /*Remove node after unfollow*/
                                 /*uDatabase.child("users")
                                         .child(key)
                                         .child("notifications")
                                         .child(notificationKey)
                                         .removeValue();*/
+
 
                                 mFollowdByCurrentUser = false;
                                 bt_follow_user.setText("Theo dõi");

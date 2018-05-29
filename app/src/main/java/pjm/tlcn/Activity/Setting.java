@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -43,7 +44,10 @@ public class Setting extends AppCompatActivity {
             public void onClick(View v) {
                 LoginManager.getInstance().logOut();
                 finishAffinity();
-                System.exit(0);
+                //System.exit(0);
+                Intent intent = new Intent(getApplicationContext(), Login.class);
+                startActivity(intent);
+                finish();
             }
         });
 

@@ -5,4 +5,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="facebook_app_id">911491519001745</string>
     <string name="fb_login_protocol_scheme">fb911491519001745</string>
+
+
+    <!--Icon Fontawesome-->
+    <string name="ellipsis_v">&#xf142;</string>
 </resources>

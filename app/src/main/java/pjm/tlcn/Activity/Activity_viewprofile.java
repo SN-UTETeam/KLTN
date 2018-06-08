@@ -29,6 +29,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Date;
 
+import pjm.tlcn.Common.SessionUser;
 import pjm.tlcn.Fragment.View_ProfilePost;
 import pjm.tlcn.Model.Follow;
 import pjm.tlcn.Model.Notification;
@@ -54,12 +55,14 @@ public class Activity_viewprofile extends AppCompatActivity {
     private User user = null;
     private Follow follow = null;
 
+    private SessionUser sessionUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_viewprofile);
         uDatabase = FirebaseDatabase.getInstance().getReference();
-
+        sessionUser=new SessionUser(getBaseContext());
         //Set back Toolbar
         toolbar_viewprofile = (Toolbar) findViewById(R.id.toolbar_view_profile);
         setSupportActionBar(toolbar_viewprofile);
@@ -191,11 +194,11 @@ public class Activity_viewprofile extends AppCompatActivity {
                                         .removeValue();
 
                                 /*Remove node after unfollow*/
-                                /*uDatabase.child("users")
+                                uDatabase.child("users")
                                         .child(key)
                                         .child("notifications")
-                                        .child(notificationKey)
-                                        .removeValue();*/
+                                        .child(sessionUser.getSessionUser().getUser_id())
+                                        .removeValue();
 
 
                                 mFollowdByCurrentUser = false;
@@ -232,7 +235,7 @@ public class Activity_viewprofile extends AppCompatActivity {
                                 mFollowdByCurrentUser = true;
 
                                 //update data notifications
-                                uDatabase.child("users").child(key).child("notifications").child(notificationKey).setValue(n);
+                                uDatabase.child("users").child(key).child("notifications").child(sessionUser.getSessionUser().getUser_id()).setValue(n);
                             }
 
                         }
@@ -253,7 +256,7 @@ public class Activity_viewprofile extends AppCompatActivity {
                                     .child(newkey)
                                     .setValue(following);
                             //update data notifications
-                            uDatabase.child("users").child(key).child("notifications").child(notificationKey).setValue(n);
+                            uDatabase.child("users").child(key).child("notifications").child(sessionUser.getSessionUser().getUser_id()).setValue(n);
 
 
                             Img_nhantin.setVisibility(View.VISIBLE);

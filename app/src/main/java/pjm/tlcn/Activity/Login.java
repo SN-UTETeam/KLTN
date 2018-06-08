@@ -39,6 +39,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import pjm.tlcn.Common.SessionUser;
 import pjm.tlcn.Model.User;
 import pjm.tlcn.R;
 
@@ -57,6 +58,8 @@ public class Login extends AppCompatActivity {
     public static String user_id;
     public Dialog dialog;
     private TextView tvfont;
+
+    private SessionUser sessionUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +67,7 @@ public class Login extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
         setContentView(R.layout.activity_login);
-
+        sessionUser=new SessionUser(getBaseContext());
         tvfont = (TextView) findViewById(R.id.tvfont);
         // khai báo và add kiểu font bạn cần
         Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/SNAP____.TTF");
@@ -130,6 +133,8 @@ public class Login extends AppCompatActivity {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         user = dataSnapshot.getValue(User.class);
+                                        sessionUser.clearUserStorage();
+                                        sessionUser.createSessionUser(user);
                                     }
 
                                     @Override
@@ -217,6 +222,10 @@ public class Login extends AppCompatActivity {
                                     if (dataSnapshot.getValue() !=null){
                                         User getU = dataSnapshot.getValue(User.class);
                                         user = getU;
+
+                                        sessionUser.clearUserStorage();
+                                        sessionUser.createSessionUser(user);
+
                                         Intent intent = new Intent(getApplicationContext(),MainActivity.class);
                                         dialog.dismiss();
                                         startActivity(intent);
@@ -230,6 +239,10 @@ public class Login extends AppCompatActivity {
                                                 firebaseUser.getPhoneNumber()+"",
                                                 "No Describer",
                                                 firebaseUser.getPhotoUrl().toString()+"");
+
+                                        sessionUser.clearUserStorage();
+                                        sessionUser.createSessionUser(user);
+
                                         mDatabase.child("users").child(firebaseUser.getUid()).setValue(user);
                                         Intent intent = new Intent(getApplicationContext(),MainActivity.class);
                                         dialog.dismiss();

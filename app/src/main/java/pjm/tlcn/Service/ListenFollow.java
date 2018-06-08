@@ -21,6 +21,7 @@ import java.util.Random;
 import pjm.tlcn.Activity.Activity_viewprofile;
 import pjm.tlcn.Activity.MainActivity;
 import pjm.tlcn.Activity.ViewFollow;
+import pjm.tlcn.Common.SessionUser;
 import pjm.tlcn.Model.Notification;
 import pjm.tlcn.R;
 
@@ -29,14 +30,15 @@ public class ListenFollow extends Service {
     FirebaseAuth auth = null;
     FirebaseDatabase db = null;
     DatabaseReference refNotification = null;
-
+    private SessionUser sessionUser;
     @Override
     public void onCreate() {
         super.onCreate();
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             auth = FirebaseAuth.getInstance();
             db = FirebaseDatabase.getInstance();
-            refNotification = db.getReference("users" + "/" + auth.getCurrentUser().getUid() + "/notifications");
+            sessionUser=new SessionUser(getBaseContext());
+            refNotification = db.getReference("users" + "/" + sessionUser.getSessionUser().getUser_id() + "/notifications");
         }
     }
 

@@ -11,17 +11,20 @@ import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
 
+import pjm.tlcn.Common.SessionUser;
 import pjm.tlcn.R;
 
 public class Setting extends AppCompatActivity {
     Toolbar toolbar_setting;
     private TextView tv_logout;
     private ImageView img_changepassword;
+
+    private SessionUser sessionUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-
+        sessionUser = new SessionUser(getBaseContext());
         //Create Variable
         toolbar_setting = (Toolbar) findViewById(R.id.toolbar_setting);
         tv_logout = (TextView) findViewById(R.id.tv_logout);
@@ -43,6 +46,7 @@ public class Setting extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 LoginManager.getInstance().logOut();
+                sessionUser.clearUserStorage();
                 finishAffinity();
                 //System.exit(0);
                 Intent intent = new Intent(getApplicationContext(), Login.class);

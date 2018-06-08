@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "pjm.tlcn"
         minSdkVersion 19
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
@@ -43,33 +43,35 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    compile 'de.hdodenhof:circleimageview:2.2.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.facebook.android:facebook-android-sdk:4.+'
-    compile 'com.firebase:firebase-client-android:2.5.2'
-    compile 'com.google.firebase:firebase-core:11.4.2'
-    compile 'com.google.firebase:firebase-messaging:11.4.2'
-    compile 'com.google.firebase:firebase-auth:11.4.2'
-    compile 'com.google.firebase:firebase-database:11.4.2'
-    compile 'com.google.firebase:firebase-storage:11.4.2'
-    compile 'com.google.android.gms:play-services-auth:11.4.2'
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.android.support:recyclerview-v7:25.3.1'
-    compile 'com.android.support:cardview-v7:25.3.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.makeramen:roundedimageview:2.3.0'
-    compile 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
-    compile 'com.android.support:design:25.3.1'
-    compile 'com.tuyenmonkey:mkloader:1.4.0'
-    compile 'cn.jzvd:jiaozivideoplayer:6.1.2'
-    testCompile 'junit:junit:4.12'
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.facebook.android:facebook-android-sdk:4.+'
+    implementation 'com.firebase:firebase-client-android:2.5.2'
+    implementation 'com.google.firebase:firebase-core:11.4.2'
+    implementation 'com.google.firebase:firebase-messaging:11.4.2'
+    implementation 'com.google.firebase:firebase-auth:11.4.2'
+    implementation 'com.google.firebase:firebase-database:11.4.2'
+    implementation 'com.google.firebase:firebase-storage:11.4.2'
+    implementation 'com.google.android.gms:play-services-auth:11.4.2'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support:support-v4:26.1.0'
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
+    implementation 'com.android.support:cardview-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.makeramen:roundedimageview:2.3.0'
+    implementation 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
+    implementation 'com.android.support:design:26.1.0'
+    implementation 'com.tuyenmonkey:mkloader:1.4.0'
+    implementation 'cn.jzvd:jiaozivideoplayer:6.1.2'
+    implementation 'com.google.code.gson:gson:2.8.5'
+
+    testImplementation 'junit:junit:4.12'
 
 }
 apply plugin: 'com.google.gms.google-services'

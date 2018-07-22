@@ -19,12 +19,6 @@
     app:layout_scrollFlags="scroll|enterAlways|snap"
     >
 
-    <ImageButton
-        android:layout_marginLeft="15dp"
-        android:layout_gravity="center|left"
-        android:background="@drawable/follow_navbar"
-        android:layout_width="30dp"
-        android:layout_height="30dp" />
     <TextView
         android:id="@+id/tv_UserName"
         android:layout_width="match_parent"
